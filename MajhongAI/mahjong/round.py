@@ -176,7 +176,7 @@ class Round:
                             desc.append("呼叫转移")
                     win_player.score += reward
                     self.current_player.score -= reward
-                    tmp_action = Action(self.player_id, previou_action.card, EVENT.HU, reward, ",".join(desc))
+                    tmp_action = Action(player_id, previou_action.card, EVENT.HU, reward, ",".join(desc))
                     hu_action.append(tmp_action)
                     win_player.make_hu(tmp_action)
                     win_player.is_finish = True
