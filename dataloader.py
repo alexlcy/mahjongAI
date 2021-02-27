@@ -1,11 +1,11 @@
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
-from Serialization import serialize
+from MajhongAI.mahjong.Serialization import serialize
 
 
 class MyDataSet(Dataset):
     def __init__(self, txt_file):
-        with open('raw_dataset.txt', 'r') as fp:
+        with open('./MajhongAI/mahjong/raw_dataset.txt', 'r') as fp:
             self.data = fp.readlines()
 
     def __len__(self):
