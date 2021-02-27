@@ -1,4 +1,4 @@
-# import copy
+import copy
 import numpy as np
 # import DataInformation
 from collections import Counter
@@ -38,7 +38,7 @@ def raw_data_processing(folder_path, times=None):
         #     file.write(f'%s' % str(i))
 
         files = os.listdir(folder_path)  # 得到对局文件夹下的所有文件名称
-        for time in range(1):  # 遍历times组对局
+        for time in range(times):  # 遍历times组对局
             with open(folder_path + "/" + files[time]) as read_file:
                 lines = read_file.readlines()
                 # initial dicts
@@ -64,8 +64,8 @@ def raw_data_processing(folder_path, times=None):
                 #                int(process_line(lines[5])[2])]
 
                 # rows_content = []
-                # for index in range(5, len(lines)):
-                for index in range(5, 7):
+                for index in range(5, len(lines)):
+                # for index in range(5, 7):
                     #         row_content = [-999] * len(DataInformation.header)
                     # index=4
                     line = process_line(lines[index])
@@ -76,25 +76,21 @@ def raw_data_processing(folder_path, times=None):
 
                     # print(card)
                     player = int(line[0])
-                    q_dict[player].append([own_wind[player],
-                                           round_wind[player],
-                                           tiles[player],
-                                           discard[player],
-                                           discard[player + 1 if player + 1 <= 3 else (player + 1) % 4],
-                                           discard[player + 2 if player + 2 <= 3 else (player + 2) % 4],
-                                           discard[player + 3 if player + 3 <= 3 else (player + 3) % 4],
-                                           open_meld[player],
-                                           open_meld[player + 1 if player + 1 <= 3 else (player + 1) % 4],
-                                           open_meld[player + 2 if player + 2 <= 3 else (player + 2) % 4],
-                                           open_meld[player + 3 if player + 3 <= 3 else (player + 3) % 4]
-                                           ])
-                    # if player == 0:
-                    print(q_dict)
+                    features = copy.deepcopy([own_wind[player],
+                                             round_wind[player],
+                                             tiles[player],
+                                             discard[player],
+                                             discard[player + 1 if player + 1 <= 3 else (player + 1) % 4],
+                                             discard[player + 2 if player + 2 <= 3 else (player + 2) % 4],
+                                             discard[player + 3 if player + 3 <= 3 else (player + 3) % 4],
+                                             open_meld[player],
+                                             open_meld[player + 1 if player + 1 <= 3 else (player + 1) % 4],
+                                             open_meld[player + 2 if player + 2 <= 3 else (player + 2) % 4],
+                                             open_meld[player + 3 if player + 3 <= 3 else (player + 3) % 4]
+                                            ])
+                    q_dict[player].append(features)
                     if len(q_dict[player]) == 5:
-                        # print(q_dict)
                         for history_ in q_dict[player]:
-                            # print(history)
-
                             write_file.write(str(history_)+'\n')
                         write_file.write('\n')
                         # write_file.write('[' + str(own_wind[player]) + ',')

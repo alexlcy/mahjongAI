@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="c86f18a5-4649-445f-b0f8-4af10e983ba7" name="Default Changelist" comment="raw_data_processor.py has a problem">
-      <change beforePath="$PROJECT_DIR$/.idea/mahjongAI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mahjongAI.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/consts.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/consts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/dto.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/dto.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/env.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/raw data processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/raw_data_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/raw_dataset.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/round.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/round.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/snapshot.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/snapshot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataloader.py" beforeDir="false" afterPath="$PROJECT_DIR$/dataloader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/raw_data_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/raw_data_processor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +29,12 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="main" />
@@ -48,7 +61,7 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="preferences.editor" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -102,9 +115,6 @@
       <module name="mahjongAI" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MajhongAI" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -130,19 +140,25 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MajhongAI/mahjong/raw_data_processor.py" />
       <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.dataloader" />
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.main (1)" />
+      <item itemvalue="Python.raw_data_processor" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.raw_data_processor" />
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.raw_data_processor" />
         <item itemvalue="Python.dataloader" />
-        <item itemvalue="Python.main" />
         <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
@@ -157,6 +173,14 @@
       <updated>1613994112625</updated>
       <workItem from="1613994114016" duration="12231000" />
     </task>
+    <task id="LOCAL-00001" summary="raw_data_processor.py has a problem">
+      <created>1614389039118</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1614389039118</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -179,30 +203,42 @@
     <option name="LAST_COMMIT_MESSAGE" value="raw_data_processor.py has a problem" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="219" y="58" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1614399542126">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="219" y="58" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1614399542126" />
+    <state x="433" y="99" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1614399831560">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="433" y="99" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824@0.0.1536.824" timestamp="1614399831560" />
     <state x="496" y="108" key="FileChooserDialogImpl" timestamp="1614389005438">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="496" y="108" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1614389005438" />
-    <state width="1510" height="220" key="GridCell.Tab.0.bottom" timestamp="1614352774606">
+    <state width="1510" height="187" key="GridCell.Tab.0.bottom" timestamp="1614399880207">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1510" height="220" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1614352774606" />
-    <state width="1510" height="220" key="GridCell.Tab.0.center" timestamp="1614352774606">
+    <state width="1510" height="187" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1614399880207" />
+    <state width="1510" height="187" key="GridCell.Tab.0.center" timestamp="1614399880207">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1510" height="220" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1614352774606" />
-    <state width="1510" height="220" key="GridCell.Tab.0.left" timestamp="1614352774606">
+    <state width="1510" height="187" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1614399880207" />
+    <state width="1510" height="187" key="GridCell.Tab.0.left" timestamp="1614399880207">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1510" height="220" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1614352774606" />
-    <state width="1510" height="220" key="GridCell.Tab.0.right" timestamp="1614352774606">
+    <state width="1510" height="187" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1614399880207" />
+    <state width="1510" height="187" key="GridCell.Tab.0.right" timestamp="1614399880207">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1510" height="220" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1614352774606" />
-    <state x="153" y="0" key="SettingsEditor" timestamp="1614389022421">
+    <state width="1510" height="187" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1614399880207" />
+    <state x="153" y="0" key="SettingsEditor" timestamp="1614399859064">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="153" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1614389022421" />
+    <state x="153" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1614399859064" />
+    <state x="261" y="80" key="Vcs.Push.Dialog.v2" timestamp="1614390190017">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="261" y="80" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1614390190017" />
     <state x="543" y="307" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1614388834156">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
