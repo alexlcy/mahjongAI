@@ -4,6 +4,7 @@ import numpy as np
 from collections import Counter
 import os, os.path
 from collections import deque
+from mahjong import settings
 
 
 def process_line(line_content):
@@ -15,9 +16,10 @@ def process_str_list(str_list_content):
     return str_list_content.replace('"', '').replace('\'', '').replace('[', '').replace(']', '').split(',')
 
 
-def online_encoder(player):
-    global Mylist
-    lines = Mylist
+def online_encoder(DL_player):
+    # global Mylist
+
+    lines = settings.myList
 
     # initial dicts
     # tiles_from_others = {str(i): [] for i in range(4)}
@@ -29,13 +31,14 @@ def online_encoder(player):
     # last_discard = {str(i): [] for i in range(4)}
     own_wind = {i: [] for i in range(4)}
     round_wind = {i: [] for i in range(4)}
-    # history = {i: [[] for j in range(5)] for i in range(4)}
-    q_dict = {i: deque(maxlen=5) for i in range(4)}
-    # q0 = deque(maxlen=5)
+    q_dict = {i: deque([[], [], [], [], []], maxlen=5) for i in range(4)}
+    # q_dict = {i: deque(maxlen=5) for i in range(4)}
+    q0 = deque(maxlen=5)
 
     for i in range(4):
+        # 初始化起始手牌
         tiles[i] = process_str_list(process_line(lines[i])[1])
-
+        
     for index in range(5, len(lines)):
 
         line = process_line(lines[index])
@@ -93,8 +96,10 @@ def online_encoder(player):
         elif line[1] == 'HU':
             open_meld[player].append(card)
 
-    return tiles[str(player)], open_meld, discard, last_discard
+    # for info in q_dict[DL_player]:
+    #     print(info)
+    return q_dict[DL_player]
 
 
-
+# print(online_encoder(0))
 

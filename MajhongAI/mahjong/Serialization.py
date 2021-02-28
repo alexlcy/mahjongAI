@@ -2,7 +2,6 @@ import numpy as np
 from collections import Counter
 import os, os.path
 
-
 w_dict = {'W' + str(i + 1): i for i in range(9)}  # 万
 b_dict = {'B' + str(i + 1): i + 9 for i in range(9)}  # 饼
 t_dict = {'T' + str(i + 1): i + 18 for i in range(9)}  # 条
@@ -11,7 +10,46 @@ j_dict = {'J' + str(i + 1): i + 31 for i in range(3)}  # （剑牌）中发白
 total_dict = {**w_dict, **b_dict, **t_dict, **f_dict, **j_dict}
 
 
-def serialize(data):
+def online_serialize(all_data):
+    names = locals()
+    # own wind 1 + round wind 1 + own hand 1 + all discards 4*4 + open melds 4*4 = 38
+    all_features = {f'res{i}': np.zeros((38, 34), int) for i in range(5)}
+
+    for index, data in enumerate(all_data):
+        # print('all_data:')
+        # print(len(all_data))
+        # 刚开局没有历史，全部feature用空值代替
+        if data:
+            for idx, array in enumerate(data):
+                if idx == 0:  # for wind and own wind currently
+                    names['res'+str(index)] = np.zeros((1, 34), int)
+                elif idx == 1: # for wind and own wind currently
+                    temp = np.zeros((1, 34), int)
+                    names['res'+str(index)] = np.concatenate((names['res'+str(index)], temp), axis=0)
+                # 目前为止： np.zeros((2,34))
+                else: # other features are all (4,34) size
+                    temp = np.zeros((4, 34), int)
+                    if not array: #如果当前feature为空，则直接在结果上加上np.zeros((4,34))
+                        names['res' + str(index)] = np.concatenate((names['res' + str(index)], temp), axis=0)
+                    else:
+                        count = Counter(array)
+                        for i in count:
+                            if i[0] != 'H':
+                                tile_index = total_dict[i]
+                                nums = count[i]
+                                for j in range(nums):
+                                    temp[j][tile_index] = 1
+                        names['res' + str(index)] = np.concatenate((names['res' + str(index)], temp), axis=0)
+            all_features[f'res{index}'] = names['res' + str(index)]
+        # for value in all_features.values():
+        #     print(value.shape)
+        # res = np.concatenate((value for value in all_features.values()), axis=0)
+        res = np.vstack(list(all_features.values()))[:, :, np.newaxis]
+        print('all serialized features size:', res.shape)
+        return res
+
+
+def offline_serialize(data):
     data = eval(data)
     res = []
     for idx, array in enumerate(data):

@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
-from MajhongAI.mahjong.Serialization import serialize
+from MajhongAI.mahjong.Serialization import offline_serialize
 
 
 class MyDataSet(Dataset):
@@ -24,5 +24,5 @@ for batch_idx, batch in enumerate(raw_dl):
     print("\nBatch = " + str(batch_idx))
     raw_data = batch
     print(raw_data[0])
-    print(serialize(raw_data[0]))
+    print(offline_serialize(raw_data[0]))
     # print(type(raw_data))

@@ -8,6 +8,8 @@ from mahjong.agents.human import HumanAgent
 from mahjong.agents.rule import RuleAgent
 import mahjong.settings
 import os
+from mahjong import online_encoder
+from mahjong.Serialization import online_serialize
 
 
 mahjong.settings.init()
@@ -32,16 +34,26 @@ reset & run
 env.reset()
 env.run()
 
-import time
-timestr = time.strftime("%Y%m%d-%H%M%S")
-extension = ".txt"
-file_name = timestr + extension
-file_path = 'datasets'
-if not os.path.exists(file_path):
-    os.mkdir(file_path)
-with open(file_path+'/'+file_name, 'w+') as file:
-    for i in mahjong.settings.myList:
-        file.write(f'%s'%str(i))
+
+# Online encoder
+DL_agent = 0
+all_features = online_encoder.online_encoder(0)
+print(f'{DL_agent} player current all features:')
+print(all_features)
+Model_input = online_serialize(all_features)
+
+
+# Batch encoder
+# import time
+# timestr = time.strftime("%Y%m%d-%H%M%S")
+# extension = ".txt"
+# file_name = timestr + extension
+# file_path = 'datasets'
+# if not os.path.exists(file_path):
+#     os.mkdir(file_path)
+# with open(file_path+'/'+file_name, 'w+') as file:
+#     for i in mahjong.settings.myList:
+#         file.write(f'%s'%str(i))
 
 """
 for show log
