@@ -32,6 +32,7 @@ class DeepLearningAgent(object):
         Returns:
         """
 
+
         player = snapshot.players[self.__player_id]
         legal_actions = player['legal_actions']
 
