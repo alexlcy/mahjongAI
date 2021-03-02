@@ -287,6 +287,8 @@ class Round:
         """
         
         self.trace.append(action)
+        if action.event.name == 'BU' or action.event.name == 'ZHI' or action.event.name == 'GANG' or action.event.name == 'PENG':
+            self.feature_tracer.update(action)
         if not self.config["show_log"]:
             return
         logging.info(action)
