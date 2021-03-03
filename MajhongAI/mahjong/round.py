@@ -7,6 +7,7 @@ from mahjong.judger import judger
 from mahjong.player import Player
 from mahjong.snapshot import Snapshot
 from mahjong.consts import MELD, EVENT, COMMAND, CHINESE_SPECIAL, CARD
+from mahjong.settings import FeatureTracer
 # 退税/和局/过碰
 
 
@@ -28,6 +29,8 @@ class Round:
         self.config = config
         self.trace = []
         self.player_num = len(players)
+        self.feature_tracer = None
+        self.temp = None
 
     def get_snapshot(self) -> Snapshot:
         """
@@ -44,11 +47,25 @@ class Round:
         """
         游戏开始
         """
+        raw_player_initial_hands = {player.player_id: player.hands for player in self.players}
+        player_initial_hands = {i: [] for i in range(4)}
+        for key, values in raw_player_initial_hands.items():
+            for value in values:
+                player_initial_hands[key].append(CARD[value])
+        self.feature_tracer = FeatureTracer(player_initial_hands)
+
         card = self.dealer.next_card()
         self.current_player.get(card)
         self.trace.append(Action(self.player_id, card, EVENT.INIT))  # 初始化
         for player in self.players:
             player.process_legal_actions(card, self.trace)
+
+        # raw_player_initial_hands = {player.player_id: player.hands for player in self.players}
+        # player_initial_hands = {i: [] for i in range(4)}
+        # for key, values in raw_player_initial_hands.items():
+        #     for value in values:
+        #         player_initial_hands[key].append(CARD[value])
+        # self.feature_tracer = FeatureTracer(player_initial_hands)
 
     def next(self, snapshot: Snapshot) -> Snapshot:
         """
@@ -176,7 +193,7 @@ class Round:
                             desc.append("呼叫转移")
                     win_player.score += reward
                     self.current_player.score -= reward
-                    tmp_action = Action(self.player_id, previou_action.card, EVENT.HU, reward, ",".join(desc))
+                    tmp_action = Action(player_id, previou_action.card, EVENT.HU, reward, ",".join(desc))
                     hu_action.append(tmp_action)
                     win_player.make_hu(tmp_action)
                     win_player.is_finish = True
@@ -287,6 +304,8 @@ class Round:
         """
         
         self.trace.append(action)
+        self.feature_tracer.update(action)
+        # self.temp = self.feature_tracer.get_features(0) # (190,34,1)
         if not self.config["show_log"]:
             return
         logging.info(action)

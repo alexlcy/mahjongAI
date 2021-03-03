@@ -71,15 +71,16 @@ class Env(object):
 
     def run(self):
         # history = []
+        # self.snapshot.save()
+        while not self.snapshot.is_finish:
+            if self.config["show_log"]:
+                self.snapshot.print()
+            self.decide()
+            if self.config["show_log"]:
+                self.snapshot.print_decides()
+            self.next()
+        # self.snapshot.save()
         if self.config["show_log"]:
             self.snapshot.print()
-        while not self.snapshot.is_finish:
-
-            self.decide()
-            # if self.config["show_log"]:
-            #     self.snapshot.print_decides()
-            self.next()
-        # if self.config["show_log"]:
-        #     self.snapshot.print()
         if self.config["seed"]:
             self.save()

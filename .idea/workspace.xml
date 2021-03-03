@@ -1,17 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="c86f18a5-4649-445f-b0f8-4af10e983ba7" name="Default Changelist" comment="">
+    <list default="true" id="c86f18a5-4649-445f-b0f8-4af10e983ba7" name="Default Changelist" comment="Add online encoder, run main then u can get serialized model input">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/agents/DL.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/agents/DL.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/consts.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/consts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/dto.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/dto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/raw_dataset.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/round.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/round.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/snapshot.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/snapshot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MajhongAI/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Untitled.ipynb" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="JupyterTrust" id="3e03ec08-6a05-4b6d-80a1-26dfce921489" />
   <component name="ProjectId" id="1opqvqYTGNzBjwfjMhYQPn7jxwV" />
@@ -22,19 +74,50 @@
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../mahjong5_new" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.editor" />
   </component>
-  <component name="RunManager">
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\DDM_spring\6980new\mahjongAI\MajhongAI\mahjong" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\DDM_spring\6980new\mahjongAI\MajhongAI\mahjong" />
+      <recent name="D:\DDM_spring\6980new\mahjongAI\MajhongAI" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.main">
+    <configuration name="game" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="mahjongAI" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MajhongAI/mahjong" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MajhongAI/mahjong/game.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="mahjongAI" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -56,9 +139,127 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="online_encoder (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="mahjongAI" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MajhongAI/mahjong" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MajhongAI/mahjong/online_encoder.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="online_encoder" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="mahjongAI" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MajhongAI" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="D:\DDM_spring\6980new\mahjongAI\MajhongAI\mahjong\online_encoder.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="online_encoder" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="mahjongAI" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MajhongAI/mahjong/encoder" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="D:\DDM_spring\6980new\mahjongAI\MajhongAI\mahjong\online_encoder.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="raw_data_processor" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="mahjongAI" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MajhongAI/mahjong" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MajhongAI/mahjong/raw_data_processor.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="round" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="mahjongAI" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MajhongAI/mahjong" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MajhongAI/mahjong/round.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.online_encoder (1)" />
+      <item itemvalue="Python.online_encoder" />
+      <item itemvalue="Python.raw_data_processor" />
+      <item itemvalue="Python.round" />
+      <item itemvalue="Python.game" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main" />
+        <item itemvalue="Python.round" />
+        <item itemvalue="Python.game" />
+        <item itemvalue="Python.online_encoder (1)" />
+        <item itemvalue="Python.online_encoder (1)" />
+        <item itemvalue="Python.online_encoder" />
       </list>
     </recent_temporary>
   </component>
@@ -70,82 +271,56 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1613994112625</updated>
-      <workItem from="1613994114016" duration="11222000" />
+      <workItem from="1613994114016" duration="12231000" />
+      <workItem from="1614437493290" duration="525000" />
     </task>
+    <task id="LOCAL-00001" summary="raw_data_processor.py has a problem">
+      <created>1614389039118</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1614389039118</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Add online encoder, run main then u can get serialized model input">
+      <created>1614497472128</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1614497472128</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="360" y="219" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1613995442031">
-      <screen x="0" y="0" width="1792" height="1120" />
-    </state>
-    <state x="360" y="219" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1613995442031" />
-    <state width="1750" height="392" key="GridCell.Tab.0.bottom" timestamp="1614005673229">
-      <screen x="0" y="0" width="1792" height="1120" />
-    </state>
-    <state width="1750" height="392" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1614005673229" />
-    <state width="1750" height="392" key="GridCell.Tab.0.center" timestamp="1614005673227">
-      <screen x="0" y="0" width="1792" height="1120" />
-    </state>
-    <state width="1750" height="392" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1614005673227" />
-    <state width="1750" height="392" key="GridCell.Tab.0.left" timestamp="1614005673227">
-      <screen x="0" y="0" width="1792" height="1120" />
-    </state>
-    <state width="1750" height="392" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1614005673227" />
-    <state width="1750" height="392" key="GridCell.Tab.0.right" timestamp="1614005673228">
-      <screen x="0" y="0" width="1792" height="1120" />
-    </state>
-    <state width="1750" height="392" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1614005673228" />
-    <state width="1750" height="392" key="GridCell.Tab.1.bottom" timestamp="1614005673231">
-      <screen x="0" y="0" width="1792" height="1120" />
-    </state>
-    <state width="1750" height="392" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1614005673231" />
-    <state width="1750" height="392" key="GridCell.Tab.1.center" timestamp="1614005673230">
-      <screen x="0" y="0" width="1792" height="1120" />
-    </state>
-    <state width="1750" height="392" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1614005673230" />
-    <state width="1750" height="392" key="GridCell.Tab.1.left" timestamp="1614005673230">
-      <screen x="0" y="0" width="1792" height="1120" />
-    </state>
-    <state width="1750" height="392" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1614005673230" />
-    <state width="1750" height="392" key="GridCell.Tab.1.right" timestamp="1614005673230">
-      <screen x="0" y="0" width="1792" height="1120" />
-    </state>
-    <state width="1750" height="392" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1614005673230" />
-    <state x="405" y="196" key="SettingsEditor" timestamp="1613994483028">
-      <screen x="0" y="0" width="1792" height="1120" />
-    </state>
-    <state x="405" y="196" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1613994483028" />
-    <state x="500" y="108" width="1302" height="1120" key="dock-window-1" timestamp="1613994861279">
-      <screen x="0" y="25" width="1792" height="1019" />
-    </state>
-    <state x="500" y="108" width="1302" height="1120" key="dock-window-1/0.25.1792.1019@0.25.1792.1019" timestamp="1613994861279" />
-    <state x="561" y="251" width="670" height="676" key="search.everywhere.popup" timestamp="1614003577146">
-      <screen x="0" y="0" width="1792" height="1120" />
-    </state>
-    <state x="561" y="251" width="670" height="676" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1614003577146" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="raw_data_processor.py has a problem" />
+    <MESSAGE value="Add online encoder, run main then u can get serialized model input" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add online encoder, run main then u can get serialized model input" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/MajhongAI/mahjong/agents/rule.py</url>
-          <line>33</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="player" language="Python" />
         <watch expression="player['color']" language="Python" />
         <watch expression="player['hands']" language="Python" />
+        <watch expression="myList" language="Python" />
+        <watch expression="mahjong.settings.myList" language="Python" />
+        <watch expression="self.feature_tracer.tiles[0]" />
       </configuration>
     </watches-manager>
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/mahjongAI$main.coverage" NAME="main Coverage Results" MODIFIED="1613995594248" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MajhongAI" />
   </component>
 </project>

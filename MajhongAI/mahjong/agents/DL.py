@@ -39,21 +39,6 @@ class DeepLearningAgent(object):
         # Later will implement decide win model
         return True
 
-    def decide_discard(self, card):
-        """
-        If there are no 缺 in the tile, then we will call the decide_tile_discard
-
-        Returns:
-        """
-        return card
-
-    def decide_tile_discard(self):
-        """
-
-
-        Returns:
-        """
-        return
 
     # TODO: Debug & optimize some repeat part - Koning
     def decide(self, snapshot: Snapshot, trace: list, deck: list):

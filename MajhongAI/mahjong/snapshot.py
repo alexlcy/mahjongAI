@@ -2,6 +2,7 @@ import json
 import logging
 
 from mahjong.consts import COLOR, CARD, MELD
+import mahjong.settings
 
 
 def translate(cards: list) -> str:
@@ -67,13 +68,21 @@ class Snapshot:
 
     def print(self):
         for player in self.players:
-            logging.info(f'''{player["player_id"]}\t{translate(player["hands"])}''')
-# \t弃子 {translate(player["drop"])}
-# \t放子 {translate_grounds(player["grounds"])}
-# \t行为 {player["legal_actions"]}''')
-#         logging.info(f'牌堆 {self.step_deck}\t跟踪 {self.step_trace}')
+            logging.info(f'''
+玩家 {player["player_id"]} \t缺色 {COLOR[player["color"]]}\t得分 {player["score"]} 完成 {player["is_finish"]}
+\t手牌 {translate(player["hands"])}
+\t弃子 {translate(player["drop"])}
+\t放子 {translate_grounds(player["grounds"])}
+\t行为 {player["legal_actions"]}''')
+        logging.info(f'牌堆 {self.step_deck}\t跟踪 {self.step_trace}')
+
+    # def save(self):
+    #     for player in self.players:
+    #         mahjong.settings.myList.append("%d\t%s\n" % (player["player_id"], f'{translate(player["hands"])}'))
 
     def print_decides(self):
         for player in self.players:
             if player["choice"]:
                 logging.info(f'玩家 {player["player_id"]}\t决策 {player["choice"]}')
+                # if player["choice"] == 500:
+                #     mahjong.settings.myList.append("%d\t决策%s\n" % (player["player_id"], f'{player["choice"]}'))
