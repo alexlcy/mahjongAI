@@ -161,21 +161,6 @@ class DeepLearningAgent(object):
                 return      
                       
         player['choice'] = random.choice(legal_actions)
-          
-    def decide_kong(self):
-        # Decide whether to make a Kong
-        whether_kong = True
-        score = 1
-
-        return whether_kong, score
-
-    def decide_pong(self):
-        # Decide whether to make a Pong
-        whether_pong = True
-        score = 1
-
-        return whether_pong, score
-
 
     def decide_discard(self, player):
         """
