@@ -13,7 +13,7 @@ total_dict = {**w_dict, **b_dict, **t_dict, **f_dict, **j_dict}
 def online_serialize(all_data):
     names = locals()
     # own wind 1 + round wind 1 + own hand 1 + all discards 4*4 + open melds 4*4 = 38
-    all_features = {f'res{i}': np.zeros((38, 34), int) for i in range(5)}
+    all_features = {f'res{i}': np.zeros((39, 34), int) for i in range(5)}
 
     for index, data in enumerate(all_data):
         # print('all_data:')
