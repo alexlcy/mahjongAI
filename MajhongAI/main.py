@@ -6,13 +6,13 @@ from mahjong.env import Env
 from mahjong.agents.human import HumanAgent
 # from mahjong.agents.random import RandomAgent
 from mahjong.agents.rule import RuleAgent
-import mahjong.settings
+# import mahjong.settings
 import os
 from mahjong import online_encoder
 from mahjong.Serialization import online_serialize
 
 
-mahjong.settings.init()
+# mahjong.settings.init()
 
 LOG_FORMAT = "%(message)s"
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
@@ -35,12 +35,12 @@ env.reset()
 env.run()
 
 
-# Online encoder
-DL_agent = 0
-all_features = online_encoder.online_encoder(0)
-print(f'{DL_agent} player current all features:')
-print(all_features)
-Model_input = online_serialize(all_features)
+# # Online encoder
+# DL_agent = 0
+# all_features = online_encoder.online_encoder(0)
+# print(f'{DL_agent} player current all features:')
+# print(all_features)
+# Model_input = online_serialize(all_features)
 
 
 # Batch encoder

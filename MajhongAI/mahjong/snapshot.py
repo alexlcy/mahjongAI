@@ -76,9 +76,9 @@ class Snapshot:
 \t行为 {player["legal_actions"]}''')
         logging.info(f'牌堆 {self.step_deck}\t跟踪 {self.step_trace}')
 
-    def save(self):
-        for player in self.players:
-            mahjong.settings.myList.append("%d\t%s\n" % (player["player_id"], f'{translate(player["hands"])}'))
+    # def save(self):
+    #     for player in self.players:
+    #         mahjong.settings.myList.append("%d\t%s\n" % (player["player_id"], f'{translate(player["hands"])}'))
 
     def print_decides(self):
         for player in self.players:

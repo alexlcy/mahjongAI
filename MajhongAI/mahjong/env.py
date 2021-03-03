@@ -71,7 +71,7 @@ class Env(object):
 
     def run(self):
         # history = []
-        self.snapshot.save()
+        # self.snapshot.save()
         while not self.snapshot.is_finish:
             if self.config["show_log"]:
                 self.snapshot.print()
