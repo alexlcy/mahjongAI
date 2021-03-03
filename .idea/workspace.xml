@@ -19,17 +19,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c86f18a5-4649-445f-b0f8-4af10e983ba7" name="Default Changelist" comment="Add online encoder, run main then u can get serialized model input">
+    <list default="true" id="c86f18a5-4649-445f-b0f8-4af10e983ba7" name="Default Changelist" comment="raw_data_processor.py has a problem">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/consts.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/consts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/dto.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/dto.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/agents/DL.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/agents/DL.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/agents/rule.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/agents/rule.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/env.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/raw_dataset.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/round.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/round.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/snapshot.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/snapshot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Untitled.ipynb" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,6 +103,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MajhongAI/mahjong/game.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -124,9 +120,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="/usr/local/bin/python3.7" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MajhongAI" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
@@ -151,6 +147,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MajhongAI/mahjong/online_encoder.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -172,6 +169,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="D:\DDM_spring\6980new\mahjongAI\MajhongAI\mahjong\online_encoder.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -236,6 +234,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MajhongAI/mahjong/round.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -311,6 +310,48 @@
     <MESSAGE value="Add online encoder, run main then u can get serialized model input" />
     <option name="LAST_COMMIT_MESSAGE" value="Add online encoder, run main then u can get serialized model input" />
   </component>
+  <component name="WindowStateProjectService">
+    <state x="360" y="219" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1614782182668">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="360" y="219" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1614782182668" />
+    <state width="1750" height="757" key="GridCell.Tab.0.bottom" timestamp="1614784564414">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="1750" height="757" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1614784564414" />
+    <state width="1750" height="757" key="GridCell.Tab.0.center" timestamp="1614784564413">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="1750" height="757" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1614784564413" />
+    <state width="1750" height="757" key="GridCell.Tab.0.left" timestamp="1614784564412">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="1750" height="757" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1614784564412" />
+    <state width="1750" height="757" key="GridCell.Tab.0.right" timestamp="1614784564413">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="1750" height="757" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1614784564413" />
+    <state width="1750" height="466" key="GridCell.Tab.1.bottom" timestamp="1614784325349">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="1750" height="466" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1614784325349" />
+    <state width="1750" height="466" key="GridCell.Tab.1.center" timestamp="1614784325348">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="1750" height="466" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1614784325348" />
+    <state width="1750" height="466" key="GridCell.Tab.1.left" timestamp="1614784325347">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="1750" height="466" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1614784325347" />
+    <state width="1750" height="466" key="GridCell.Tab.1.right" timestamp="1614784325348">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="1750" height="466" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1614784325348" />
+    <state width="896" height="560" key="XDebugger.FullValuePopup" timestamp="1614784272929">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="896" height="560" key="XDebugger.FullValuePopup/0.0.1792.1120@0.0.1792.1120" timestamp="1614784272929" />
+  </component>
   <component name="XDebuggerManager">
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -320,7 +361,13 @@
         <watch expression="myList" language="Python" />
         <watch expression="mahjong.settings.myList" language="Python" />
         <watch expression="self.feature_tracer.tiles[0]" />
+        <watch expression="tile_counter" language="Python" />
+        <watch expression="choice" language="Python" />
       </configuration>
     </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/mahjongAI$main.coverage" NAME="main Coverage Results" MODIFIED="1614784453026" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MajhongAI" />
+    <SUITE FILE_PATH="coverage/mahjongAI$raw_data_processor.coverage" NAME="raw_data_processor Coverage Results" MODIFIED="1614398133307" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MajhongAI/mahjong" />
   </component>
 </project>

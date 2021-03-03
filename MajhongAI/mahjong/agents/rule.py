@@ -4,6 +4,8 @@ import math
 from mahjong.snapshot import Snapshot
 from mahjong.consts import COMMAND
 
+from MajhongAI.mahjong.settings import FeatureTracer
+
 
 class RuleAgent(object):
     def __init__(self, player_id: int):
@@ -11,7 +13,7 @@ class RuleAgent(object):
         self.__player_id = player_id
         self.state_tensor = np.zeros((9, 8, 10))
 
-    def decide(self, snapshot: Snapshot, trace:list, deck:list):
+    def decide(self, snapshot: Snapshot, feature_tracer: FeatureTracer, trace:list, deck:list):
         player = snapshot.players[self.__player_id]
         legal_actions = player['legal_actions']
         if not legal_actions or len(legal_actions) == 0:

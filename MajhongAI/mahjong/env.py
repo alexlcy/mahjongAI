@@ -47,7 +47,7 @@ class Env(object):
 
     def decide(self):
         for agent in self.agents:
-            agent.decide(self.snapshot, self.game.round.trace, self.game.dealer.deck) # self.game.round.trace to get the trace , self.game.dealer.deck to get deck
+            agent.decide(self.snapshot,self.game.round.feature_tracer, self.game.round.trace, self.game.dealer.deck) # self.game.round.trace to get the trace , self.game.dealer.deck to get deck
 
     def load(self, uuid:str, step:int):
         """
