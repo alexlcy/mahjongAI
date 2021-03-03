@@ -7,6 +7,8 @@ from mahjong.agents.human import HumanAgent
 # from mahjong.agents.random import RandomAgent
 from mahjong.agents.rule import RuleAgent
 
+from MajhongAI.mahjong.agents.DL import DeepLearningAgent
+
 LOG_FORMAT = "%(message)s"
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
@@ -20,7 +22,7 @@ config = {
 }
 
 env = Env(config)
-env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), RuleAgent(3)])
+env.set_agents([DeepLearningAgent(0), RuleAgent(1), RuleAgent(2), RuleAgent(3)])
 
 """
 reset & run
