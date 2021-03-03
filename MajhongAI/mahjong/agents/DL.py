@@ -3,6 +3,7 @@ import random
 import math
 from mahjong.snapshot import Snapshot
 from mahjong.consts import COMMAND
+from collections import Counter
 
 
 # To do for everyone
@@ -13,6 +14,7 @@ from mahjong.consts import COMMAND
 
 # To do for Koning
 # TODO: Select action from legal action
+from MajhongAI.mahjong.settings import FeatureTracer
 
 
 class DeepLearningAgent(object):
@@ -41,7 +43,7 @@ class DeepLearningAgent(object):
 
 
     # TODO: Debug & optimize some repeat part - Koning
-    def decide(self, snapshot: Snapshot, trace: list, deck: list):
+    def decide(self, snapshot: Snapshot, feature_tracer: FeatureTracer, trace: list, deck: list):
         """
         Decide which action to take based on the legal action and data available
 
@@ -67,6 +69,7 @@ class DeepLearningAgent(object):
         colors = [0] * 3
         for card in player['hands']:
             colors[math.floor(card / 10)] += 1
+
         if legal_actions[0] >= 600:
             player['choice'] = COMMAND.COLOR.value + colors.index(min(colors))
             return
@@ -173,9 +176,6 @@ class DeepLearningAgent(object):
 
         return whether_pong, score
 
-    def decide_win(self):
-        # Later will implement decide win model
-        raise NotImplementedError
 
     def decide_discard(self, player):
         """
@@ -189,17 +189,17 @@ class DeepLearningAgent(object):
         """
 
         # Priority 1: Discard based on color
-        color_discard_tile = self.decide_discard_by_color()
+        color_discard_tile = self.decide_discard_by_color(player)
         if color_discard_tile is not None:
             return color_discard_tile
 
         # Priority 2: Discard based on AI model
-        ai_discard_tile = self.decide_discard_by_AI()
-        if ai_discard_tile in player['hands']:
-            return ai_discard_tile
+        # ai_discard_tile = self.decide_discard_by_AI()
+        # if ai_discard_tile in player['hands']:
+        #     return ai_discard_tile
 
         # Priority 3: Discard based on naive rule
-        return self.decide_discard_by_rule
+        return self.decide_discard_by_rule(player)
 
     def decide_discard_by_AI(self):
         """
@@ -221,20 +221,21 @@ class DeepLearningAgent(object):
         """
         # Discard based on color (缺)
         color = player['color']
+        tile_counter = Counter(player['hands'])
 
         # Discard if the there are only one 缺 tile
         for tile_num in range(1, 10):
-            if player['hands'][color + tile_num] == 1:
+            if tile_counter[color + tile_num] == 1:
                 return color + tile_num
 
         # Discard if the there are two 缺 tile
         for tile_num in range(1, 10):
-            if player['hands'][color + tile_num] == 2:
+            if tile_counter[color + tile_num] == 2:
                 return color + tile_num
 
         # Discard if the there are only three tile
         for tile_num in range(1, 10):
-            if player['hands'][color + tile_num] == 2:
+            if tile_counter[color + tile_num] == 3:
                 return color + tile_num
 
         # If no 缺 tile available, then skip the 缺 discard function
