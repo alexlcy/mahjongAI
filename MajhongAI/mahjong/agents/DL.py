@@ -3,7 +3,7 @@ import random
 import math
 import torch
 from mahjong.snapshot import Snapshot
-from mahjong.consts import COMMAND, CARD_DICT
+from mahjong.consts import COMMAND, CARD_DICT,CARD
 from collections import Counter
 from mahjong.models.model import DiscardModel, KongModel, PongModel
 
@@ -164,7 +164,7 @@ class DeepLearningAgent(object):
                 # TODO: If no bug, will remove below print
                 print(f"7 Checking: new choice - {player['choice']} should be <= -1~~")
                 return
-        
+
         # Step 3: Choose which one to discard
         if player['choice'] < 100:
             discard_tile = self.decide_discard(player, feature)
@@ -192,7 +192,7 @@ class DeepLearningAgent(object):
         #     return color_discard_tile
 
         # Priority 2: Discard based on AI model
-        ai_discard_tile_list = self.decide_discard_by_AI(player, feature)
+        ai_discard_tile_list = self.decide_discard_by_AI(feature)
 
         for index, ai_discard_tile in enumerate(ai_discard_tile_list):
             if ai_discard_tile in player['hands']:
@@ -201,12 +201,11 @@ class DeepLearningAgent(object):
         # Priority 3: Discard based on naive rule
         return self.decide_discard_by_rule(player)
 
-    def decide_discard_by_AI(self, player, feature):
+    def decide_discard_by_AI(self, feature):
         """
         Call the discard model and return the tile that we shoudl discard
         Returns:
         """
-
 
         pred = self.discard_model.predict(feature)
         softmax = torch.nn.Softmax(dim=1)

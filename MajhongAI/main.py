@@ -4,7 +4,7 @@ from tqdm import tqdm
 from time import time
 from mahjong.env import Env
 from mahjong.agents.human import HumanAgent
-# from mahjong.agents.random import RandomAgent
+from mahjong.agents.random import RandomAgent
 from mahjong.agents.rule import RuleAgent
 # import mahjong.settings
 import os
@@ -28,7 +28,7 @@ config = {
 }
 
 env = Env(config)
-env.set_agents([DeepLearningAgent(0), RuleAgent(1), RuleAgent(2), RuleAgent(3)])
+env.set_agents([RandomAgent(0), RandomAgent(1), RuleAgent(2), DeepLearningAgent(3)])
 
 """
 reset & run
