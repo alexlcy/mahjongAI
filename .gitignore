@@ -7,3 +7,4 @@ MajhongAI/mahjong/agents/__pycache__/
 *.cpy
 *.pyc
 *.xml
+.pickle
