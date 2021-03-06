@@ -20,10 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c86f18a5-4649-445f-b0f8-4af10e983ba7" name="Default Changelist" comment="raw_data_processor.py has a problem">
-      <change beforePath="$PROJECT_DIR$/.idea/mahjongAI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mahjongAI.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/agents/DL.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/agents/DL.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -307,7 +305,7 @@
       <updated>1613994112625</updated>
       <workItem from="1613994114016" duration="12231000" />
       <workItem from="1614437493290" duration="525000" />
-      <workItem from="1615009004007" duration="668000" />
+      <workItem from="1615009004007" duration="1103000" />
     </task>
     <task id="LOCAL-00001" summary="raw_data_processor.py has a problem">
       <created>1614389039118</created>
@@ -355,38 +353,42 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="752" y="306" key="EnvironmentVariablesDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1615008495985" />
-    <state width="1750" height="302" key="GridCell.Tab.0.bottom" timestamp="1615010388417">
+    <state width="1750" height="440" key="GridCell.Tab.0.bottom" timestamp="1615010792590">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="302" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1615010388417" />
-    <state width="1750" height="302" key="GridCell.Tab.0.center" timestamp="1615010388416">
+    <state width="1750" height="440" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1615010792590" />
+    <state width="1750" height="440" key="GridCell.Tab.0.center" timestamp="1615010792589">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="302" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1615010388416" />
-    <state width="1750" height="302" key="GridCell.Tab.0.left" timestamp="1615010388416">
+    <state width="1750" height="440" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1615010792589" />
+    <state width="1750" height="440" key="GridCell.Tab.0.left" timestamp="1615010792589">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="302" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1615010388416" />
-    <state width="1750" height="302" key="GridCell.Tab.0.right" timestamp="1615010388417">
+    <state width="1750" height="440" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1615010792589" />
+    <state width="1750" height="440" key="GridCell.Tab.0.right" timestamp="1615010792590">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="302" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1615010388417" />
-    <state width="1750" height="466" key="GridCell.Tab.1.bottom" timestamp="1615008998747">
+    <state width="1750" height="440" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1615010792590" />
+    <state width="1750" height="466" key="GridCell.Tab.1.bottom" timestamp="1615010717283">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="466" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1615008998747" />
-    <state width="1750" height="466" key="GridCell.Tab.1.center" timestamp="1615008998746">
+    <state width="1750" height="466" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1615010717283" />
+    <state width="1750" height="466" key="GridCell.Tab.1.bottom/0.25.1792.1024@0.25.1792.1024" timestamp="1615010582424" />
+    <state width="1750" height="466" key="GridCell.Tab.1.center" timestamp="1615010717282">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="466" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1615008998746" />
-    <state width="1750" height="466" key="GridCell.Tab.1.left" timestamp="1615008998743">
+    <state width="1750" height="466" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1615010717282" />
+    <state width="1750" height="466" key="GridCell.Tab.1.center/0.25.1792.1024@0.25.1792.1024" timestamp="1615010582423" />
+    <state width="1750" height="466" key="GridCell.Tab.1.left" timestamp="1615010717282">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="466" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1615008998743" />
-    <state width="1750" height="466" key="GridCell.Tab.1.right" timestamp="1615008998746">
+    <state width="1750" height="466" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1615010717282" />
+    <state width="1750" height="466" key="GridCell.Tab.1.left/0.25.1792.1024@0.25.1792.1024" timestamp="1615010582423" />
+    <state width="1750" height="466" key="GridCell.Tab.1.right" timestamp="1615010717283">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="466" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1615008998746" />
+    <state width="1750" height="466" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1615010717283" />
+    <state width="1750" height="466" key="GridCell.Tab.1.right/0.25.1792.1024@0.25.1792.1024" timestamp="1615010582424" />
     <state x="405" y="196" key="SettingsEditor" timestamp="1615010413919">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
@@ -420,7 +422,7 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/mahjongAI$main.coverage" NAME="main Coverage Results" MODIFIED="1615010385201" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MajhongAI" />
+    <SUITE FILE_PATH="coverage/mahjongAI$main.coverage" NAME="main Coverage Results" MODIFIED="1615010717255" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MajhongAI" />
     <SUITE FILE_PATH="coverage/mahjongAI$majhongAI.coverage" NAME="majhongAI Coverage Results" MODIFIED="1615010388409" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MajhongAI" />
     <SUITE FILE_PATH="coverage/mahjongAI$raw_data_processor.coverage" NAME="raw_data_processor Coverage Results" MODIFIED="1614398133307" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MajhongAI/mahjong" />
   </component>
