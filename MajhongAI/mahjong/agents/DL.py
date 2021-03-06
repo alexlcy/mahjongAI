@@ -35,19 +35,33 @@ class DeepLearningAgent(object):
         self.kong_model = KongModel()
         self.pong_model = PongModel()
 
-    def decide_kong(self):
+    def decide_kong(self, feature):
         # Decide whether to make a Kong
-        whether_kong = True
-        score = 1
+        pred = self.kong_model.predict(feature)
+        softmax = torch.nn.Softmax(dim=1)
+        softmax_pred = softmax(pred)
+        index = np.argmax(softmax_pred.numpy())
+        if index == 0:
+            whether_kong = False
+        else:
+            whether_kong = True
+        score = softmax_pred.numpy()[0][index]
+        print(f'Kong: {whether_kong}, score: {score}')
+        return not whether_kong, score
 
-        return whether_kong, score
-
-    def decide_pong(self):
+    def decide_pong(self, feature):
         # Decide whether to make a Pong
-        whether_pong = True
-        score = 1
-
-        return whether_pong, score
+        pred = self.pong_model.predict(feature)
+        softmax = torch.nn.Softmax(dim=1)
+        softmax_pred = softmax(pred)
+        index = np.argmax(softmax_pred.numpy())
+        if index == 0:
+            whether_pong = False
+        else:
+            whether_pong = True
+        score = softmax_pred.numpy()[0][index]
+        print(f'Pong: {whether_pong}, score: {score}')
+        return not whether_pong, score
 
     def decide_win(self):
         # Later will implement decide win model
@@ -106,8 +120,8 @@ class DeepLearningAgent(object):
         if player['choice'] >= 400:
             # check whether pong
             # retrieve confidence score of pong and kong
-            whether_pong, pong_score = self.decide_pong()
-            whether_kong, kong_score = self.decide_kong()
+            whether_pong, pong_score = self.decide_pong(feature)
+            whether_kong, kong_score = self.decide_kong(feature)
             if all([whether_pong, whether_kong]):
                 if pong_score > kong_score:
                     player['choice'] = legal_actions[pos - 1]
@@ -132,7 +146,7 @@ class DeepLearningAgent(object):
         # Choose whether bu kong
         if player['choice'] >= 300:
             # check whether kong
-            whether_kong, _ = self.decide_kong()
+            whether_kong, _ = self.decide_kong(feature)
             if whether_kong is True:
                 return
             else:
@@ -144,7 +158,7 @@ class DeepLearningAgent(object):
         # Choose whether an kong
         if player['choice'] >= 200:
             # check whether kong
-            whether_kong, _ = self.decide_kong()
+            whether_kong, _ = self.decide_kong(feature)
             if whether_kong is True:
                 return
             else:
@@ -156,7 +170,7 @@ class DeepLearningAgent(object):
         # Choose whether pong
         if player['choice'] >= 100:
             # check whether pong
-            whether_pong, _ = self.decide_pong()
+            whether_pong, _ = self.decide_pong(feature)
             if whether_pong is True:
                 return
             else:
