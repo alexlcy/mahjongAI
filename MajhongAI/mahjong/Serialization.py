@@ -69,7 +69,7 @@ def online_serialize(all_data):
         #     print(value.shape)
         # res = np.concatenate((value for value in all_features.values()), axis=0)
         res = np.vstack(list(all_features.values()))[:, :, np.newaxis]
-        print('all serialized features size:', res.shape)
+        # print('all serialized features size:', res.shape)
         return res
 
 

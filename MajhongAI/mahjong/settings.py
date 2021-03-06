@@ -1,7 +1,7 @@
 from collections import deque
 import copy
 from mahjong.Serialization import online_serialize
-
+import torch
 
 class FeatureTracer:
 
@@ -68,4 +68,4 @@ class FeatureTracer:
         self.q_dict[player].append(features)
 
     def get_features(self, player):
-        return online_serialize(self.q_dict[player])
+        return torch.unsqueeze(torch.Tensor(online_serialize(self.q_dict[player])), 0)
