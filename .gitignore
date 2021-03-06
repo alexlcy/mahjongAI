@@ -3,4 +3,4 @@ MajhongAI/.idea/
 *.cpy
 *.pyc
 *.xml
-.pickle
+*.pickle
