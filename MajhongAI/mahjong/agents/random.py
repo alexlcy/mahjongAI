@@ -1,6 +1,7 @@
 import random
 # from mahjong.consts import *
 from mahjong.snapshot import Snapshot
+from mahjong.settings import FeatureTracer
 
 
 class RandomAgent:
@@ -10,7 +11,7 @@ class RandomAgent:
         self.seed = seed
         random.seed(self.seed)
 
-    def decide(self, snapshot: Snapshot, trace:list, deck:list):
+    def decide(self, snapshot: Snapshot, feature_tracer: FeatureTracer, trace:list, deck:list):
         player = snapshot.players[self.__player_id]
         if not player['legal_actions'] or len(player['legal_actions']) == 0:
             return
