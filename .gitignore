@@ -1,6 +1,5 @@
 data/*
 processed_data/
-.idea/
 .idea/workspace.xml
 MajhongAI/mahjong/agents/__pycache__/
 
