@@ -1,8 +1,4 @@
-data/*
-processed_data/
-.idea/workspace.xml
-MajhongAI/mahjong/agents/__pycache__/
-
+MajhongAI/.idea/
 *.pth
 *.cpy
 *.pyc
