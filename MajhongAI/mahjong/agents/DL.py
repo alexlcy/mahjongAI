@@ -4,6 +4,7 @@ import math
 from mahjong.snapshot import Snapshot
 from mahjong.consts import COMMAND
 from collections import Counter
+from mahjong.models.model import DiscardModel, KongModel, PongModel
 
 
 # To do for everyone
@@ -14,7 +15,7 @@ from collections import Counter
 
 # To do for Koning
 # TODO: Select action from legal action
-from MajhongAI.mahjong.settings import FeatureTracer
+from mahjong.settings import FeatureTracer
 
 
 class DeepLearningAgent(object):
@@ -154,7 +155,7 @@ class DeepLearningAgent(object):
         
         # Step 3: Choose which one to discard
         if player['choice'] < 100:
-            discard_tile = self.decide_discard(player)
+            discard_tile = self.decide_discard(player, feature_tracer)
             # Call discard function to discard a tile
             if discard_tile is not None:
                 player['choice'] = discard_tile
@@ -162,7 +163,7 @@ class DeepLearningAgent(object):
                       
         player['choice'] = random.choice(legal_actions)
 
-    def decide_discard(self, player):
+    def decide_discard(self, player, feature_tracer):
         """
         The tile is discarded based on the below sequence
         1. Discard color tile if there exist
@@ -179,19 +180,24 @@ class DeepLearningAgent(object):
             return color_discard_tile
 
         # Priority 2: Discard based on AI model
-        # ai_discard_tile = self.decide_discard_by_AI()
-        # if ai_discard_tile in player['hands']:
-        #     return ai_discard_tile
+        ai_discard_tile = self.decide_discard_by_AI(player, feature_tracer)
+        if ai_discard_tile in player['hands']:
+            return ai_discard_tile
 
         # Priority 3: Discard based on naive rule
         return self.decide_discard_by_rule(player)
 
-    def decide_discard_by_AI(self):
+    def decide_discard_by_AI(self, player, feature_tracer):
         """
         Call the discard model and return the tile that we shoudl discard
         Returns:
         """
-        raise NotImplementedError
+        feature_tracer = feature_tracer.get_features(player['player_id'])
+
+        discard_model = DiscardModel()
+        pred = discard_model.predict(feature_tracer)
+
+        return pred
 
     def decide_discard_by_color(self, player):
         """

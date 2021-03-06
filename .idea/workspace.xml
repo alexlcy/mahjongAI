@@ -20,11 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c86f18a5-4649-445f-b0f8-4af10e983ba7" name="Default Changelist" comment="raw_data_processor.py has a problem">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/mahjongAI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mahjongAI.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/agents/DL.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/agents/DL.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/agents/rule.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/agents/rule.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MajhongAI/mahjong/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/MajhongAI/mahjong/env.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +35,17 @@
       <list>
         <option value="Python Script" />
       </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
     </option>
   </component>
   <component name="Git.Settings">
@@ -79,15 +89,18 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="preferences.editor" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/MajhongAI/mahjong/models/weights/pong" />
+      <recent name="$PROJECT_DIR$/MajhongAI/mahjong/models/weights/discard" />
+      <recent name="$PROJECT_DIR$/MajhongAI/mahjong/models/weights/kong" />
+      <recent name="$PROJECT_DIR$/MajhongAI/mahjong/models/weights" />
       <recent name="D:\DDM_spring\6980new\mahjongAI\MajhongAI\mahjong" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\DDM_spring\6980new\mahjongAI\MajhongAI\mahjong" />
-      <recent name="D:\DDM_spring\6980new\mahjongAI\MajhongAI" />
     </key>
   </component>
   <component name="RunManager" selected="Python.main">
@@ -120,7 +133,29 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="/usr/local/bin/python3.7" />
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/envs/mahjongAI/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MajhongAI" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="false" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MajhongAI/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="majhongAI" type="PythonConfigurationType" factoryName="Python">
+      <module name="mahjongAI" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/bin/python3.8" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MajhongAI" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -135,7 +170,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="online_encoder (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="online_encoder (1)" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="mahjongAI" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -246,6 +281,7 @@
     </configuration>
     <list>
       <item itemvalue="Python.main" />
+      <item itemvalue="Python.majhongAI" />
       <item itemvalue="Python.online_encoder (1)" />
       <item itemvalue="Python.online_encoder" />
       <item itemvalue="Python.raw_data_processor" />
@@ -256,7 +292,6 @@
       <list>
         <item itemvalue="Python.round" />
         <item itemvalue="Python.game" />
-        <item itemvalue="Python.online_encoder (1)" />
         <item itemvalue="Python.online_encoder (1)" />
         <item itemvalue="Python.online_encoder" />
       </list>
@@ -272,6 +307,7 @@
       <updated>1613994112625</updated>
       <workItem from="1613994114016" duration="12231000" />
       <workItem from="1614437493290" duration="525000" />
+      <workItem from="1615009004007" duration="668000" />
     </task>
     <task id="LOCAL-00001" summary="raw_data_processor.py has a problem">
       <created>1614389039118</created>
@@ -311,48 +347,65 @@
     <option name="LAST_COMMIT_MESSAGE" value="Add online encoder, run main then u can get serialized model input" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="360" y="219" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1614782182668">
+    <state x="360" y="219" width="1071" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1615010467629">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="360" y="219" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1614782182668" />
-    <state width="1750" height="757" key="GridCell.Tab.0.bottom" timestamp="1614784564414">
+    <state x="360" y="219" width="1071" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1615010467629" />
+    <state x="752" y="306" key="EnvironmentVariablesDialog" timestamp="1615008495985">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="757" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1614784564414" />
-    <state width="1750" height="757" key="GridCell.Tab.0.center" timestamp="1614784564413">
+    <state x="752" y="306" key="EnvironmentVariablesDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1615008495985" />
+    <state width="1750" height="302" key="GridCell.Tab.0.bottom" timestamp="1615010388417">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="757" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1614784564413" />
-    <state width="1750" height="757" key="GridCell.Tab.0.left" timestamp="1614784564412">
+    <state width="1750" height="302" key="GridCell.Tab.0.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1615010388417" />
+    <state width="1750" height="302" key="GridCell.Tab.0.center" timestamp="1615010388416">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="757" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1614784564412" />
-    <state width="1750" height="757" key="GridCell.Tab.0.right" timestamp="1614784564413">
+    <state width="1750" height="302" key="GridCell.Tab.0.center/0.0.1792.1120@0.0.1792.1120" timestamp="1615010388416" />
+    <state width="1750" height="302" key="GridCell.Tab.0.left" timestamp="1615010388416">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="757" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1614784564413" />
-    <state width="1750" height="466" key="GridCell.Tab.1.bottom" timestamp="1614784325349">
+    <state width="1750" height="302" key="GridCell.Tab.0.left/0.0.1792.1120@0.0.1792.1120" timestamp="1615010388416" />
+    <state width="1750" height="302" key="GridCell.Tab.0.right" timestamp="1615010388417">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="466" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1614784325349" />
-    <state width="1750" height="466" key="GridCell.Tab.1.center" timestamp="1614784325348">
+    <state width="1750" height="302" key="GridCell.Tab.0.right/0.0.1792.1120@0.0.1792.1120" timestamp="1615010388417" />
+    <state width="1750" height="466" key="GridCell.Tab.1.bottom" timestamp="1615008998747">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="466" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1614784325348" />
-    <state width="1750" height="466" key="GridCell.Tab.1.left" timestamp="1614784325347">
+    <state width="1750" height="466" key="GridCell.Tab.1.bottom/0.0.1792.1120@0.0.1792.1120" timestamp="1615008998747" />
+    <state width="1750" height="466" key="GridCell.Tab.1.center" timestamp="1615008998746">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="466" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1614784325347" />
-    <state width="1750" height="466" key="GridCell.Tab.1.right" timestamp="1614784325348">
+    <state width="1750" height="466" key="GridCell.Tab.1.center/0.0.1792.1120@0.0.1792.1120" timestamp="1615008998746" />
+    <state width="1750" height="466" key="GridCell.Tab.1.left" timestamp="1615008998743">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state width="1750" height="466" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1614784325348" />
+    <state width="1750" height="466" key="GridCell.Tab.1.left/0.0.1792.1120@0.0.1792.1120" timestamp="1615008998743" />
+    <state width="1750" height="466" key="GridCell.Tab.1.right" timestamp="1615008998746">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state width="1750" height="466" key="GridCell.Tab.1.right/0.0.1792.1120@0.0.1792.1120" timestamp="1615008998746" />
+    <state x="405" y="196" key="SettingsEditor" timestamp="1615010413919">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="405" y="196" key="SettingsEditor/0.0.1792.1120@0.0.1792.1120" timestamp="1615010413919" />
     <state width="896" height="560" key="XDebugger.FullValuePopup" timestamp="1614784272929">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state width="896" height="560" key="XDebugger.FullValuePopup/0.0.1792.1120@0.0.1792.1120" timestamp="1614784272929" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/MajhongAI/mahjong/agents/DL.py</url>
+          <line>199</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="player" language="Python" />
@@ -367,7 +420,8 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/mahjongAI$main.coverage" NAME="main Coverage Results" MODIFIED="1614784453026" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MajhongAI" />
+    <SUITE FILE_PATH="coverage/mahjongAI$main.coverage" NAME="main Coverage Results" MODIFIED="1615010385201" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MajhongAI" />
+    <SUITE FILE_PATH="coverage/mahjongAI$majhongAI.coverage" NAME="majhongAI Coverage Results" MODIFIED="1615010388409" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MajhongAI" />
     <SUITE FILE_PATH="coverage/mahjongAI$raw_data_processor.coverage" NAME="raw_data_processor Coverage Results" MODIFIED="1614398133307" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MajhongAI/mahjong" />
   </component>
 </project>

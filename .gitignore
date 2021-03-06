@@ -1,5 +1,6 @@
-/data/*
-/processed_data/*
-/MahjongAI/.idea/*
+data/*
+processed_data/
+MahjongAI/.idea/
+
 *.pth
 *.cpy

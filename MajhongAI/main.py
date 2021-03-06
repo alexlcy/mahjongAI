@@ -14,7 +14,7 @@ from mahjong.Serialization import online_serialize
 
 # mahjong.settings.init()
 
-from MajhongAI.mahjong.agents.DL import DeepLearningAgent
+from mahjong.agents.DL import DeepLearningAgent
 
 LOG_FORMAT = "%(message)s"
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
