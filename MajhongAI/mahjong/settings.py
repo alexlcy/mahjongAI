@@ -51,7 +51,6 @@ class FeatureTracer:
             self.steal = [card]
 
         # Updating this player's all status after making this action, then extract features
-
         features = copy.deepcopy([self.own_wind[player],
                               self.round_wind[player],
                               self.steal,
@@ -68,4 +67,4 @@ class FeatureTracer:
         self.q_dict[player].append(features)
 
     def get_features(self, player):
-        return torch.unsqueeze(torch.Tensor(online_serialize(self.q_dict[player])), 0)
+        return torch.Tensor(online_serialize(self.q_dict[player])).unsqueeze(0)

@@ -47,7 +47,7 @@ class DeepLearningAgent(object):
             whether_kong = True
         score = softmax_pred.numpy()[0][index]
         print(f'Kong: {whether_kong}, score: {score}')
-        return not whether_kong, score
+        return whether_kong, score
 
     def decide_pong(self, feature):
         # Decide whether to make a Pong
@@ -61,7 +61,7 @@ class DeepLearningAgent(object):
             whether_pong = True
         score = softmax_pred.numpy()[0][index]
         print(f'Pong: {whether_pong}, score: {score}')
-        return not whether_pong, score
+        return whether_pong, score
 
     def decide_win(self):
         # Later will implement decide win model
@@ -206,7 +206,7 @@ class DeepLearningAgent(object):
         #     return color_discard_tile
 
         # Priority 2: Discard based on AI model
-        ai_discard_tile_list = self.decide_discard_by_AI(feature)
+        softmax_pred, ai_discard_tile_list = self.decide_discard_by_AI(feature)
 
         for index, ai_discard_tile in enumerate(ai_discard_tile_list):
             if ai_discard_tile in player['hands']:
@@ -224,11 +224,11 @@ class DeepLearningAgent(object):
         pred = self.discard_model.predict(feature)
         softmax = torch.nn.Softmax(dim=1)
         softmax_pred = softmax(pred)
-        tile_priority = reversed(np.argsort(softmax_pred.numpy())[0])
+        tile_priority = np.argsort(softmax_pred.numpy())[0][::-1]
         tile_priority_list = [self.total_dict_revert[index] for index in tile_priority]
         tile_index_priority = [CARD_DICT[index] for index in tile_priority_list if index[0] not in ('J', 'F')]
 
-        return tile_index_priority
+        return softmax_pred,tile_index_priority
 
     def decide_discard_by_color(self, player):
         """

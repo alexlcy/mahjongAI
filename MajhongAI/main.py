@@ -28,7 +28,7 @@ config = {
 }
 
 env = Env(config)
-env.set_agents([RandomAgent(0), RandomAgent(1), RuleAgent(2), DeepLearningAgent(3)])
+env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), DeepLearningAgent(3)])
 
 """
 reset & run
