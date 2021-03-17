@@ -3,3 +3,6 @@
 /MahjongAI/.idea/*
 *.pth
 *.cpy
+/MahjongAI/test.py
+MajhongAI/__pycache__/
+MajhongAI/stats_logger/__pycache__/
