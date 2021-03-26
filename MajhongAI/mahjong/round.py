@@ -11,6 +11,7 @@ from mahjong.settings import FeatureTracer
 
 # 退税/和局/过碰
 from MajhongAI.mahjong.ReinforcementLearning.experience import ExperienceCollector
+from MajhongAI.mahjong.consts import COLOR
 
 
 def parse_command(choice: int) -> COMMAND:
@@ -35,8 +36,7 @@ class Round:
         self.temp = None
 
         # Experience Buffer
-        self.collectors = {0: ExperienceCollector(), 1: ExperienceCollector(), 2: ExperienceCollector(),
-                           3: ExperienceCollector()}
+        self.collector = ExperienceCollector()
         self.action_num = 0
 
     def get_snapshot(self) -> Snapshot:
@@ -61,7 +61,6 @@ class Round:
                 player_initial_hands[key].append(CARD[value])
         self.feature_tracer = FeatureTracer(player_initial_hands)
 
-        self.action_num += 1
         card = self.dealer.next_card()
         self.current_player.get(card)
         self.trace.append(Action(self.player_id, card, EVENT.INIT))  # 初始化
@@ -88,7 +87,7 @@ class Round:
         Returns:
             Snapshot: 快照副本
         """
-        self.action_num += 1
+        # self.action_num += 1
 
         previou_action = self.trace[-1]
         # logging.info(f'previou action {previou_action}')
@@ -316,12 +315,14 @@ class Round:
         self.trace.append(action)
         raw_state = self.feature_tracer.tiles
         self.feature_tracer.update(action)
-        self.collectors[action.player_id].record_decision(self.action_num, raw_state[action.player_id],
-                                                          self.feature_tracer.tiles[action.player_id],
-                                                          self.feature_tracer.discard[action.player_id],
-                                                          self.feature_tracer.open_meld[action.player_id],
-                                                          self.feature_tracer.steal, # feature tracer steal not a dict?
-                                                          action, action.reward, self.current_player.score)
+
+        self.action_num += 1
+        self.collector.record_decision(self.action_num, action.player_id, raw_state[action.player_id],
+                                          self.feature_tracer.tiles[action.player_id],
+                                          self.feature_tracer.discard[action.player_id],
+                                          self.feature_tracer.open_meld[action.player_id],
+                                          self.feature_tracer.steal, # feature tracer steal not a dict?
+                                          (action.event.name, CARD[action.card]), action.reward, self.current_player.score, COLOR[self.players[action.player_id].color])
         # self.temp = self.feature_tracer.get_features(0) # (190,34,1)
         if not self.config["show_log"]:
             return

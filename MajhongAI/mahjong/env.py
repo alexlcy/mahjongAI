@@ -88,10 +88,10 @@ class Env(object):
             self.save()
 
         # Experience Buffer
-        collectors = self.game.round.collectors
+        collectors = self.game.round.collector
         buffer = ExperienceBuffer()
         buffer.combine_experience(collectors)
         folder_location = './buffer'
-        csv_file_name = 'test'
+        csv_file_name = 'test1'
         buffer.store_experience(folder_location, csv_file_name)
 
