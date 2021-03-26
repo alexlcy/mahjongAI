@@ -7,6 +7,8 @@ from copy import deepcopy
 from mahjong.game import Game
 from mahjong.snapshot import Snapshot
 
+from MajhongAI.mahjong.ReinforcementLearning.experience import ExperienceBuffer
+
 DEFAULT_CONFIG = {
     'player_num': 4,
     'seed': None
@@ -84,3 +86,12 @@ class Env(object):
             self.snapshot.print()
         if self.config["seed"]:
             self.save()
+
+        # Experience Buffer
+        collectors = self.game.round.collectors
+        buffer = ExperienceBuffer()
+        buffer.combine_experience(collectors)
+        folder_location = './buffer'
+        csv_file_name = 'test'
+        buffer.store_experience(folder_location, csv_file_name)
+
