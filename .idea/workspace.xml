@@ -89,7 +89,7 @@
       <recent name="D:\DDM_spring\6980new\mahjongAI\MajhongAI" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.exploration_method">
+  <component name="RunManager" selected="Python.main">
     <configuration name="exploration" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="mahjongAI" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -241,16 +241,15 @@
     </configuration>
     <list>
       <item itemvalue="Python.main" />
+      <item itemvalue="Python.exploration" />
       <item itemvalue="Python.online_encoder" />
       <item itemvalue="Python.game" />
       <item itemvalue="Python.online_encoder (1)" />
       <item itemvalue="Python.raw_data_processor" />
       <item itemvalue="Python.round" />
-      <item itemvalue="Python.exploration_method" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.exploration_method" />
         <item itemvalue="Python.round" />
         <item itemvalue="Python.game" />
         <item itemvalue="Python.online_encoder (1)" />
