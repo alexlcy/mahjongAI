@@ -1,7 +1,7 @@
 from collections import deque
 import copy
 from mahjong.Serialization import online_serialize
-
+import torch
 
 class FeatureTracer:
 
@@ -48,14 +48,13 @@ class FeatureTracer:
 
         # update steal
         if new_act in ['PLAY', 'DRAW', 'PENG']:
-            self.steal = card
+            self.steal = [card]
 
         # Updating this player's all status after making this action, then extract features
-
         features = copy.deepcopy([self.own_wind[player],
                               self.round_wind[player],
-                              self.tiles[player],
                               self.steal,
+                              self.tiles[player],
                               self.discard[player],
                               self.discard[player + 1 if player + 1 <= 3 else (player + 1) % 4],
                               self.discard[player + 2 if player + 2 <= 3 else (player + 2) % 4],
@@ -68,4 +67,4 @@ class FeatureTracer:
         self.q_dict[player].append(features)
 
     def get_features(self, player):
-        return online_serialize(self.q_dict[player])
+        return torch.Tensor(online_serialize(self.q_dict[player])).unsqueeze(0)

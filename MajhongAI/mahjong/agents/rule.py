@@ -4,7 +4,7 @@ import math
 from mahjong.snapshot import Snapshot
 from mahjong.consts import COMMAND
 
-from MajhongAI.mahjong.settings import FeatureTracer
+from mahjong.settings import FeatureTracer
 
 
 class RuleAgent(object):
