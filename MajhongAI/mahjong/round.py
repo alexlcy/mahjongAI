@@ -9,6 +9,8 @@ from mahjong.snapshot import Snapshot
 from mahjong.consts import MELD, EVENT, COMMAND, CHINESE_SPECIAL, CARD
 from mahjong.settings import FeatureTracer
 
+from copy import deepcopy
+
 # 退税/和局/过碰
 from MajhongAI.mahjong.ReinforcementLearning.experience import ExperienceCollector
 from MajhongAI.mahjong.consts import COLOR
@@ -314,7 +316,7 @@ class Round:
         """
 
         self.trace.append(action)
-        raw_state = self.feature_tracer.tiles
+        raw_state = deepcopy(self.feature_tracer.tiles)
         self.feature_tracer.update(action)
 
         self.action_num += 1
@@ -323,7 +325,8 @@ class Round:
                                                           self.feature_tracer.discard[action.player_id],
                                                           self.feature_tracer.open_meld[action.player_id],
                                                           self.feature_tracer.steal,
-                                                          (action.event.name, CARD[action.card]), action.reward, self.current_player.score)
+                                                          (action.event.name, CARD[action.card]), action.reward,
+                                                          self.current_player.score, COLOR[self.players[action.player_id].color], self.feature_tracer)
 
         # self.temp = self.feature_tracer.get_features(0) # (190,34,1)
         if not self.config["show_log"]:
