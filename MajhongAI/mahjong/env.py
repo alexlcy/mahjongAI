@@ -76,7 +76,7 @@ class Env(object):
     def step_back(self, step: int = 1):
         self.snapshot = self.game.step_back(step)
 
-    def run(self):
+    def run(self, buffer):
         # history = []
         # self.snapshot.save()
         while not self.snapshot.is_finish:
@@ -94,9 +94,8 @@ class Env(object):
 
         # Experience Buffer
         collectors = self.game.round.collectors
-        buffer = ExperienceBuffer()
         buffer.massage_experience(collectors)
-        buffer.save_experience(mahjong_config.buffer_folder_location)
+        return buffer
 
         # x, y, discard = ExperienceBuffer().read_experience('./experiment_2021_03_29_19_17_08.h5')
         # buffer.combine_experience(collectors)

@@ -16,6 +16,9 @@ from mahjong.Serialization import online_serialize
 
 from mahjong.agents.DL import DeepLearningAgent
 
+import mahjong_config
+from ReinforcementLearning.experience import ExperienceBuffer
+
 LOG_FORMAT = "%(message)s"
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
@@ -33,8 +36,11 @@ env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), DeepLearningAgent(3)])
 """
 reset & run
 """
-env.reset()
-env.run()
+buffer = ExperienceBuffer()
+for i in range(10):
+    env.reset()
+    buffer = env.run(buffer)
+buffer.save_experience()
 
 
 # # Online encoder
