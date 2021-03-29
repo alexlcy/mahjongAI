@@ -122,5 +122,5 @@ class ExperienceBuffer:
         dataframe.to_csv(folder_path + '/' + csv_file_name + '.csv', index=False, sep='|')
 
     def load_experience(self, folder_path, csv_file_name):
-        self.buffer = pd.read_csv(folder_path + '/' + csv_file_name, sep='|')
+        self.buffer = pd.read_csv(folder_path + '/' + csv_file_name + '.csv', sep='|')
         return self.buffer

@@ -95,8 +95,9 @@ class Env(object):
         # Experience Buffer
         collectors = self.game.round.collectors
         buffer = ExperienceBuffer()
-        buffer.combine_experience(collectors)
-        folder_location = './buffer'
-        csv_file_name = 'test1'
-        buffer.store_experience(folder_location, csv_file_name)
+        buffer.massage_experience(collectors)
+        buffer.save_experience(mahjong_config.buffer_folder_location)
 
+        # x, y = ExperienceBuffer().read_experience('./experiment_2021_03_29_19_17_08.h5')
+        # buffer.combine_experience(collectors)
+        # buffer.store_experience(mahjong_config.buffer_folder_location, mahjong_config.buffer_csv_file_name)
