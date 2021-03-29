@@ -4,7 +4,7 @@ from tqdm import tqdm
 from time import time
 from mahjong.env import Env
 from mahjong.agents.human import HumanAgent
-# from mahjong.agents.random import RandomAgent
+from mahjong.agents.random import RandomAgent
 from mahjong.agents.rule import RuleAgent
 # import mahjong.settings
 import os
@@ -14,7 +14,10 @@ from mahjong.Serialization import online_serialize
 
 # mahjong.settings.init()
 
-from MajhongAI.mahjong.agents.DL import DeepLearningAgent
+from mahjong.agents.DL import DeepLearningAgent
+
+import mahjong_config
+from ReinforcementLearning.experience import ExperienceBuffer
 
 LOG_FORMAT = "%(message)s"
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
@@ -28,13 +31,16 @@ config = {
 }
 
 env = Env(config)
-env.set_agents([DeepLearningAgent(0), RuleAgent(1), RuleAgent(2), RuleAgent(3)])
+env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), DeepLearningAgent(3)])
 
 """
 reset & run
 """
-env.reset()
-env.run()
+buffer = ExperienceBuffer()
+for i in range(10):
+    env.reset()
+    buffer = env.run(buffer)
+buffer.save_experience()
 
 
 # # Online encoder

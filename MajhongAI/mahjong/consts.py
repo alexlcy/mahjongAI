@@ -68,6 +68,8 @@ CARD = ["",
         "T4", "T5", "T6",
         "T7", "T8", "T9"]
 
+CARD_DICT = {value:index for index, value in enumerate(CARD)}
+
 
 CHINESE_SPECIAL = {
     "tian":"天胡",
