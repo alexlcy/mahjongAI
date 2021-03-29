@@ -36,7 +36,8 @@ class Round:
         self.temp = None
 
         # Experience Buffer
-        self.collector = ExperienceCollector()
+        self.collectors = {0: ExperienceCollector(), 1: ExperienceCollector(), 2: ExperienceCollector(),
+                           3: ExperienceCollector()}
         self.action_num = 0
 
     def get_snapshot(self) -> Snapshot:
@@ -317,12 +318,13 @@ class Round:
         self.feature_tracer.update(action)
 
         self.action_num += 1
-        self.collector.record_decision(self.action_num, action.player_id, raw_state[action.player_id],
-                                          self.feature_tracer.tiles[action.player_id],
-                                          self.feature_tracer.discard[action.player_id],
-                                          self.feature_tracer.open_meld[action.player_id],
-                                          self.feature_tracer.steal, # feature tracer steal not a dict?
-                                          (action.event.name, CARD[action.card]), action.reward, self.current_player.score, COLOR[self.players[action.player_id].color])
+        self.collectors[action.player_id].record_decision(self.action_num, raw_state[action.player_id],
+                                                          self.feature_tracer.tiles[action.player_id],
+                                                          self.feature_tracer.discard[action.player_id],
+                                                          self.feature_tracer.open_meld[action.player_id],
+                                                          self.feature_tracer.steal,
+                                                          (action.event.name, CARD[action.card]), action.reward, self.current_player.score)
+
         # self.temp = self.feature_tracer.get_features(0) # (190,34,1)
         if not self.config["show_log"]:
             return

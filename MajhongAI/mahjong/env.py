@@ -7,12 +7,16 @@ from copy import deepcopy
 from mahjong.game import Game
 from mahjong.snapshot import Snapshot
 
-from MajhongAI.mahjong.ReinforcementLearning.experience import ExperienceBuffer
+from mahjong.ReinforcementLearning.experience import ExperienceBuffer
+
+import mahjong_config
 
 DEFAULT_CONFIG = {
     'player_num': 4,
     'seed': None
 }
+
+
 class Env(object):
     """
     Mahjong Environment
@@ -30,7 +34,7 @@ class Env(object):
         self.name = 'Mahjong'
         self.seed = config['seed']
         self.game = Game()
-        
+
         self.agents = None
         self.snapshot = None
 
@@ -49,9 +53,10 @@ class Env(object):
 
     def decide(self):
         for agent in self.agents:
-            agent.decide(self.snapshot,self.game.round.feature_tracer, self.game.round.trace, self.game.dealer.deck) # self.game.round.trace to get the trace , self.game.dealer.deck to get deck
+            agent.decide(self.snapshot, self.game.round.feature_tracer, self.game.round.trace,
+                         self.game.dealer.deck)  # self.game.round.trace to get the trace , self.game.dealer.deck to get deck
 
-    def load(self, uuid:str, step:int):
+    def load(self, uuid: str, step: int):
         """
         加载历史对局
         Args:
@@ -59,16 +64,16 @@ class Env(object):
             step (int): 步骤
         """
         if not os.path.exists(f'logs/{uuid}_history.pickle') \
-            or not os.path.exists(f'logs/{uuid}_trace.pickle') \
-            or not os.path.exists(f'logs/{uuid}_seed.pickle'):
+                or not os.path.exists(f'logs/{uuid}_trace.pickle') \
+                or not os.path.exists(f'logs/{uuid}_seed.pickle'):
             print("wrong uuid")
-        
+
         with open(f'logs/{uuid}_seed.pickle', 'rb') as handle:
             self.config = pickle.load(handle)
         self.game.init_game(self.config)
         self.snapshot = self.game.load_game(uuid, step)
 
-    def step_back(self,step:int=1):
+    def step_back(self, step: int = 1):
         self.snapshot = self.game.step_back(step)
 
     def run(self):
@@ -88,7 +93,7 @@ class Env(object):
             self.save()
 
         # Experience Buffer
-        collectors = self.game.round.collector
+        collectors = self.game.round.collectors
         buffer = ExperienceBuffer()
         buffer.combine_experience(collectors)
         folder_location = './buffer'
