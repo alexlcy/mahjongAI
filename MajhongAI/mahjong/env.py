@@ -9,7 +9,7 @@ from mahjong.snapshot import Snapshot
 
 from mahjong.ReinforcementLearning.experience import ExperienceBuffer
 
-import mahjong_config
+import mahjong.mahjong_config
 
 DEFAULT_CONFIG = {
     'player_num': 4,

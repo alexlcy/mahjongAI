@@ -11,16 +11,16 @@ import numpy as np
 import h5py
 import datetime
 
+from mahjong.Serialization import helper
+
 __all__ = [
     'ExperienceCollector',
     'ExperienceBuffer'
 ]
 
-from Serialization import helper
-
 
 class ExperienceCollector:
-    def __init__(self):
+    def __init__(self, player_id):
         self.action_nums = []
         self.player_ids = []
         self.raw_states = []
@@ -38,28 +38,19 @@ class ExperienceCollector:
         self.discard_cards = []
         self.win = False
         self.win_times = 0
+        self.player_id = player_id
 
     # def record_feature_reward(self, q_dict):
 
     def record_decision(self, action_num, raw_state, state, discard, open_meld, steal, action, reward, score,
                         lack_color, feature_tracer):
         if action[0] == 'HU':
-            # self.action_nums.append(deepcopy(action_num))
-            # self.states.append(deepcopy(raw_state))
-            # self.raw_states.append(deepcopy(state))
-            # self.discards.append(deepcopy(discard))
-            # self.open_melds.append(deepcopy(open_meld))
-            # self.steals.append(deepcopy(steal))
-            # self.actions.append(deepcopy(action))
-            # self.scores.append(deepcopy(score))
-            # self.lack_colors.append(deepcopy(lack_color))
-            # self.feature_tracers.append(deepcopy(feature_tracer))
-            # self.rewards.append(deepcopy(reward))
             r = deepcopy(reward)
             for i in range(len(self.rewards)):
                 self.rewards[i] += r
-            self.win = True
-            self.win_times += 1
+            if r > 0:
+                self.win = True
+                self.win_times += 1
 
         elif action[0] == 'PLAY':
             self.action_nums.append(deepcopy(action_num))
@@ -84,16 +75,16 @@ class ExperienceBuffer:
         self.x = []
         self.y = []
         self.discard = []
-        self.win_times = 0
+        self.win_times = {0: 0, 1: 0, 2: 0, 3: 0}
 
     def massage_experience(self, collectors):
         for c_key in collectors.keys():
+            for i in range(len(collectors[c_key].feature_tracers)):
+                self.x.append(collectors[c_key].feature_tracers[i].get_features(c_key))
+                self.discard.append(helper(1, [collectors[c_key].discard_cards[i]]))
+            self.y.extend(collectors[c_key].rewards)
             if collectors[c_key].win:
-                for i in range(len(collectors[c_key].feature_tracers)):
-                    self.x.append(collectors[c_key].feature_tracers[i].get_features(c_key))
-                    self.discard.append(helper(1, [collectors[c_key].discard_cards[i]]))
-                self.y.extend(collectors[c_key].rewards)
-            self.win_times += collectors[c_key].win_times
+                self.win_times[c_key] += collectors[c_key].win_times
 
     def save_experience(self):
         if len(self.x) != 0:
@@ -106,7 +97,9 @@ class ExperienceBuffer:
                 experience_outf['experience'].create_dataset('x', data=x)
                 experience_outf['experience'].create_dataset('y', data=y)
                 experience_outf['experience'].create_dataset('discard', data=discard)
-            print(f'HU {self.win_times} times data generated...')
+            for c_key in self.win_times.keys():
+                print(f'Player {c_key} won {self.win_times[c_key]} times...')
+            print(f'HU {sum(self.win_times.values())} times data generated...')
         else:
             print('No HU experience data...')
 

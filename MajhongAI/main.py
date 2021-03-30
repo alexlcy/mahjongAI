@@ -15,33 +15,36 @@ from mahjong.Serialization import online_serialize
 # mahjong.settings.init()
 
 from mahjong.agents.DL import DeepLearningAgent
+import time
 
-import mahjong_config
-from ReinforcementLearning.experience import ExperienceBuffer
+import mahjong.mahjong_config
+from mahjong.ReinforcementLearning.experience import ExperienceBuffer
 
 LOG_FORMAT = "%(message)s"
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
-random.seed(0)
-seed = time()
-config = {
-    'show_log': True,
-    'player_num': 4,
-    'seed': seed # to None for random run, if seed == None, will not save record
-}
-
-env = Env(config)
-env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), DeepLearningAgent(3)])
-
-"""
-reset & run
-"""
+start = time.time()
+play_times = 100
 buffer = ExperienceBuffer()
-for i in range(10):
+for i in range(play_times):
+    random.seed(0)
+    seed = time.time()
+    config = {
+        'show_log': True,
+        'player_num': 4,
+        'seed': seed # to None for random run, if seed == None, will not save record
+    }
+
+    env = Env(config)
+    env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), DeepLearningAgent(3)])
+    """
+    reset & run
+    """
     env.reset()
     buffer = env.run(buffer)
 buffer.save_experience()
-
+end = time.time()
+print(f'Recording: {(end - start) / 60} min played {play_times} games')
 
 # # Online encoder
 # DL_agent = 0

@@ -12,8 +12,8 @@ from mahjong.settings import FeatureTracer
 from copy import deepcopy
 
 # 退税/和局/过碰
-from MajhongAI.mahjong.ReinforcementLearning.experience import ExperienceCollector
-from MajhongAI.mahjong.consts import COLOR
+from mahjong.ReinforcementLearning.experience import ExperienceCollector
+from mahjong.consts import COLOR
 
 
 def parse_command(choice: int) -> COMMAND:
@@ -38,8 +38,9 @@ class Round:
         self.temp = None
 
         # Experience Buffer
-        self.collectors = {0: ExperienceCollector(), 1: ExperienceCollector(), 2: ExperienceCollector(),
-                           3: ExperienceCollector()}
+        self.collectors = {0: ExperienceCollector(0), 1: ExperienceCollector(1), 2: ExperienceCollector(2),
+                           3: ExperienceCollector(3)}
+        self.rewards = {0: None, 1: None, 2: None, 3: None}
         self.action_num = 0
 
     def get_snapshot(self) -> Snapshot:
@@ -124,8 +125,10 @@ class Round:
                 for player in self.players:
                     if not player.is_finish and player.player_id != self.player_id:
                         player.score -= 2
+                        self.rewards[player.player_id] = -2
                         reward += 2
                 self.current_player.score += reward
+                self.rewards[self.player_id] = reward
                 self.__record(Action(self.player_id, card, EVENT.GANG, reward))
                 self.current_player.make_gang(card)
             elif command == COMMAND.BU:  # 补杠
@@ -159,8 +162,10 @@ class Round:
                 for player in self.players:
                     if not player.is_finish and player.player_id != self.player_id:
                         player.score -= score
+                        self.rewards[player.player_id] = score
                         reward += score
                 self.current_player.score += reward
+                self.rewards[self.player_id] = reward
                 action = Action(self.player_id, previou_action.card, EVENT.HU, reward, ",".join(desc))
                 self.__record(action)
                 self.current_player.is_finish = True
@@ -205,6 +210,8 @@ class Round:
                             desc.append("呼叫转移")
                     win_player.score += reward
                     self.current_player.score -= reward
+                    self.rewards[self.player_id] = -reward
+                    self.rewards[player_id] = reward
                     tmp_action = Action(player_id, previou_action.card, EVENT.HU, reward, ",".join(desc))
                     hu_action.append(tmp_action)
                     win_player.make_hu(tmp_action)
@@ -231,11 +238,14 @@ class Round:
                     for player in self.players:
                         if not player.is_finish and player.player_id != player_id:
                             player.score -= 1
+                            self.rewards[player.player_id] = -1
                             reward += 1
                         if not player.is_finish and player.player_id == previou_action.player_id:
                             player.score -= 1
+                            self.rewards[player.player_id] = -1
                             reward += 1
                     self.current_player.score += reward
+                    self.rewards[self.current_player.player_id] = reward
                     self.__record(Action(self.player_id, card, EVENT.ZHI, reward))
                     self.current_player.make_zhi(card, previou_action.player_id)
                 else:
@@ -279,6 +289,8 @@ class Round:
                     reward = math.floor(math.pow(2, bet))
                     win_player.score += reward
                     self.current_player.score -= reward
+                    self.rewards[player_id] = reward
+                    self.rewards[self.current_player.player_id] = -reward
                     tmp_action = Action(self.player_id, previou_action.card, EVENT.HU, reward, ",".join(desc))
                     hu_action.append(tmp_action)
                     win_player.make_hu(tmp_action)
@@ -301,7 +313,9 @@ class Round:
                 if not player.is_finish and player.player_id != self.player_id:
                     player.score -= 1
                     reward += 1
+                    self.rewards[player.player_id] = -1
             self.current_player.score += reward
+            self.rewards[self.player_id] = reward
             self.__record(Action(self.player_id, previou_action.card, EVENT.BU, reward))
             self.current_player.make_bu(previou_action.card)
             return self.__draw()
@@ -320,6 +334,8 @@ class Round:
         self.feature_tracer.update(action)
 
         self.action_num += 1
+        if action.event.name == 'HU':
+            print('HU..........................................................................')
         self.collectors[action.player_id].record_decision(self.action_num, raw_state[action.player_id],
                                                           self.feature_tracer.tiles[action.player_id],
                                                           self.feature_tracer.discard[action.player_id],
@@ -327,7 +343,19 @@ class Round:
                                                           self.feature_tracer.steal,
                                                           (action.event.name, CARD[action.card]), action.reward,
                                                           self.current_player.score, COLOR[self.players[action.player_id].color], self.feature_tracer)
+        for player_id in self.rewards.keys():
+            if player_id != action.player_id and self.rewards[player_id] is not None:
+                self.collectors[player_id].record_decision(self.action_num, raw_state[player_id],
+                                                                  self.feature_tracer.tiles[player_id],
+                                                                  self.feature_tracer.discard[player_id],
+                                                                  self.feature_tracer.open_meld[player_id],
+                                                                  self.feature_tracer.steal,
+                                                                  (action.event.name, CARD[action.card]), self.rewards[player_id],
+                                                                  self.players[player_id].score,
+                                                                  COLOR[self.players[player_id].color],
+                                                                  self.feature_tracer)
 
+        self.rewards = {0: None, 1: None, 2: None, 3: None}
         # self.temp = self.feature_tracer.get_features(0) # (190,34,1)
         if not self.config["show_log"]:
             return
