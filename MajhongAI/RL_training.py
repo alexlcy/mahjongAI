@@ -1,5 +1,8 @@
+import os
 import h5py
 import glob
+import math
+from datetime import datetime
 from tqdm import tqdm
 from mahjong.ReinforcementLearning.experience import ExperienceBuffer
 from mahjong.models.model import DiscardModel, KongModel, PongModel
@@ -11,6 +14,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Hyper-parameters
 lr = 0.01
+batch_size = 256
 
 def get_discounted_reward(r):
     discounted_r = (r - r.mean())/(r.std() + 1e-7)
@@ -32,11 +36,22 @@ optim = torch.optim.Adam(model.parameters(), lr=lr)
 
 for exp in tqdm(exp_paths, desc=f"Training on experience buffer: "):
     states, rewards, actions = exp_buffer.read_experience(exp)
-    states, actions, rewards = preprocess_data(states, actions, rewards)
-    action_logits = model(states)
+    for i in range(math.ceil(len(states)/batch_size)):
+        batch_s, batch_a, batch_r = states[i*batch_size:(i+1)*batch_size], \
+        rewards[i*batch_size:(i+1)*batch_size], actions[i*batch_size:(i+1)*batch_size]
+        batch_s, batch_a, batch_r = preprocess_data(batch_s, batch_a, batch_r)
+        action_logits = model(batch_s)
     
-    optim.zero_grad()
-    loss = rewards * loss_fn(action_logits, actions)
-    loss = loss.mean()
-    loss.backward()
-    optim.step()
+        optim.zero_grad()
+        loss = rewards * loss_fn(action_logits, batch_a)
+        loss = loss.mean()
+        loss.backward()
+        optim.step()
+
+
+RL_SAVE_DIR = 'mahjong/models/weights/discard/'
+if not os.path.exists(RL_SAVE_DIR):
+    os.makedirs(RL_SAVE_DIR)
+
+model_name = f'RL-discard-{datetime.now().strftime("%Y-%m-%d-%H%M")}.pth'
+torch.save(model.state_dict(), os.path.join(RL_SAVE_DIR, model_name))
