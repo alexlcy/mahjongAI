@@ -207,7 +207,7 @@ class ReinforceLearningAgent:
 
         # Using eplison greedy to decide whether to discard by rule or use model prediction
         if np.random.random() < self.epsilon:
-            self.epsilon_decay()
+            self.calculate_epsilon_decay()
             softmax_pred, ai_discard_tile_list = self.decide_discard_by_AI(feature)
             for index, ai_discard_tile in enumerate(ai_discard_tile_list):
                 if ai_discard_tile in player['hands']:
@@ -216,7 +216,7 @@ class ReinforceLearningAgent:
             # Priority 3: Discard based on naive rule
             return self.decide_discard_by_rule(player)
 
-    def epsilon_decay(self):
+    def calculate_epsilon_decay(self):
         self.epsilon = self.epsilon * (1 - self.epsilon_decay) if self.epsilon > self.epsilon_min else self.epsilon
 
     def decide_discard_by_AI(self, feature):
