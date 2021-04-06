@@ -31,18 +31,18 @@ logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 start = time.time()
 play_times = 1000
 buffer = ExperienceBuffer(play_times)
-for i in range(play_times):
-    random.seed(0)
-    # seed = time.time()
-    seed = None
-    config = {
-        'show_log': True,
-        'player_num': 4,
-        'seed': seed # to None for random run, if seed == None, will not save record
-    }
+random.seed(0)
+# seed = time.time()
+seed = None
+config = {
+    'show_log': True,
+    'player_num': 4,
+    'seed': None  # to None for random run, if seed == None, will not save record
+}
+env = Env(config)
+env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), ReinforceLearningAgent(3)])
 
-    env = Env(config)
-    env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), ReinforceLearningAgent(3)])
+for i in range(play_times):
     """
     reset & run
     """
