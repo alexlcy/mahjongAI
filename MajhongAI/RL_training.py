@@ -18,7 +18,7 @@ def get_discounted_reward(r):
 
 def preprocess_data(s, a, r):
     s = torch.tensor(s, dtype=torch.float32, device=device)
-    a = torch.tensor(a, dtype=torch.long, device=device)
+    a = torch.tensor(a).squeeze(1).argmax(-1).long().to(device)
     r = torch.tensor(r, dtype=torch.float32, device=device)
     discounted_r = get_discounted_reward(r)
     return s, a, discounted_r
@@ -36,7 +36,7 @@ for exp in tqdm(exp_paths, desc=f"Training on experience buffer: "):
     action_logits = model(states)
     
     optim.zero_grad()
-    loss = rewards * loss_fn(action_logits, self.ep_a)
+    loss = rewards * loss_fn(action_logits, actions)
     loss = loss.mean()
     loss.backward()
     optim.step()
