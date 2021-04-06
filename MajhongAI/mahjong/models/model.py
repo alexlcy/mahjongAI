@@ -15,6 +15,7 @@ class BaseModel():
 		self.model = MJNet(history_len, n_cls)
 		if weight_path is not None:
 			self.model.load_state_dict(torch.load(weight_path))
+			print(f'Loaded checkpoint {weight_path.split("/")[-1]}')
 		
 		self.model.to(self.device)
 
