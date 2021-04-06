@@ -162,7 +162,7 @@ class Round:
                 for player in self.players:
                     if not player.is_finish and player.player_id != self.player_id:
                         player.score -= score
-                        self.rewards[player.player_id] = score
+                        self.rewards[player.player_id] = -score
                         reward += score
                 self.current_player.score += reward
                 self.rewards[self.player_id] = reward
@@ -334,15 +334,29 @@ class Round:
         self.feature_tracer.update(action)
 
         self.action_num += 1
+        # if action.event.name == 'HU':
+
+        current_hu_rewards = {}
+        for i in self.rewards.keys():
+            if self.rewards[i] is not None:
+                current_hu_rewards[i] = self.rewards[i]
+            else:
+                current_hu_rewards[i] = 0
+
         if action.event.name == 'HU':
-            print('HU..........................................................................')
+            tmp = 0
+            for i in range(4):
+                tmp += current_hu_rewards[i]
+            print(f'HU rewards: {tmp} !!')
+
         self.collectors[action.player_id].record_decision(self.action_num, raw_state[action.player_id],
                                                           self.feature_tracer.tiles[action.player_id],
                                                           self.feature_tracer.discard[action.player_id],
                                                           self.feature_tracer.open_meld[action.player_id],
                                                           self.feature_tracer.steal,
                                                           (action.event.name, CARD[action.card]), action.reward,
-                                                          self.current_player.score, COLOR[self.players[action.player_id].color], self.feature_tracer)
+                                                          self.current_player.score, COLOR[self.players[action.player_id].color],
+                                                          self.feature_tracer, current_hu_rewards[action.player_id])
         for player_id in self.rewards.keys():
             if player_id != action.player_id and self.rewards[player_id] is not None:
                 self.collectors[player_id].record_decision(self.action_num, raw_state[player_id],
@@ -353,7 +367,7 @@ class Round:
                                                                   (action.event.name, CARD[action.card]), self.rewards[player_id],
                                                                   self.players[player_id].score,
                                                                   COLOR[self.players[player_id].color],
-                                                                  self.feature_tracer)
+                                                                  self.feature_tracer, current_hu_rewards[player_id])
 
         self.rewards = {0: None, 1: None, 2: None, 3: None}
         # self.temp = self.feature_tracer.get_features(0) # (190,34,1)

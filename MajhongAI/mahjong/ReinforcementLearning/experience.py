@@ -39,13 +39,15 @@ class ExperienceCollector:
         self.win = False
         self.win_times = 0
         self.player_id = player_id
+        self.hu_rewards = 0
 
     # def record_feature_reward(self, q_dict):
 
     def record_decision(self, action_num, raw_state, state, discard, open_meld, steal, action, reward, score,
-                        lack_color, feature_tracer):
+                        lack_color, feature_tracer, hu_rewards):
         if action[0] == 'HU':
             r = deepcopy(reward)
+            self.hu_rewards += hu_rewards
             for i in range(len(self.rewards)):
                 self.rewards[i] += r
             if r > 0:
@@ -68,7 +70,7 @@ class ExperienceCollector:
 
 
 class ExperienceBuffer:
-    def __init__(self):
+    def __init__(self, play_times):
         keys = ['player_ids', 'lack_color', 'action_nums', 'raw_states', 'states', 'discards',
                 'open_melds', 'steals', 'actions', 'rewards', 'scores']
         self.buffer = {key: [] for key in keys}
@@ -76,13 +78,18 @@ class ExperienceBuffer:
         self.y = []
         self.discard = []
         self.win_times = {0: 0, 1: 0, 2: 0, 3: 0}
+        self.hu_score = {0: 0, 1: 0, 2: 0, 3: 0}
+        self.play_times = play_times
+        self.game_no = 0
 
     def massage_experience(self, collectors):
+        self.game_no += 1
         for c_key in collectors.keys():
             for i in range(len(collectors[c_key].feature_tracers)):
                 self.x.append(collectors[c_key].feature_tracers[i].get_features(c_key).cpu())
                 self.discard.append(helper(1, [collectors[c_key].discard_cards[i]]))
             self.y.extend(collectors[c_key].rewards)
+            self.hu_score[c_key] += collectors[c_key].hu_rewards
             if collectors[c_key].win:
                 self.win_times[c_key] += collectors[c_key].win_times
 

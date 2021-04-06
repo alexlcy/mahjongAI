@@ -10,7 +10,7 @@ from mahjong.agents.rule import RuleAgent
 import os
 from mahjong import online_encoder
 from mahjong.Serialization import online_serialize
-
+from mahjong.stats_logger.calc_functions import calc_win_times, calc_hu_scores
 
 # mahjong.settings.init()
 
@@ -24,15 +24,17 @@ from mahjong.ReinforcementLearning.experience import ExperienceBuffer
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
+
 LOG_FORMAT = "%(message)s"
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
 start = time.time()
-play_times = 5
-buffer = ExperienceBuffer()
+play_times = 50
+buffer = ExperienceBuffer(play_times)
 for i in range(play_times):
     random.seed(0)
-    seed = time.time()
+    # seed = time.time()
+    seed = None
     config = {
         'show_log': True,
         'player_num': 4,
@@ -46,6 +48,13 @@ for i in range(play_times):
     """
     env.reset()
     buffer = env.run(buffer)
+
+    # tensor board
+    # win_times
+    calc_win_times(buffer.win_times, buffer.game_no)
+    # hu_score
+    calc_hu_scores(buffer.hu_score, buffer.game_no)
+
 buffer.save_experience(m_config.buffer_folder_location)
 end = time.time()
 print(f'Recording: {(end - start) / 60} min played {play_times} games')
