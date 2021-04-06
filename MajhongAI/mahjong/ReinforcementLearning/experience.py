@@ -80,7 +80,7 @@ class ExperienceBuffer:
     def massage_experience(self, collectors):
         for c_key in collectors.keys():
             for i in range(len(collectors[c_key].feature_tracers)):
-                self.x.append(collectors[c_key].feature_tracers[i].get_features(c_key))
+                self.x.append(collectors[c_key].feature_tracers[i].get_features(c_key).cpu())
                 self.discard.append(helper(1, [collectors[c_key].discard_cards[i]]))
             self.y.extend(collectors[c_key].rewards)
             if collectors[c_key].win:
