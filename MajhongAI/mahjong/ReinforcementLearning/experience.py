@@ -80,7 +80,7 @@ class ExperienceBuffer:
     def massage_experience(self, collectors):
         for c_key in collectors.keys():
             for i in range(len(collectors[c_key].feature_tracers)):
-                self.x.append(collectors[c_key].feature_tracers[i].get_features(c_key))
+                self.x.append(collectors[c_key].feature_tracers[i].get_features(c_key).cpu())
                 self.discard.append(helper(1, [collectors[c_key].discard_cards[i]]))
             self.y.extend(collectors[c_key].rewards)
             if collectors[c_key].win:
@@ -88,8 +88,8 @@ class ExperienceBuffer:
 
     def save_experience(self, folder_path):
         if len(self.x) != 0:
-            x = torch.cat(self.x.cpu(), dim=0)
-            y = np.array(self.y.cpu())
+            x = torch.cat(self.x, dim=0)
+            y = np.array(self.y)
             discard = np.stack(self.discard)
             date_string = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             with h5py.File(folder_path + "experiment_" + date_string + r'.h5', 'w') as experience_outf:
