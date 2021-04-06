@@ -34,9 +34,9 @@ model = DiscardModel(device).model
 loss_fn = nn.CrossEntropyLoss(reduction='none')
 optim = torch.optim.Adam(model.parameters(), lr=lr)
 
-for exp in exp_paths:
+for exp_i, exp in enumerate(exp_paths):
     states, rewards, actions = exp_buffer.read_experience(exp)
-    for i in tqdm(math.ceil(len(states)/batch_size), desc=f"Batch {i+1}: "):
+    for i in tqdm(math.ceil(len(states)/batch_size), desc=f"Training on buffer {exp_i}: "):
         batch_s, batch_a, batch_r = states[i*batch_size:(i+1)*batch_size], \
         actions[i*batch_size:(i+1)*batch_size], rewards[i*batch_size:(i+1)*batch_size]
         batch_s, batch_a, batch_r = preprocess_data(batch_s, batch_a, batch_r)
