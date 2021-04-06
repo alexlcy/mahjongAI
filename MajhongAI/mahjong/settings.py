@@ -6,6 +6,8 @@ import torch
 class FeatureTracer:
 
     def __init__(self, player_initial_hands: dict):
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
         self.discard = {i: [] for i in range(4)}
         self.steal = None
         self.tiles = player_initial_hands
@@ -67,4 +69,4 @@ class FeatureTracer:
         self.q_dict[player].append(features)
 
     def get_features(self, player):
-        return torch.Tensor(online_serialize(self.q_dict[player])).unsqueeze(0)
+        return torch.Tensor(online_serialize(self.q_dict[player])).unsqueeze(0).to(self.device)

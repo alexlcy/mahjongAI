@@ -5,8 +5,8 @@ from torch import nn
 from torch.nn import init, Parameter
 from torch.nn import functional as F
 from torch.autograd import Variable
-import random
 from collections import deque
+import random
 import numpy as np
 
 from mahjong.snapshot import Snapshot
