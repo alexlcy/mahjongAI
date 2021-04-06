@@ -10,7 +10,7 @@ from mahjong.agents.rule import RuleAgent
 import os
 from mahjong import online_encoder
 from mahjong.Serialization import online_serialize
-from mahjong.stats_logger.calc_functions import calc_win_times, calc_hu_scores
+from mahjong.stats_logger.calc_functions import calc_win_rates, calc_hu_scores, calc_win_times
 
 # mahjong.settings.init()
 
@@ -29,7 +29,7 @@ LOG_FORMAT = "%(message)s"
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
 start = time.time()
-play_times = 50
+play_times = 1000
 buffer = ExperienceBuffer(play_times)
 for i in range(play_times):
     random.seed(0)
@@ -52,6 +52,8 @@ for i in range(play_times):
     # tensor board
     # win_times
     calc_win_times(buffer.win_times, buffer.game_no)
+    # win_rates
+    calc_win_rates(buffer.win_times, buffer.game_no)
     # hu_score
     calc_hu_scores(buffer.hu_score, buffer.game_no)
 

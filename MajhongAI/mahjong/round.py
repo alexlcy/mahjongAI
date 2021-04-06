@@ -343,11 +343,12 @@ class Round:
             else:
                 current_hu_rewards[i] = 0
 
-        if action.event.name == 'HU':
-            tmp = 0
-            for i in range(4):
-                tmp += current_hu_rewards[i]
-            print(f'HU rewards: {tmp} !!')
+        # TODO: checking, can delete
+        # if action.event.name == 'HU':
+        #     tmp = 0
+        #     for i in range(4):
+        #         tmp += current_hu_rewards[i]
+        #     print(f'HU rewards: {tmp} !!')
 
         self.collectors[action.player_id].record_decision(self.action_num, raw_state[action.player_id],
                                                           self.feature_tracer.tiles[action.player_id],
