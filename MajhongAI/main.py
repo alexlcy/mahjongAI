@@ -15,6 +15,7 @@ from mahjong.Serialization import online_serialize
 # mahjong.settings.init()
 
 from mahjong.agents.DL import DeepLearningAgent
+from mahjong.agents.RL import ReinforceLearningAgent
 import time
 
 import mahjong.mahjong_config
@@ -39,7 +40,7 @@ for i in range(play_times):
     }
 
     env = Env(config)
-    env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), DeepLearningAgent(3)])
+    env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), ReinforceLearningAgent(3)])
     """
     reset & run
     """

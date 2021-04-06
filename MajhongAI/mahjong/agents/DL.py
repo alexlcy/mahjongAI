@@ -6,16 +6,6 @@ from mahjong.snapshot import Snapshot
 from mahjong.consts import COMMAND, CARD_DICT,CARD
 from collections import Counter
 from mahjong.models.model import DiscardModel, KongModel, PongModel
-
-
-# To do for everyone
-# TODO: Improve the discard process of the rule agent, it is stupid now
-
-# To do for alex
-# TODO: Select discard tile
-
-# To do for Koning
-# TODO: Select action from legal action
 from mahjong.settings import FeatureTracer
 
 
