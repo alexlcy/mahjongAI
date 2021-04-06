@@ -43,7 +43,7 @@ for exp_i, exp in enumerate(exp_paths):
         action_logits = model(batch_s)
     
         optim.zero_grad()
-        loss = rewards * loss_fn(action_logits, batch_a)
+        loss = batch_r * loss_fn(action_logits, batch_a)
         loss = loss.mean()
         loss.backward()
         optim.step()
