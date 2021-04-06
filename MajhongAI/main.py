@@ -18,7 +18,7 @@ from mahjong.agents.DL import DeepLearningAgent
 from mahjong.agents.RL import ReinforceLearningAgent
 import time
 
-import mahjong.mahjong_config
+import mahjong.mahjong_config as m_config
 from mahjong.ReinforcementLearning.experience import ExperienceBuffer
 
 import os
@@ -46,7 +46,7 @@ for i in range(play_times):
     """
     env.reset()
     buffer = env.run(buffer)
-buffer.save_experience()
+buffer.save_experience(m_config.buffer_folder_location)
 end = time.time()
 print(f'Recording: {(end - start) / 60} min played {play_times} games')
 

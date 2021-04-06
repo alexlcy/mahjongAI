@@ -86,13 +86,13 @@ class ExperienceBuffer:
             if collectors[c_key].win:
                 self.win_times[c_key] += collectors[c_key].win_times
 
-    def save_experience(self):
+    def save_experience(self, folder_path):
         if len(self.x) != 0:
             x = torch.cat(self.x, dim=0)
             y = np.array(self.y)
             discard = np.stack(self.discard)
             date_string = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-            with h5py.File("experiment_" + date_string + r'.h5', 'w') as experience_outf:
+            with h5py.File(folder_path + "experiment_" + date_string + r'.h5', 'w') as experience_outf:
                 experience_outf.create_group('experience')
                 experience_outf['experience'].create_dataset('x', data=x)
                 experience_outf['experience'].create_dataset('y', data=y)
