@@ -20,11 +20,14 @@ import time
 import mahjong.mahjong_config
 from mahjong.ReinforcementLearning.experience import ExperienceBuffer
 
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
+
 LOG_FORMAT = "%(message)s"
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
 start = time.time()
-play_times = 100
+play_times = 50
 buffer = ExperienceBuffer()
 for i in range(play_times):
     random.seed(0)

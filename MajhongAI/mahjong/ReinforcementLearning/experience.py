@@ -107,7 +107,7 @@ class ExperienceBuffer:
         h5file = h5py.File(file_name, 'r')
         self.x = np.array(h5file['experience']['x'])
         self.y = np.array(h5file['experience']['y'])
-        self.y = np.array(h5file['experience']['discard'])
+        self.discard = np.array(h5file['experience']['discard'])
         return self.x, self.y, self.discard
 
     def combine_experience(self, collectors):
