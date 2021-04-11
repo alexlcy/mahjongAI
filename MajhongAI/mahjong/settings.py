@@ -53,20 +53,34 @@ class FeatureTracer:
             self.steal = [card]
 
         # Updating this player's all status after making this action, then extract features
-        features = copy.deepcopy([self.own_wind[player],
-                              self.round_wind[player],
-                              self.steal,
-                              self.tiles[player],
-                              self.discard[player],
-                              self.discard[player + 1 if player + 1 <= 3 else (player + 1) % 4],
-                              self.discard[player + 2 if player + 2 <= 3 else (player + 2) % 4],
-                              self.discard[player + 3 if player + 3 <= 3 else (player + 3) % 4],
-                              self.open_meld[player],
-                              self.open_meld[player + 1 if player + 1 <= 3 else (player + 1) % 4],
-                              self.open_meld[player + 2 if player + 2 <= 3 else (player + 2) % 4],
-                              self.open_meld[player + 3 if player + 3 <= 3 else (player + 3) % 4]
-                              ])
-        self.q_dict[player].append(features)
+        def get_features(player):
+            features = copy.deepcopy([self.own_wind[player],
+                                  self.round_wind[player],
+                                  self.steal,
+                                  self.tiles[player],
+                                  self.discard[player],
+                                  self.discard[player + 1 if player + 1 <= 3 else (player + 1) % 4],
+                                  self.discard[player + 2 if player + 2 <= 3 else (player + 2) % 4],
+                                  self.discard[player + 3 if player + 3 <= 3 else (player + 3) % 4],
+                                  self.open_meld[player],
+                                  self.open_meld[player + 1 if player + 1 <= 3 else (player + 1) % 4],
+                                  self.open_meld[player + 2 if player + 2 <= 3 else (player + 2) % 4],
+                                  self.open_meld[player + 3 if player + 3 <= 3 else (player + 3) % 4]
+                                  ])
+            return features
+
+        self.q_dict[player].appendleft(get_features(player))
+        self.q_dict[player + 1 if player + 1 <= 3 else (player + 1) % 4].appendleft(get_features(player + 1 if player + 1 <= 3 else (player + 1) % 4))
+        self.q_dict[player + 2 if player + 2 <= 3 else (player + 2) % 4].appendleft(get_features(player + 2 if player + 2 <= 3 else (player + 2) % 4))
+        self.q_dict[player + 3 if player + 3 <= 3 else (player + 3) % 4].appendleft(get_features(player + 3 if player + 3 <= 3 else (player + 3) % 4))
+
+        # # For debug:
+        # with open('test_file1', 'a') as file:
+        #     for key,val in self.q_dict.items():
+        #         file.write(str(key)+str(val))
+        #         file.write('\n')
+        #     file.write('\n')
+        #     file.write('\n')
 
     def get_features(self, player):
         return torch.Tensor(online_serialize(self.q_dict[player])).unsqueeze(0).to(self.device)

@@ -1,0 +1,5 @@
+更改：
+1.round中的update加入了判断条件，非处理的action不更新
+2.每个玩家每个action都会更新
+3.feature的history存储顺序调换
+4.serialization.online_serialize的最终return缩进错误

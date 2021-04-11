@@ -331,8 +331,9 @@ class Round:
 
         self.trace.append(action)
         raw_state = deepcopy(self.feature_tracer.tiles)
-        self.feature_tracer.update(action)
-
+        if str(action).replace('\t', ' ').replace(':', ' ').split()[3] in ['PLAY','DRAW','PENG','BU','ZHI','GANG','HU']:
+            self.feature_tracer.update(action)
+        # print(action)
         self.action_num += 1
         # if action.event.name == 'HU':
 

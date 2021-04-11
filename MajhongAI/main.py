@@ -29,7 +29,7 @@ LOG_FORMAT = "%(message)s"
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
 start = time.time()
-play_times = 1000
+play_times = 100
 buffer = ExperienceBuffer(play_times)
 random.seed(0)
 # seed = time.time()
@@ -40,7 +40,7 @@ config = {
     'seed': None  # to None for random run, if seed == None, will not save record
 }
 env = Env(config)
-env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), ReinforceLearningAgent(3)])
+env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), DeepLearningAgent(3)])
 
 for i in range(play_times):
     """
