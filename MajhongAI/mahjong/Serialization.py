@@ -41,7 +41,7 @@ def online_serialize(all_data):
             names['res' + str(index)] = False
             # print(names['res' + str(index)])
             for idx, array in enumerate(data):
-                if idx in [0, 1, 2]:  # for wind and own wind and steal_card: each size (1,34)
+                if idx in [0, 1, 3]:  # for wind and own wind and steal_card: each size (1,34)
                     if names['res'+str(index)] is False:
                         names['res' + str(index)] = helper(1, array)
                     else:

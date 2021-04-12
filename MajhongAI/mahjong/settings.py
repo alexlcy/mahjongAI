@@ -56,8 +56,8 @@ class FeatureTracer:
         def get_features(player):
             features = copy.deepcopy([self.own_wind[player],
                                   self.round_wind[player],
-                                  self.steal,
                                   self.tiles[player],
+                                  self.steal,
                                   self.discard[player],
                                   self.discard[player + 1 if player + 1 <= 3 else (player + 1) % 4],
                                   self.discard[player + 2 if player + 2 <= 3 else (player + 2) % 4],
