@@ -10,7 +10,7 @@ from mahjong.agents.rule import RuleAgent
 import os
 from mahjong import online_encoder
 from mahjong.Serialization import online_serialize
-from mahjong.stats_logger.calc_functions import calc_win_rates, calc_hu_scores, calc_win_times
+from mahjong.stats_logger.calc_functions import calc_win_rates, calc_hu_scores, calc_win_times, calc_hu_score_each_game
 
 # mahjong.settings.init()
 
@@ -29,18 +29,18 @@ LOG_FORMAT = "%(message)s"
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
 start = time.time()
-play_times = 100
+play_times = 10
 buffer = ExperienceBuffer(play_times)
 random.seed(0)
 # seed = time.time()
 seed = None
 config = {
-    'show_log': True,
+    'show_log': False,
     'player_num': 4,
     'seed': None  # to None for random run, if seed == None, will not save record
 }
 env = Env(config)
-env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), DeepLearningAgent(3)])
+env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), ReinforceLearningAgent(3)])
 
 for i in range(play_times):
     """
@@ -56,6 +56,8 @@ for i in range(play_times):
     calc_win_rates(buffer.win_times, buffer.game_no)
     # hu_score
     calc_hu_scores(buffer.hu_score, buffer.game_no)
+    # hu_score each game
+    calc_hu_score_each_game(buffer.hu_reward, buffer.game_no)
 
 buffer.save_experience(m_config.buffer_folder_location)
 end = time.time()

@@ -79,6 +79,7 @@ class ExperienceBuffer:
         self.discard = []
         self.win_times = {0: 0, 1: 0, 2: 0, 3: 0}
         self.hu_score = {0: 0, 1: 0, 2: 0, 3: 0}
+        self.hu_reward = {0: 0, 1: 0, 2: 0, 3: 0}
         self.play_times = play_times
         self.game_no = 0
 
@@ -90,6 +91,7 @@ class ExperienceBuffer:
                 self.discard.append(helper(1, [collectors[c_key].discard_cards[i]]))
             self.y.extend(collectors[c_key].rewards)
             self.hu_score[c_key] += collectors[c_key].hu_rewards
+            self.hu_reward[c_key] = collectors[c_key].hu_rewards
             if collectors[c_key].win:
                 self.win_times[c_key] += collectors[c_key].win_times
 

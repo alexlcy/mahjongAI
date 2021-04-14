@@ -20,3 +20,11 @@ def calc_hu_scores(hu_scores, game_no):
     for i in range(4):
         hu_score_result[i] = hu_scores[i]
     return hu_score_result, game_no
+
+
+@players_dict_logger(data_name='hu_score_each_game')
+def calc_hu_score_each_game(hu_rewards, game_no):
+    hu_reward_result = {}
+    for i in range(4):
+        hu_reward_result[i] = hu_rewards[i]
+    return hu_reward_result, game_no
