@@ -47,7 +47,7 @@ class ReinforceLearningAgent:
         else:
             whether_kong = True
         score = softmax_pred.numpy()[0][index]
-        print(f'Kong: {whether_kong}, score: {score}')
+        # print(f'Kong: {whether_kong}, score: {softmax_pre}, index: {index}')
         return whether_kong, score
 
     def decide_pong(self, feature):
@@ -61,7 +61,7 @@ class ReinforceLearningAgent:
         else:
             whether_pong = True
         score = softmax_pred.numpy()[0][index]
-        print(f'Pong: {whether_pong}, score: {score}')
+        # print(f'Pong: {whether_pong}, score: {softmax_pre}, index: {index}')
         return whether_pong, score
 
     def decide_win(self):
@@ -114,7 +114,7 @@ class ReinforceLearningAgent:
                 pos -= 1
                 player['choice'] = legal_actions[pos]
                 # TODO: If no bug, will remove below print
-                print(f"1 Checking: new choice - {player['choice']} should be >=100 & < 500~~")
+                # print(f"1 Checking: new choice - {player['choice']} should be >=100 & < 500~~")
 
         # Choose whether zhi kong
         if player['choice'] >= 400:
@@ -126,7 +126,7 @@ class ReinforceLearningAgent:
                 if pong_score > kong_score:
                     player['choice'] = legal_actions[pos - 1]
                     # TODO: If no bug, will remove below print
-                    print(f"2 Checking: new choice - {player['choice']} should be >=100 & < 200~~")
+                    # print(f"2 Checking: new choice - {player['choice']} should be >=100 & < 200~~")
                     return
                 else:
                     return
@@ -135,12 +135,12 @@ class ReinforceLearningAgent:
             elif whether_kong is False and whether_pong is True:
                 player['choice'] = legal_actions[pos - 1]
                 # TODO: If no bug, will remove below print
-                print(f"3 Checking: new choice - {player['choice']} should be >=100 & < 200~~")
+                # print(f"3 Checking: new choice - {player['choice']} should be >=100 & < 200~~")
                 return
             elif whether_kong is False and whether_pong is False:
                 player['choice'] = legal_actions[pos - 2]
                 # TODO: If no bug, will remove below print
-                print(f"4 Checking: new choice - {player['choice']} should be <= 0~~")
+                # print(f"4 Checking: new choice - {player['choice']} should be <= 0~~")
                 return
 
         # Choose whether bu kong
@@ -152,7 +152,8 @@ class ReinforceLearningAgent:
             else:
                 player['choice'] = legal_actions[pos - 1]
                 # TODO: If no bug, will remove below print
-                print(f"5 Checking: new choice - {player['choice']} should be <= -1~~")
+                # If not bu kong, we need to discard a card
+                # print(f"5 Checking: new choice - {player['choice']} should be < 100~~")
                 return
 
         # Choose whether an kong
@@ -164,7 +165,8 @@ class ReinforceLearningAgent:
             else:
                 player['choice'] = legal_actions[pos - 1]
                 # TODO: If no bug, will remove below print
-                print(f"6 Checking: new choice - {player['choice']} should be <= -1~~")
+                # If not an kong, we need to discard a card
+                # print(f"6 Checking: new choice - {player['choice']} should be < 100~~")
                 return
 
         # Choose whether pong
@@ -176,7 +178,7 @@ class ReinforceLearningAgent:
             else:
                 player['choice'] = legal_actions[pos - 1]
                 # TODO: If no bug, will remove below print
-                print(f"7 Checking: new choice - {player['choice']} should be <= -1~~")
+                # print(f"7 Checking: new choice - {player['choice']} should be <= -1~~")
                 return
 
         # Step 3: Choose which one to discard

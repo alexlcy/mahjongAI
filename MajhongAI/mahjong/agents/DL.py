@@ -142,7 +142,7 @@ class DeepLearningAgent(object):
             else:
                 player['choice'] = legal_actions[pos - 1]
                 # TODO: If no bug, will remove below print
-                print(f"5 Checking: new choice - {player['choice']} should be <= -1~~")
+                print(f"5 Checking: new choice - {player['choice']} should be < 100~~")
                 return
 
         # Choose whether an kong
@@ -154,7 +154,7 @@ class DeepLearningAgent(object):
             else:
                 player['choice'] = legal_actions[pos - 1]
                 # TODO: If no bug, will remove below print
-                print(f"6 Checking: new choice - {player['choice']} should be <= -1~~")
+                print(f"6 Checking: new choice - {player['choice']} should be < 100~~")
                 return
 
         # Choose whether pong
