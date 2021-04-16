@@ -125,10 +125,16 @@ class Round:
                 for player in self.players:
                     if not player.is_finish and player.player_id != self.player_id:
                         player.score -= 2
-                        self.rewards[player.player_id] = -2
+                        if self.rewards[player.player_id] is None:
+                            self.rewards[player.player_id] = -2
+                        else:
+                            self.rewards[player.player_id] -= 2
                         reward += 2
                 self.current_player.score += reward
-                self.rewards[self.player_id] = reward
+                if self.rewards[self.player_id] is None:
+                    self.rewards[self.player_id] = reward
+                else:
+                    self.rewards[self.player_id] += reward
                 self.__record(Action(self.player_id, card, EVENT.GANG, reward))
                 self.current_player.make_gang(card)
             elif command == COMMAND.BU:  # 补杠
@@ -162,10 +168,16 @@ class Round:
                 for player in self.players:
                     if not player.is_finish and player.player_id != self.player_id:
                         player.score -= score
-                        self.rewards[player.player_id] = -score
+                        if self.rewards[player.player_id] is None:
+                            self.rewards[player.player_id] = -score
+                        else:
+                            self.rewards[player.player_id] -= score
                         reward += score
                 self.current_player.score += reward
-                self.rewards[self.player_id] = reward
+                if self.rewards[self.player_id] is None:
+                    self.rewards[self.player_id] = reward
+                else:
+                    self.rewards[self.player_id] += reward
                 action = Action(self.player_id, previou_action.card, EVENT.HU, reward, ",".join(desc))
                 self.__record(action)
                 self.current_player.is_finish = True
@@ -210,8 +222,14 @@ class Round:
                             desc.append("呼叫转移")
                     win_player.score += reward
                     self.current_player.score -= reward
-                    self.rewards[self.player_id] = -reward
-                    self.rewards[player_id] = reward
+                    if self.rewards[self.player_id] is None:
+                        self.rewards[self.player_id] = -reward
+                    else:
+                        self.rewards[self.player_id] -= reward
+                    if self.rewards[player_id] is None:
+                        self.rewards[player_id] = reward
+                    else:
+                        self.rewards[player_id] += reward
                     tmp_action = Action(player_id, previou_action.card, EVENT.HU, reward, ",".join(desc))
                     hu_action.append(tmp_action)
                     win_player.make_hu(tmp_action)
@@ -238,14 +256,23 @@ class Round:
                     for player in self.players:
                         if not player.is_finish and player.player_id != player_id:
                             player.score -= 1
-                            self.rewards[player.player_id] = -1
+                            if self.rewards[player.player_id] is None:
+                                self.rewards[player.player_id] = -1
+                            else:
+                                self.rewards[player.player_id] -= 1
                             reward += 1
                         if not player.is_finish and player.player_id == previou_action.player_id:
                             player.score -= 1
-                            self.rewards[player.player_id] = -1
+                            if self.rewards[player.player_id] is None:
+                                self.rewards[player.player_id] = -1
+                            else:
+                                self.rewards[player.player_id] -= 1
                             reward += 1
                     self.current_player.score += reward
-                    self.rewards[self.current_player.player_id] = reward
+                    if self.rewards[self.current_player.player_id] is None:
+                        self.rewards[self.current_player.player_id] = reward
+                    else:
+                        self.rewards[self.current_player.player_id] += reward
                     self.__record(Action(self.player_id, card, EVENT.ZHI, reward))
                     self.current_player.make_zhi(card, previou_action.player_id)
                 else:
@@ -289,8 +316,8 @@ class Round:
                     reward = math.floor(math.pow(2, bet))
                     win_player.score += reward
                     self.current_player.score -= reward
-                    self.rewards[player_id] = reward
-                    self.rewards[self.current_player.player_id] = -reward
+                    self.rewards[player_id] = reward if self.rewards[player_id] is None else self.rewards[player_id] + reward
+                    self.rewards[self.current_player.player_id] = -reward if self.rewards[self.current_player.player_id] is None else self.rewards[self.current_player.player_id] - reward
                     tmp_action = Action(self.player_id, previou_action.card, EVENT.HU, reward, ",".join(desc))
                     hu_action.append(tmp_action)
                     win_player.make_hu(tmp_action)
@@ -313,9 +340,9 @@ class Round:
                 if not player.is_finish and player.player_id != self.player_id:
                     player.score -= 1
                     reward += 1
-                    self.rewards[player.player_id] = -1
+                    self.rewards[player.player_id] = -1 if self.rewards[player.player_id] is None else self.rewards[player.player_id] - 1
             self.current_player.score += reward
-            self.rewards[self.player_id] = reward
+            self.rewards[self.player_id] = reward if self.rewards[self.player_id] is None else self.rewards[self.player_id] + reward
             self.__record(Action(self.player_id, previou_action.card, EVENT.BU, reward))
             self.current_player.make_bu(previou_action.card)
             return self.__draw()
@@ -344,7 +371,7 @@ class Round:
             else:
                 current_hu_rewards[i] = 0
 
-        # TODO: checking, can delete
+        # # TODO: checking, can delete
         # if action.event.name == 'HU':
         #     tmp = 0
         #     for i in range(4):
@@ -370,6 +397,15 @@ class Round:
                                                                   self.players[player_id].score,
                                                                   COLOR[self.players[player_id].color],
                                                                   self.feature_tracer, current_hu_rewards[player_id])
+
+        # # TODO: checking, can delete
+        # if action.event.name == 'HU':
+        #     hu_reward_checking = {}
+        #     tmp = 0
+        #     for i in range(4):
+        #         hu_reward_checking[i] = self.collectors[i].hu_rewards
+        #         tmp += hu_reward_checking[i]
+        #     print(f'HU rewards: {tmp} !! And {hu_reward_checking}')
 
         self.rewards = {0: None, 1: None, 2: None, 3: None}
         # self.temp = self.feature_tracer.get_features(0) # (190,34,1)
