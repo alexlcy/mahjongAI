@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @FileName : online_encoder.py
+# @Project  : MAHJONG AI
+# @Author   : WANG Jianxing
+# @Time     : 2021/2/17
 import copy
 import numpy as np
 # import DataInformation

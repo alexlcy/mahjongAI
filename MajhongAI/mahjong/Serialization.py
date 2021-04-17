@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @FileName : Serialization.py
+# @Project  : MAHJONG AI
+# @Author   : WANG Jianxing
+# @Time     : 2021/4/17
 import numpy as np
 from collections import Counter
 import os, os.path

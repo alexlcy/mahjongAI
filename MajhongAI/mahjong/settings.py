@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @FileName : settings.py
+# @Project  : MAHJONG AI
+# @Author   : WANG Jianxing
+# @Time     : 2021/4/17
 from collections import deque
 import copy
 from mahjong.Serialization import online_serialize
