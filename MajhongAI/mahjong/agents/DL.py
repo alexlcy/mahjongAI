@@ -36,7 +36,7 @@ class DeepLearningAgent(object):
         else:
             whether_kong = True
         score = softmax_pred.numpy()[0][index]
-        print(f'Kong: {whether_kong}, score: {score}')
+        # print(f'Kong: {whether_kong}, score: {softmax_pre}, index: {index}')
         return whether_kong, score
 
     def decide_pong(self, feature):
@@ -50,13 +50,12 @@ class DeepLearningAgent(object):
         else:
             whether_pong = True
         score = softmax_pred.numpy()[0][index]
-        print(f'Pong: {whether_pong}, score: {score}')
+        # print(f'Pong: {whether_pong}, score: {softmax_pre}, index: {index}')
         return whether_pong, score
 
     def decide_win(self):
         # Later will implement decide win model
         return True
-
 
     # TODO: Debug & optimize some repeat part - Koning
     def decide(self, snapshot: Snapshot, feature_tracer: FeatureTracer, trace: list, deck: list):
@@ -104,7 +103,7 @@ class DeepLearningAgent(object):
                 pos -= 1
                 player['choice'] = legal_actions[pos]
                 # TODO: If no bug, will remove below print
-                print(f"1 Checking: new choice - {player['choice']} should be >=100 & < 500~~")
+                # print(f"1 Checking: new choice - {player['choice']} should be >=100 & < 500~~")
 
         # Choose whether zhi kong
         if player['choice'] >= 400:
@@ -116,7 +115,7 @@ class DeepLearningAgent(object):
                 if pong_score > kong_score:
                     player['choice'] = legal_actions[pos - 1]
                     # TODO: If no bug, will remove below print
-                    print(f"2 Checking: new choice - {player['choice']} should be >=100 & < 200~~")
+                    # print(f"2 Checking: new choice - {player['choice']} should be >=100 & < 200~~")
                     return
                 else:
                     return
@@ -125,12 +124,12 @@ class DeepLearningAgent(object):
             elif whether_kong is False and whether_pong is True:
                 player['choice'] = legal_actions[pos - 1]
                 # TODO: If no bug, will remove below print
-                print(f"3 Checking: new choice - {player['choice']} should be >=100 & < 200~~")
+                # print(f"3 Checking: new choice - {player['choice']} should be >=100 & < 200~~")
                 return
             elif whether_kong is False and whether_pong is False:
                 player['choice'] = legal_actions[pos - 2]
                 # TODO: If no bug, will remove below print
-                print(f"4 Checking: new choice - {player['choice']} should be <= 0~~")
+                # print(f"4 Checking: new choice - {player['choice']} should be <= 0~~")
                 return
 
         # Choose whether bu kong
@@ -142,7 +141,8 @@ class DeepLearningAgent(object):
             else:
                 player['choice'] = legal_actions[pos - 1]
                 # TODO: If no bug, will remove below print
-                print(f"5 Checking: new choice - {player['choice']} should be < 100~~")
+                # If not bu kong, we need to discard a card
+                # print(f"5 Checking: new choice - {player['choice']} should be < 100~~")
                 return
 
         # Choose whether an kong
@@ -154,7 +154,8 @@ class DeepLearningAgent(object):
             else:
                 player['choice'] = legal_actions[pos - 1]
                 # TODO: If no bug, will remove below print
-                print(f"6 Checking: new choice - {player['choice']} should be < 100~~")
+                # If not an kong, we need to discard a card
+                # print(f"6 Checking: new choice - {player['choice']} should be < 100~~")
                 return
 
         # Choose whether pong
@@ -166,7 +167,7 @@ class DeepLearningAgent(object):
             else:
                 player['choice'] = legal_actions[pos - 1]
                 # TODO: If no bug, will remove below print
-                print(f"7 Checking: new choice - {player['choice']} should be <= -1~~")
+                # print(f"7 Checking: new choice - {player['choice']} should be <= -1~~")
                 return
 
         # Step 3: Choose which one to discard
@@ -175,8 +176,8 @@ class DeepLearningAgent(object):
             # Call discard function to discard a tile
             if discard_tile is not None:
                 player['choice'] = discard_tile
-                return      
-                      
+                return
+
         player['choice'] = random.choice(legal_actions)
 
     def decide_discard(self, player, feature):
@@ -218,7 +219,7 @@ class DeepLearningAgent(object):
         tile_priority_list = [self.total_dict_revert[index] for index in tile_priority]
         tile_index_priority = [CARD_DICT[index] for index in tile_priority_list if index[0] not in ('J', 'F')]
 
-        return softmax_pred,tile_index_priority
+        return softmax_pred, tile_index_priority
 
     def decide_discard_by_color(self, player):
         """
@@ -253,8 +254,7 @@ class DeepLearningAgent(object):
         # If no 缺 tile available, then skip the 缺 discard function
         return None
 
-
-    def decide_discard_by_rule(self,player):
+    def decide_discard_by_rule(self, player):
         """
         When there are no valid decision made by AI and no discard based on color.
         The discard will be conducted using the same naive rule as the rule agent.
