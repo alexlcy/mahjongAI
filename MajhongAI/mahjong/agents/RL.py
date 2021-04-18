@@ -14,6 +14,7 @@ from mahjong.consts import COMMAND, CARD_DICT,CARD
 from collections import Counter
 from mahjong.models.model import DiscardModel, KongModel, PongModel
 from mahjong.settings import FeatureTracer
+from mahjong.exploration.methods import ExplorationMethods
 
 
 class ReinforceLearningAgent:
@@ -21,20 +22,21 @@ class ReinforceLearningAgent:
         self.name = 'reinforcementlearning'
         self.__player_id = player_id
         self.state_tensor = np.zeros((9, 8, 10))
-        w_dict = {'W' + str(i + 1): i for i in range(9)}  # 万
-        b_dict = {'B' + str(i + 1): i + 9 for i in range(9)}  # 饼
-        t_dict = {'T' + str(i + 1): i + 18 for i in range(9)}  # 条
-        f_dict = {'F' + str(i + 1): i + 27 for i in range(4)}  # 风 东南西北
-        j_dict = {'J' + str(i + 1): i + 31 for i in range(3)}  # （剑牌）中发白
-        total_dict = {**w_dict, **b_dict, **t_dict, **f_dict, **j_dict}
-        self.total_dict_revert = {index: value for value, index in total_dict.items()}
+        # w_dict = {'W' + str(i + 1): i for i in range(9)}  # 万
+        # b_dict = {'B' + str(i + 1): i + 9 for i in range(9)}  # 饼
+        # t_dict = {'T' + str(i + 1): i + 18 for i in range(9)}  # 条
+        # f_dict = {'F' + str(i + 1): i + 27 for i in range(4)}  # 风 东南西北
+        # j_dict = {'J' + str(i + 1): i + 31 for i in range(3)}  # （剑牌）中发白
+        # total_dict = {**w_dict, **b_dict, **t_dict, **f_dict, **j_dict}
+        # self.total_dict_revert = {index: value for value, index in total_dict.items()}
         self.discard_model = DiscardModel()
         self.kong_model = KongModel()
         self.pong_model = PongModel()
-        self.decay_step = 0
-        self.epsilon = 0.1  # exploration probability at start
-        self.epsilon_min = 0.01  # minimum exploration probability
-        self.epsilon_decay = 0.0005  # exponential decay rate for exploration prob
+        self.exploration_method = ExplorationMethods(self.discard_model)
+        # self.decay_step = 0
+        # self.epsilon = 0.1  # exploration probability at start
+        # self.epsilon_min = 0.01  # minimum exploration probability
+        # self.epsilon_decay = 0.0005  # exponential decay rate for exploration prob
 
     def decide_kong(self, feature):
         # Decide whether to make a Kong
@@ -183,7 +185,7 @@ class ReinforceLearningAgent:
 
         # Step 3: Choose which one to discard
         if player['choice'] < 100:
-            discard_tile = self.decide_discard(player, feature)
+            discard_tile = self.decide_discard(player, feature, player['hands'])
             # Call discard function to discard a tile
             if discard_tile is not None:
                 player['choice'] = discard_tile
@@ -191,7 +193,7 @@ class ReinforceLearningAgent:
 
         player['choice'] = random.choice(legal_actions)
 
-    def decide_discard(self, player, feature):
+    def decide_discard(self, player, feature, hands):
         """
         The tile is discarded based on the below sequence
         1. Discard color tile if there exist
@@ -201,6 +203,11 @@ class ReinforceLearningAgent:
         Returns:
             discard_tile: The tile want to discard
         """
+        # return self.exploration_method.epsilon_1(feature, player)  # total 10: 1,1,3,2
+        # return self.exploration_method.epsilon_2(feature, player)  # total 10: 1,3,2,3
+        return self.exploration_method.epsilon_3(feature, player)  # total 10: 3,3,2,2
+        # return self.exploration_method.gaussian(feature, player, hands)  # total 10: 3,3,2,2  TODO: How to add noise in action space?
+
 
         # Priority 1: Discard based on color
         # color_discard_tile = self.decide_discard_by_color(player)
@@ -208,36 +215,35 @@ class ReinforceLearningAgent:
         #     return color_discard_tile
 
         # Using eplison greedy to decide whether to discard by rule or use model prediction
-        self.calculate_epsilon_decay()
-        if np.random.random() > self.epsilon:
-            softmax_pred, ai_discard_tile_list = self.decide_discard_by_AI(feature)
-            for index, ai_discard_tile in enumerate(ai_discard_tile_list):
-                if ai_discard_tile in player['hands']:
-                    return ai_discard_tile
-        else:
-            # Priority 3: Discard based on naive rule
-            return self.decide_discard_by_rule(player)
+        # self.calculate_epsilon_decay()
+        # if np.random.random() > self.epsilon:
+        #     softmax_pred, ai_discard_tile_list = self.decide_discard_by_AI(feature)
+        #     for index, ai_discard_tile in enumerate(ai_discard_tile_list):
+        #         if ai_discard_tile in player['hands']:
+        #             return ai_discard_tile
+        # else:
+        #     # Priority 3: Discard based on naive rule
+        #     return self.decide_discard_by_rule(player)
 
-        # if self.epsilon > self.epsilon_min:
-        #     self.epsilon *= (1-self.epsilon_decay)
 
-    def calculate_epsilon_decay(self):
-        self.epsilon = self.epsilon * (1 - self.epsilon_decay) if self.epsilon > self.epsilon_min else self.epsilon
 
-    def decide_discard_by_AI(self, feature):
-        """
-        Call the discard model and return the tile that we shoudl discard
-        Returns:
-        """
+    # def calculate_epsilon_decay(self):
+    #     self.epsilon = self.epsilon * (1 - self.epsilon_decay) if self.epsilon > self.epsilon_min else self.epsilon
 
-        pred = self.discard_model.predict(feature)
-        softmax = torch.nn.Softmax(dim=1)
-        softmax_pred = softmax(pred)
-        tile_priority = np.argsort(softmax_pred.numpy())[0][::-1]
-        tile_priority_list = [self.total_dict_revert[index] for index in tile_priority]
-        tile_index_priority = [CARD_DICT[index] for index in tile_priority_list if index[0] not in ('J', 'F')]
-
-        return softmax_pred, tile_index_priority
+    # def decide_discard_by_AI(self, feature):
+    #     """
+    #     Call the discard model and return the tile that we shoudl discard
+    #     Returns:
+    #     """
+    #
+    #     pred = self.discard_model.predict(feature)
+    #     softmax = torch.nn.Softmax(dim=1)
+    #     softmax_pred = softmax(pred)
+    #     tile_priority = np.argsort(softmax_pred.numpy())[0][::-1]
+    #     tile_priority_list = [self.total_dict_revert[index] for index in tile_priority]
+    #     tile_index_priority = [CARD_DICT[index] for index in tile_priority_list if index[0] not in ('J', 'F')]
+    #
+    #     return softmax_pred, tile_index_priority
 
     def decide_discard_by_color(self, player):
         """
@@ -272,28 +278,28 @@ class ReinforceLearningAgent:
         # If no 缺 tile available, then skip the 缺 discard function
         return None
 
-    def decide_discard_by_rule(self, player):
-        """
-        When there are no valid decision made by AI and no discard based on color.
-        The discard will be conducted using the same naive rule as the rule agent.
-
-        Args:
-            player ():
-
-        Returns:
-
-        """
-        # Discard based on rule
-        cards = [0] * 30
-        for card in player['hands']:
-            cards[card] += 1
-
-        for card in range(30):
-            if cards[card] == 1:
-                return card
-        for card in range(30):
-            if cards[card] == 2:
-                return card
+    # def decide_discard_by_rule(self, player):
+    #     """
+    #     When there are no valid decision made by AI and no discard based on color.
+    #     The discard will be conducted using the same naive rule as the rule agent.
+    #
+    #     Args:
+    #         player ():
+    #
+    #     Returns:
+    #
+    #     """
+    #     # Discard based on rule
+    #     cards = [0] * 30
+    #     for card in player['hands']:
+    #         cards[card] += 1
+    #
+    #     for card in range(30):
+    #         if cards[card] == 1:
+    #             return card
+    #     for card in range(30):
+    #         if cards[card] == 2:
+    #             return card
 
 
 

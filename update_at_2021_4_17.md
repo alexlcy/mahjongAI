@@ -19,5 +19,9 @@
 
 
 
-Update at 2021/4/17
+Update at 2021/4/18
+
+1.尝试了三种epsilon greedy的方法：
+
+2.问题：向action space添加noise的方法不可行？
 

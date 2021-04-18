@@ -30,7 +30,7 @@ LOG_FORMAT = "%(message)s "
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
 start = time.time()
-play_times = 10
+play_times = 100
 buffer = ExperienceBuffer(play_times)
 random.seed(0)
 # seed = time.time()
