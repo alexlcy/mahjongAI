@@ -406,12 +406,15 @@ class Round:
         #         tmp += current_hu_rewards[i]
         #     print(f'HU rewards: {tmp} !!')
 
+        if action.event.name == 'HU':
+            print('Checking ~~')
+
         self.collectors[action.player_id].record_decision(self.action_num, raw_state[action.player_id],
                                                           self.feature_tracer.tiles[action.player_id],
                                                           self.feature_tracer.discard[action.player_id],
                                                           self.feature_tracer.open_meld[action.player_id],
                                                           self.feature_tracer.steal,
-                                                          (action.event.name, CARD[action.card]), action.reward,
+                                                          (action.event.name, CARD[action.card], action.player_id, action.player_id), action.reward,
                                                           self.current_player.score,
                                                           COLOR[self.players[action.player_id].color],
                                                           self.feature_tracer, current_hu_rewards[action.player_id],
@@ -423,7 +426,7 @@ class Round:
                                                            self.feature_tracer.discard[player_id],
                                                            self.feature_tracer.open_meld[player_id],
                                                            self.feature_tracer.steal,
-                                                           (action.event.name, CARD[action.card]),
+                                                           (action.event.name, CARD[action.card], action.player_id, player_id),
                                                            self.rewards[player_id],
                                                            self.players[player_id].score,
                                                            COLOR[self.players[player_id].color],
