@@ -55,7 +55,7 @@ class ExperienceCollector:
             for i in range(self.last_hu_record_index, len(self.rewards)):
                 self.rewards[i] += r
                 self.norm_rewards[i] = norm_reward
-            self.last_hu_record_index = i
+            self.last_hu_record_index = len(self.rewards)
             if r > 0 and action[2] == action[3]:
                 self.win = True
                 self.win_times += 1
