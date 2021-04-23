@@ -80,7 +80,7 @@ class ExplorationMethods:
         )
 
     def decide_discard_by_AI_help(self, feature):
-        prediction = self.model.predict(feature)
+        prediction = self.model.predict(feature)  # (1,34)
         softmax = torch.nn.Softmax(dim=1)
         softmax_prediction = softmax(prediction)
         tile_priority = np.argsort(softmax_prediction.numpy())[0][::-1]

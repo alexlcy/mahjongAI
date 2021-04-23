@@ -207,7 +207,7 @@ class ReinforceLearningAgent:
         # return self.exploration_method.epsilon_2(feature, player)  # total 10: 1,3,2,3
         return self.exploration_method.epsilon_3(feature, player)  # total 10: 3,3,2,2
         # return self.exploration_method.gaussian(feature, player, hands)  # total 10: 3,3,2,2  TODO: How to add noise in action space?
-
+        # return self.exploration_method.decide_discard_by_AI(feature, player)
 
         # Priority 1: Discard based on color
         # color_discard_tile = self.decide_discard_by_color(player)

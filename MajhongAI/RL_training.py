@@ -29,7 +29,7 @@ def preprocess_data(s, a, r):
 
 # Training
 exp_paths = glob.glob('mahjong/data/*.h5')
-exp_buffer = ExperienceBuffer()
+exp_buffer = ExperienceBuffer(10)
 model = DiscardModel(device).model
 loss_fn = nn.CrossEntropyLoss(reduction='none')
 optim = torch.optim.Adam(model.parameters(), lr=lr)
