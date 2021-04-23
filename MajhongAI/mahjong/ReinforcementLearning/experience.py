@@ -40,17 +40,23 @@ class ExperienceCollector:
         self.win_times = 0
         self.player_id = player_id
         self.hu_rewards = 0
+        self.norm_hu_rewards = 0
+        self.norm_rewards = []
+        self.last_hu_record_index = 0
 
     # def record_feature_reward(self, q_dict):
 
     def record_decision(self, action_num, raw_state, state, discard, open_meld, steal, action, reward, score,
-                        lack_color, feature_tracer, hu_rewards):
+                        lack_color, feature_tracer, hu_rewards, norm_reward):
         if action[0] == 'HU':
             r = deepcopy(reward)
             self.hu_rewards += hu_rewards
-            for i in range(len(self.rewards)):
+            self.norm_hu_rewards = norm_reward
+            for i in range(self.last_hu_record_index, len(self.rewards)):
                 self.rewards[i] += r
-            if r > 0:
+                self.norm_rewards[i] = norm_reward
+            self.last_hu_record_index = len(self.rewards)
+            if r > 0 and action[2] == action[3]:
                 self.win = True
                 self.win_times += 1
 
@@ -67,6 +73,7 @@ class ExperienceCollector:
             self.lack_colors.append(deepcopy(lack_color))
             self.feature_tracers.append(deepcopy(feature_tracer))
             self.discard_cards.append(deepcopy(action[1]))
+            self.norm_rewards.append(deepcopy(norm_reward))
 
 
 class ExperienceBuffer:
@@ -83,13 +90,16 @@ class ExperienceBuffer:
         self.play_times = play_times
         self.game_no = 0
 
-    def massage_experience(self, collectors):
+    def massage_experience(self, collectors, normed=True):
         self.game_no += 1
         for c_key in collectors.keys():
             for i in range(len(collectors[c_key].feature_tracers)):
                 self.x.append(collectors[c_key].feature_tracers[i].get_features(c_key).cpu())
                 self.discard.append(helper(1, [collectors[c_key].discard_cards[i]]))
-            self.y.extend(collectors[c_key].rewards)
+            if normed:
+                self.y.extend(collectors[c_key].norm_rewards)
+            else:
+                self.y.extend(collectors[c_key].rewards)
             self.hu_score[c_key] += collectors[c_key].hu_rewards
             self.hu_reward[c_key] = collectors[c_key].hu_rewards
             if collectors[c_key].win:
