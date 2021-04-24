@@ -131,7 +131,7 @@ class ExperienceBuffer:
                 if is_rl_agent:
                     p = self.cal_probability_of_action(self.is_trigger_by_rl[-1], epsilon, self.discard_argmax[-1], tmp)
                     self.action_probabilities.append(p)
-                    self.epsilons.append(epsilon)
+                    self.epsilons.append(epsilon if epsilon is not None else -0.5)
                 else:
                     # print(f'Checking cases~ type 3')
                     self.action_probabilities.append(-1)
@@ -189,11 +189,10 @@ class ExperienceBuffer:
 
     def read_experience(self, file_name):
         h5file = h5py.File(file_name, 'r')
-        self.game_no = np.array(h5file['experience']['game_no'])
-        self.x = np.array(h5file['experience']['x'])
-        self.y = np.array(h5file['experience']['y'])
-        self.discard = np.array(h5file['experience']['discard'])
-        return self.game_no, self.x, self.y, self.discard
+        headers = ['game_no', 'x', 'y', 'discard', 'is_rl_agents', 'is_trigger_by_rl', 'p_action', 'discard_argmax',
+                   'raw_predictions', 'epsilon']
+        buffer_dict = {header: np.array(h5file['experience'][header]) for header in headers}
+        return buffer_dict
 
     # # ## deprecation
     # def combine_experience(self, collectors):
