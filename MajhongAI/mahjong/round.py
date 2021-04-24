@@ -28,19 +28,23 @@ class Round:
     处理核心
     """
 
-    def __init__(self, dealer: Dealer, players: list, config: dict):
+    def __init__(self, dealer: Dealer, players: list, config: dict, is_rl_agents):
         self.dealer = dealer
         self.players = players
         self.player_id = dealer.get_banker()
         self.config = config
+        self.is_rl_agents = is_rl_agents
         self.trace = []
         self.player_num = len(players)
         self.feature_tracer = None
         self.temp = None
 
         # Experience Buffer
-        self.collectors = {0: ExperienceCollector(0), 1: ExperienceCollector(1), 2: ExperienceCollector(2),
-                           3: ExperienceCollector(3)}
+        # print(self.is_rl_agents)
+        self.collectors = {0: ExperienceCollector(0, self.is_rl_agents[0]),
+                           1: ExperienceCollector(1, self.is_rl_agents[1]),
+                           2: ExperienceCollector(2, self.is_rl_agents[2]),
+                           3: ExperienceCollector(3, self.is_rl_agents[3])}
         self.rewards = {0: None, 1: None, 2: None, 3: None}
         self.norm_rewards = {0: 0, 1: 0, 2: 0, 3: 0}
         self.action_num = 0
@@ -406,8 +410,8 @@ class Round:
         #         tmp += current_hu_rewards[i]
         #     print(f'HU rewards: {tmp} !!')
 
-        if action.event.name == 'HU':
-            print('Checking ~~')
+        # if action.event.name == 'HU':
+        #     print('Checking ~~')
 
         self.collectors[action.player_id].record_decision(self.action_num, raw_state[action.player_id],
                                                           self.feature_tracer.tiles[action.player_id],

@@ -58,13 +58,17 @@ class ExplorationMethods:
         else:
             return self.decide_discard_by_AI(feature, player)
 
-    def epsilon_3(self, feature, player, **kwargs):  # advanced probability with decay
+    def epsilon_3(self, feature, player, feature_tracer, **kwargs):  # advanced probability with decay
         explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
+        feature_tracer.set_explore_probability(player['player_id'], explore_probability)
         self.decay_step += 1
+        ai_discard_tile, raw_prediction = self.decide_discard_by_AI(feature, player)
+        if raw_prediction is None:
+            print('Error here~ type2: methods/epsilon_3')
         if explore_probability > np.random.rand():
-            return self.decide_discard_by_rule(player)
+            return self.decide_discard_by_rule(player), False, raw_prediction
         else:
-            return self.decide_discard_by_AI(feature, player)
+            return ai_discard_tile, True, raw_prediction
 
     def gaussian(self, feature, player, action_space, **kwargs):
         self.t += 1
@@ -72,7 +76,7 @@ class ExplorationMethods:
             self.max_sigma - (self.max_sigma - self.min_sigma) *
             min(1.0, self.t * 1.0 / self.decay_period)
         )
-        action = self.decide_discard_by_AI(feature, player)
+        action, raw_prediction = self.decide_discard_by_AI(feature, player)
         return np.clip(
             math.ceil(action + np.random.normal() * sigma),
             np.array(action_space).min(),
@@ -80,23 +84,23 @@ class ExplorationMethods:
         )
 
     def decide_discard_by_AI_help(self, feature):
-        prediction = self.model.predict(feature)
+        raw_prediction = self.model.predict(feature)  # (1,34)
         softmax = torch.nn.Softmax(dim=1)
-        softmax_prediction = softmax(prediction)
+        softmax_prediction = softmax(raw_prediction)
         tile_priority = np.argsort(softmax_prediction.numpy())[0][::-1]
         tile_priority_list = [self.total_dict_revert[index] for index in tile_priority]
         tile_index_priority = [CARD_DICT[index] for index in tile_priority_list if index[0] not in ('J', 'F')]
-        return softmax_prediction, tile_index_priority
+        return softmax_prediction, tile_index_priority, raw_prediction
 
     def decide_discard_by_AI(self, feature, player):
         """
         Call the discard model and return the tile that we should discard
         Returns:
         """
-        softmax_prediction, ai_discard_tile_list = self.decide_discard_by_AI_help(feature)
+        softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
         for index, ai_discard_tile in enumerate(ai_discard_tile_list):
             if ai_discard_tile in player['hands']:
-                return ai_discard_tile
+                return ai_discard_tile, raw_prediction
 
     def decide_discard_by_rule(self, player):
         """

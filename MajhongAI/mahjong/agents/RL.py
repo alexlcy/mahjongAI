@@ -185,7 +185,11 @@ class ReinforceLearningAgent:
 
         # Step 3: Choose which one to discard
         if player['choice'] < 100:
-            discard_tile = self.decide_discard(player, feature, player['hands'])
+            discard_tile, is_trigger_by_rl, raw_prediction = self.decide_discard(player, feature, player['hands'], feature_tracer)
+
+            # Save current prediction
+            feature_tracer.set_current_prediction(self.__player_id, raw_prediction)
+
             # Call discard function to discard a tile
             if discard_tile is not None:
                 player['choice'] = discard_tile
@@ -193,7 +197,7 @@ class ReinforceLearningAgent:
 
         player['choice'] = random.choice(legal_actions)
 
-    def decide_discard(self, player, feature, hands):
+    def decide_discard(self, player, feature, hands, feature_tracer):
         """
         The tile is discarded based on the below sequence
         1. Discard color tile if there exist
@@ -205,7 +209,7 @@ class ReinforceLearningAgent:
         """
         # return self.exploration_method.epsilon_1(feature, player)  # total 10: 1,1,3,2
         # return self.exploration_method.epsilon_2(feature, player)  # total 10: 1,3,2,3
-        return self.exploration_method.epsilon_3(feature, player)  # total 10: 3,3,2,2
+        return self.exploration_method.epsilon_3(feature, player, feature_tracer)  # total 10: 3,3,2,2
         # return self.exploration_method.gaussian(feature, player, hands)  # total 10: 3,3,2,2  TODO: How to add noise in action space?
 
 
