@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @FileName : DQN.py
+# @FileName : DQN_keras.py
 # @Project  : MAHJONG AI
 # @Author   : WANG Jianxing
 # @Time     : 2021/4/21 16:06

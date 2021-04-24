@@ -109,14 +109,16 @@ class ExplorationMethods:
         Returns:
 
         """
-        # Discard based on rule
-        cards = [0] * 30
-        for card in player['hands']:
-            cards[card] += 1
+        # # Discard based on rule
+        # cards = [0] * 30
+        # for card in player['hands']:
+        #     cards[card] += 1
+        #
+        # for card in range(30):
+        #     if cards[card] == 1:
+        #         return card
+        # for card in range(30):
+        #     if cards[card] == 2:
+        #         return card
 
-        for card in range(30):
-            if cards[card] == 1:
-                return card
-        for card in range(30):
-            if cards[card] == 2:
-                return card
+        return random.choice(player['hands'])
