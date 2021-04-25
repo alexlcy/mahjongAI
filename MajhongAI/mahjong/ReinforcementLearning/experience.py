@@ -127,7 +127,7 @@ class ExperienceBuffer:
                     self.epsilons.append(epsilon if epsilon is not None else -0.5)
                 else:
                     # print(f'Checking cases~ type 3')
-                    self.action_probabilities.append(-1)
+                    self.action_probabilities.append(1)
                     self.epsilons.append(-1)
 
             if normed:
@@ -144,38 +144,38 @@ class ExperienceBuffer:
             game_no = np.array(self.game_no_list)
             x = torch.cat(self.x, dim=0)
             y = np.array(self.y)
-            discard = np.stack(self.discard)
+            # discard = np.stack(self.discard)
             is_rl_agent = np.array(self.is_rl_agent)
             is_trigger_by_rl = np.array(self.is_trigger_by_rl)
             p_action = np.array(self.action_probabilities)
             discard_argmax = np.array(self.discard_argmax)
-            raw_predictions = torch.cat(self.raw_predictions, dim=0)
-            epsilon = np.array(self.epsilons)
+            # raw_predictions = torch.cat(self.raw_predictions, dim=0)
+            # epsilon = np.array(self.epsilons)
             date_string = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             with h5py.File(folder_path + "experiment_" + date_string + r'.h5', 'w') as experience_outf:
                 experience_outf.create_group('experience')
                 # 1
                 experience_outf['experience'].create_dataset('game_no', data=game_no)
                 # 2
-                experience_outf['experience'].create_dataset('x', data=x)
+                experience_outf['experience'].create_dataset('states', data=x)
                 # 3
-                experience_outf['experience'].create_dataset('y', data=y)
-                # 4
-                experience_outf['experience'].create_dataset('discard', data=discard)
+                experience_outf['experience'].create_dataset('rewards', data=y)
+                # # 4
+                # experience_outf['experience'].create_dataset('discard', data=discard)
                 # 5
                 experience_outf['experience'].create_dataset('is_rl_agents', data=is_rl_agent)
                 # 6
-                from collections import Counter
-                print(f'is_trigger_by_rl: {Counter(is_trigger_by_rl)}')
-                experience_outf['experience'].create_dataset('is_trigger_by_rl', data=is_trigger_by_rl)
+                # from collections import Counter
+                # print(f'is_trigger_by_rl: {Counter(is_trigger_by_rl)}')
+                # experience_outf['experience'].create_dataset('is_trigger_by_rl', data=is_trigger_by_rl)
                 # 7
                 experience_outf['experience'].create_dataset('p_action', data=p_action)
                 # 8
-                experience_outf['experience'].create_dataset('discard_argmax', data=discard_argmax)
-                # 9
-                experience_outf['experience'].create_dataset('raw_predictions', data=raw_predictions)
-                # 10
-                experience_outf['experience'].create_dataset('epsilon', data=epsilon)
+                experience_outf['experience'].create_dataset('actions', data=discard_argmax)
+                # # 9
+                # experience_outf['experience'].create_dataset('raw_predictions', data=raw_predictions)
+                # # 10
+                # experience_outf['experience'].create_dataset('epsilon', data=epsilon)
             for c_key in self.win_times.keys():
                 print(f'Player {c_key} won {self.win_times[c_key]} times...')
             print(f'HU {sum(self.win_times.values())} times data generated...')
@@ -184,8 +184,7 @@ class ExperienceBuffer:
 
     def read_experience(self, file_name):
         h5file = h5py.File(file_name, 'r')
-        headers = ['game_no', 'x', 'y', 'discard', 'is_rl_agents', 'is_trigger_by_rl', 'p_action', 'discard_argmax',
-                   'raw_predictions', 'epsilon']
+        headers = ['game_no', 'is_rl_agents', 'states', 'rewards', 'actions', 'p_action']
         buffer_dict = {header: np.array(h5file['experience'][header]) for header in headers}
         return buffer_dict
 
