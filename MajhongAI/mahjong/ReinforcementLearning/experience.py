@@ -12,6 +12,7 @@ import h5py
 import datetime
 
 from mahjong.Serialization import helper
+from mahjong.ReinforcementLearning.calculation_rl import cal_probability_of_action
 
 __all__ = [
     'ExperienceCollector',
@@ -101,20 +102,6 @@ class ExperienceBuffer:
         self.play_times = play_times
         self.game_no = 0
 
-    # TODO: if ok should be moved to calculation_rl.py
-    def cal_probability_of_action(self, is_trigger_by_rl, epsilon, discard_argmax, raw_predictions):
-        p_action = 0
-        try:
-            p_action = (1 - epsilon) * raw_predictions.T[discard_argmax][0]
-        except Exception:
-            print('Error here, type 1: experience/cal_probability_of_action')
-        if not is_trigger_by_rl:
-            try:
-                p_action += epsilon / 27
-            except Exception:
-                print('Error here, type 4: experience/cal_probability_of_action')
-        return p_action
-
     def massage_experience(self, collectors, normed=True):
         self.game_no += 1
         for c_key in collectors.keys():
@@ -135,7 +122,7 @@ class ExperienceBuffer:
                 # ### probability from model (rule & AI)
                 epsilon = collectors[c_key].feature_tracers[i].epsilons[c_key]
                 if is_rl_agent:
-                    p = self.cal_probability_of_action(self.is_trigger_by_rl[-1], epsilon, self.discard_argmax[-1], tmp)
+                    p = cal_probability_of_action(self.is_trigger_by_rl[-1], epsilon, self.discard_argmax[-1], tmp)
                     self.action_probabilities.append(p)
                     self.epsilons.append(epsilon if epsilon is not None else -0.5)
                 else:
