@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 # @FileName : experience.py
 # @Project  : MAHJONG AI
 # @Author   : Koning LIU
@@ -20,7 +20,7 @@ __all__ = [
 
 
 class ExperienceCollector:
-    def __init__(self, player_id):
+    def __init__(self, player_id, is_rl=False):
         self.action_nums = []
         self.player_ids = []
         self.raw_states = []
@@ -43,6 +43,7 @@ class ExperienceCollector:
         self.norm_hu_rewards = 0
         self.norm_rewards = []
         self.last_hu_record_index = 0
+        self.is_rl_agent = int(is_rl)
 
     # def record_feature_reward(self, q_dict):
 
@@ -81,21 +82,61 @@ class ExperienceBuffer:
         keys = ['player_ids', 'lack_color', 'action_nums', 'raw_states', 'states', 'discards',
                 'open_melds', 'steals', 'actions', 'rewards', 'scores']
         self.buffer = {key: [] for key in keys}
+        self.game_no_list = []
         self.x = []
         self.y = []
         self.discard = []
+        self.is_rl_agent = []
+        self.is_trigger_by_rl = []
+        self.action_probabilities = []
+        self.discard_argmax = []
+        self.raw_predictions = []
+        self.epsilons = []
         self.win_times = {0: 0, 1: 0, 2: 0, 3: 0}
         self.hu_score = {0: 0, 1: 0, 2: 0, 3: 0}
         self.hu_reward = {0: 0, 1: 0, 2: 0, 3: 0}
         self.play_times = play_times
         self.game_no = 0
 
+    # TODO: if ok should be moved to calculation_rl.py
+    def cal_probability_of_action(self, is_trigger_by_rl, epsilon, discard_argmax, raw_predictions):
+        p_action = 0
+        try:
+            p_action = (1 - epsilon) * raw_predictions.T[discard_argmax][0]
+        except Exception:
+            print('Error here, type 1: experience/cal_probability_of_action')
+        if not is_trigger_by_rl:
+            try:
+                p_action += epsilon / 27
+            except Exception:
+                print('Error here, type 4: experience/cal_probability_of_action')
+        return p_action
+
     def massage_experience(self, collectors, normed=True):
         self.game_no += 1
         for c_key in collectors.keys():
             for i in range(len(collectors[c_key].feature_tracers)):
+                self.game_no_list.append(self.game_no)
                 self.x.append(collectors[c_key].feature_tracers[i].get_features(c_key).cpu())
                 self.discard.append(helper(1, [collectors[c_key].discard_cards[i]]))
+                is_rl_agent = collectors[c_key].is_rl_agent
+                self.is_rl_agent.append(is_rl_agent)
+                self.discard_argmax.append(np.argmax(self.discard[-1]))
+                # ### Discard model predictions ###
+                tmp = collectors[c_key].feature_tracers[i].current_prediction[c_key]
+                self.is_trigger_by_rl.append(1 if tmp is not None else 0)
+                self.raw_predictions.append(tmp if tmp is not None else torch.Tensor(np.zeros((1,34))))
+                # ### probability from model (rule & AI)
+                epsilon = collectors[c_key].feature_tracers[i].epsilons[c_key]
+                if is_rl_agent:
+                    p = self.cal_probability_of_action(self.is_trigger_by_rl[-1], epsilon, self.discard_argmax[-1], tmp)
+                    self.action_probabilities.append(p)
+                    self.epsilons.append(epsilon if epsilon is not None else -0.5)
+                else:
+                    # print(f'Checking cases~ type 3')
+                    self.action_probabilities.append(-1)
+                    self.epsilons.append(-1)
+
             if normed:
                 self.y.extend(collectors[c_key].norm_rewards)
             else:
@@ -107,15 +148,39 @@ class ExperienceBuffer:
 
     def save_experience(self, folder_path):
         if len(self.x) != 0:
+            game_no = np.array(self.game_no_list)
             x = torch.cat(self.x, dim=0)
             y = np.array(self.y)
             discard = np.stack(self.discard)
+            is_rl_agent = np.array(self.is_rl_agent)
+            is_trigger_by_rl = np.array(self.is_trigger_by_rl)
+            p_action = np.array(self.action_probabilities)
+            discard_argmax = np.array(self.discard_argmax)
+            raw_predictions = torch.cat(self.raw_predictions, dim=0)
+            epsilon = np.array(self.epsilons)
             date_string = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             with h5py.File(folder_path + "experiment_" + date_string + r'.h5', 'w') as experience_outf:
                 experience_outf.create_group('experience')
+                # 1
+                experience_outf['experience'].create_dataset('game_no', data=game_no)
+                # 2
                 experience_outf['experience'].create_dataset('x', data=x)
+                # 3
                 experience_outf['experience'].create_dataset('y', data=y)
+                # 4
                 experience_outf['experience'].create_dataset('discard', data=discard)
+                # 5
+                experience_outf['experience'].create_dataset('is_rl_agents', data=is_rl_agent)
+                # 6
+                experience_outf['experience'].create_dataset('is_trigger_by_rl', data=is_trigger_by_rl)
+                # 7
+                experience_outf['experience'].create_dataset('p_action', data=p_action)
+                # 8
+                experience_outf['experience'].create_dataset('discard_argmax', data=discard_argmax)
+                # 9
+                experience_outf['experience'].create_dataset('raw_predictions', data=raw_predictions)
+                # 10
+                experience_outf['experience'].create_dataset('epsilon', data=epsilon)
             for c_key in self.win_times.keys():
                 print(f'Player {c_key} won {self.win_times[c_key]} times...')
             print(f'HU {sum(self.win_times.values())} times data generated...')
@@ -124,31 +189,32 @@ class ExperienceBuffer:
 
     def read_experience(self, file_name):
         h5file = h5py.File(file_name, 'r')
-        self.x = np.array(h5file['experience']['x'])
-        self.y = np.array(h5file['experience']['y'])
-        self.discard = np.array(h5file['experience']['discard'])
-        return self.x, self.y, self.discard
+        headers = ['game_no', 'x', 'y', 'discard', 'is_rl_agents', 'is_trigger_by_rl', 'p_action', 'discard_argmax',
+                   'raw_predictions', 'epsilon']
+        buffer_dict = {header: np.array(h5file['experience'][header]) for header in headers}
+        return buffer_dict
 
-    def combine_experience(self, collectors):
-        # self.feature_buffer = []
-        for c_key in collectors.keys():
-            if collectors[c_key].win:
-                self.buffer['action_nums'].extend(collectors[c_key].action_nums)
-                self.buffer['raw_states'].extend(collectors[c_key].raw_states)
-                self.buffer['states'].extend(collectors[c_key].states)
-                self.buffer['discards'].extend(collectors[c_key].discards)
-                self.buffer['open_melds'].extend(collectors[c_key].open_melds)
-                self.buffer['steals'].extend(collectors[c_key].steals)
-                self.buffer['actions'].extend(collectors[c_key].actions)
-                self.buffer['rewards'].extend(collectors[c_key].rewards)
-                self.buffer['scores'].extend(collectors[c_key].scores)
-                self.buffer['lack_color'].extend(collectors[c_key].lack_colors)
-                self.buffer['player_ids'].extend([c_key] * len(collectors[c_key].action_nums))
-
-    def store_experience(self, folder_path, csv_file_name):
-        dataframe = pd.DataFrame(self.buffer)
-        dataframe.to_csv(folder_path + '/' + csv_file_name + '.csv', index=False, sep='|')
-
-    def load_experience(self, folder_path, csv_file_name):
-        self.buffer = pd.read_csv(folder_path + '/' + csv_file_name + '.csv', sep='|')
-        return self.buffer
+    # # ## deprecation
+    # def combine_experience(self, collectors):
+    #     # self.feature_buffer = []
+    #     for c_key in collectors.keys():
+    #         if collectors[c_key].win:
+    #             self.buffer['action_nums'].extend(collectors[c_key].action_nums)
+    #             self.buffer['raw_states'].extend(collectors[c_key].raw_states)
+    #             self.buffer['states'].extend(collectors[c_key].states)
+    #             self.buffer['discards'].extend(collectors[c_key].discards)
+    #             self.buffer['open_melds'].extend(collectors[c_key].open_melds)
+    #             self.buffer['steals'].extend(collectors[c_key].steals)
+    #             self.buffer['actions'].extend(collectors[c_key].actions)
+    #             self.buffer['rewards'].extend(collectors[c_key].rewards)
+    #             self.buffer['scores'].extend(collectors[c_key].scores)
+    #             self.buffer['lack_color'].extend(collectors[c_key].lack_colors)
+    #             self.buffer['player_ids'].extend([c_key] * len(collectors[c_key].action_nums))
+    #
+    # def store_experience(self, folder_path, csv_file_name):
+    #     dataframe = pd.DataFrame(self.buffer)
+    #     dataframe.to_csv(folder_path + '/' + csv_file_name + '.csv', index=False, sep='|')
+    #
+    # def load_experience(self, folder_path, csv_file_name):
+    #     self.buffer = pd.read_csv(folder_path + '/' + csv_file_name + '.csv', sep='|')
+    #     return self.buffer

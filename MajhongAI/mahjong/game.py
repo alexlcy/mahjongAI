@@ -20,8 +20,9 @@ class Game():
         self.round = None
         self.player_id = 0
 
-    def init_game(self, config: dict):
+    def init_game(self, config: dict, is_rl_agents):
         self.config = config
+        self.is_rl_agents = is_rl_agents
         self.rand_seed = config['seed']
         self.player_num = config['player_num']
         self.uuid = time.strftime('%Y%m%d%H%M%S') + str(random.randint(1000,9999))
@@ -32,7 +33,7 @@ class Game():
         self.dealer = Dealer(self.rand_seed)
         for player in players:
             self.dealer.deal_cards(player, 13)
-        self.round = Round(self.dealer, players, self.config)
+        self.round = Round(self.dealer, players, self.config, self.is_rl_agents)
         self.player_id = self.dealer.get_banker()
         self.round.start()
         snapshot = self.round.get_snapshot()
