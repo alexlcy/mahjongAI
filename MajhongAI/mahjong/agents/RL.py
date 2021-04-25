@@ -90,9 +90,11 @@ class ReinforceLearningAgent:
         if not legal_actions or len(legal_actions) == 0:
             return
 
-        if len(legal_actions) == 1:
-            player['choice'] = legal_actions[0]
-            return
+        # This optimization may cause bug in new experience buffer
+        # So we comment this and let it do the following procedure
+        # if len(legal_actions) == 1:
+        #     player['choice'] = legal_actions[0]
+        #     return
 
         # Step 1: 选缺 process (Only trigger once in a round)
         colors = [0] * 3
@@ -189,6 +191,11 @@ class ReinforceLearningAgent:
 
             # Save current prediction
             feature_tracer.set_current_prediction(self.__player_id, raw_prediction)
+            # Save the status that is_trigger_by_rl
+            feature_tracer.set_is_trigger_by_rl(self.__player_id, is_trigger_by_rl)
+            # TODO: Checking, can delete later
+            if is_trigger_by_rl is None:
+                print(f'Check unexpected error: player_id:{self.__player_id}, is_trigger_by_rl is {is_trigger_by_rl}')
 
             # Call discard function to discard a tile
             if discard_tile is not None:

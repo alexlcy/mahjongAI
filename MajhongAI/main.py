@@ -34,15 +34,6 @@ start = time.time()
 play_times = 10
 buffer = ExperienceBuffer(play_times)
 random.seed(0)
-# seed = time.time()
-# seed = None
-# config = {
-#     'show_log': True,
-#     'player_num': 4,
-#     'seed': None  # to None for random run, if seed == None, will not save record
-# }
-# env = Env(config)
-# env.set_agents([ReinforceLearningAgent(0), RuleAgent(1), RuleAgent(2), RuleAgent(3)])
 
 config = {
     'show_log': False,
@@ -56,6 +47,15 @@ hu_reward_statistics = {0: [], 1: [], 2: [], 3: []}
 for i in range(play_times):
     print(f'No.{i + 1} Game ing~')
 
+    # config = {
+    #     'show_log': False,
+    #     'player_num': 4,
+    #     'seed': i  # to None for random run, if seed == None, will not save record
+    # }
+    # env = Env(config)
+    # env.set_agents(
+    #     [ReinforceLearningAgent(0), ReinforceLearningAgent(1), ReinforceLearningAgent(2), ReinforceLearningAgent(3)])
+    # print(f'seed is {i}')
     """
     reset & run
     """

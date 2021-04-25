@@ -62,6 +62,9 @@ class ExperienceCollector:
                 self.win_times += 1
 
         elif action[0] == 'PLAY':
+            # TODO: Checking is_trigger_by_rl, can delete later, if no bug
+            if self.is_rl_agent and feature_tracer.is_trigger_by_rl[self.player_id] is None:
+                print(f'player_id: {self.player_id}, is_trigger_by_rl: {feature_tracer.is_trigger_by_rl}, checking !!!')
             self.action_nums.append(deepcopy(action_num))
             self.states.append(deepcopy(raw_state))
             self.raw_states.append(deepcopy(state))
@@ -124,8 +127,11 @@ class ExperienceBuffer:
                 self.discard_argmax.append(np.argmax(self.discard[-1]))
                 # ### Discard model predictions ###
                 tmp = collectors[c_key].feature_tracers[i].current_prediction[c_key]
-                self.is_trigger_by_rl.append(1 if tmp is not None else 0)
-                self.raw_predictions.append(tmp if tmp is not None else torch.Tensor(np.zeros((1,34))))
+                is_trigger_by_rl = collectors[c_key].feature_tracers[i].is_trigger_by_rl[c_key]
+                if is_rl_agent and is_trigger_by_rl is None:
+                    print(f'Checking None: ?? in experience')
+                self.is_trigger_by_rl.append(is_trigger_by_rl if is_trigger_by_rl is not None else -1)
+                self.raw_predictions.append(tmp if tmp is not None else torch.Tensor(np.zeros((1, 34))))
                 # ### probability from model (rule & AI)
                 epsilon = collectors[c_key].feature_tracers[i].epsilons[c_key]
                 if is_rl_agent:
@@ -172,6 +178,8 @@ class ExperienceBuffer:
                 # 5
                 experience_outf['experience'].create_dataset('is_rl_agents', data=is_rl_agent)
                 # 6
+                from collections import Counter
+                print(f'is_trigger_by_rl: {Counter(is_trigger_by_rl)}')
                 experience_outf['experience'].create_dataset('is_trigger_by_rl', data=is_trigger_by_rl)
                 # 7
                 experience_outf['experience'].create_dataset('p_action', data=p_action)

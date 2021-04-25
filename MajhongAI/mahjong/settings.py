@@ -26,12 +26,16 @@ class FeatureTracer:
         # self.epsilons = {i: None for i in range(4)}
         self.current_prediction = {i: None for i in range(4)}
         self.epsilons = {i: None for i in range(4)}
+        self.is_trigger_by_rl = {i: None for i in range(4)}
 
     def set_current_prediction(self, player, prediction):
         self.current_prediction[player] = prediction
 
     def set_explore_probability(self, player, explore_probability):
         self.epsilons[player] = explore_probability
+
+    def set_is_trigger_by_rl(self, player, is_trigger_by_rl):
+        self.is_trigger_by_rl[player] = is_trigger_by_rl
 
     def update(self, line):
         line = str(line)
