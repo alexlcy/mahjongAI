@@ -38,7 +38,8 @@ loss_fn = nn.CrossEntropyLoss(reduction='none')
 optim = torch.optim.Adam(model.parameters(), lr=lr)
 
 for exp_i, exp in enumerate(exp_paths):
-    _, states, rewards, actions, whether_RL, prob_from_action_model, index_of_action = exp_buffer.read_experience(exp)
+    game_no, states, rewards, actions, whether_RL, is_trigger_by_rl, prob_from_action_model, index_of_action =\
+        exp_buffer.read_experience(exp)
     # Get Rl agent data
     states_, rewards_, actions_, prob_from_action_model_, index_of_action_ = [],[],[],[],[]
     for idx,val in enumerate(whether_RL):
