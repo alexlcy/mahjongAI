@@ -64,6 +64,9 @@ class ExperienceCollector:
                 self.win_times += 1
 
         elif action[0] == 'PLAY':
+            # TODO: Checking is_trigger_by_rl, can delete later, if no bug
+            if self.is_rl_agent and feature_tracer.is_trigger_by_rl[self.player_id] is None:
+                print(f'player_id: {self.player_id}, is_trigger_by_rl: {feature_tracer.is_trigger_by_rl}, checking !!!')
             self.action_nums.append(deepcopy(action_num))
             self.states.append(deepcopy(raw_state))
             self.raw_states.append(deepcopy(state))
@@ -126,7 +129,10 @@ class ExperienceBuffer:
                 self.discard_argmax.append(np.argmax(self.discard[-1]))
                 # ### Discard model predictions ###
                 tmp = collectors[c_key].feature_tracers[i].current_prediction[c_key]
-                self.is_trigger_by_rl.append(int(collectors[c_key].feature_tracers[i].is_trigger_by_rl[c_key]) if is_rl_agent else -1)
+                is_trigger_by_rl = collectors[c_key].feature_tracers[i].is_trigger_by_rl[c_key]
+                if is_rl_agent and is_trigger_by_rl is None:
+                    print(f'Checking None: ?? in experience')
+                self.is_trigger_by_rl.append(int(is_trigger_by_rl) if is_rl_agent else -1)
                 self.raw_predictions.append(tmp if tmp is not None else torch.Tensor(np.zeros((1, 34))))
                 # ### probability from model (rule & AI)
                 epsilon = collectors[c_key].feature_tracers[i].epsilons[c_key]
@@ -153,13 +159,13 @@ class ExperienceBuffer:
             game_no = np.array(self.game_no_list)
             x = torch.cat(self.x, dim=0)
             y = np.array(self.y)
-            discard = np.stack(self.discard)
+            # discard = np.stack(self.discard)
             is_rl_agent = np.array(self.is_rl_agent)
             print(f'is_trigger_by_rl: {Counter(self.is_trigger_by_rl)}')
-            is_trigger_by_rl = np.array(self.is_trigger_by_rl)
+            # is_trigger_by_rl = np.array(self.is_trigger_by_rl)
             p_action = np.array(self.action_probabilities)
             discard_argmax = np.array(self.discard_argmax)
-            raw_predictions = torch.cat(self.raw_predictions, dim=0)
+            # raw_predictions = torch.cat(self.raw_predictions, dim=0)
             # epsilon = np.array(self.epsilons)
             date_string = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             with h5py.File(folder_path + "experiment_" + date_string + r'.h5', 'w') as experience_outf:
