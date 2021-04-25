@@ -50,7 +50,7 @@ config = {
     'seed': None  # to None for random run, if seed == None, will not save record
 }
 env = Env(config)
-env.set_agents([ReinforceLearningAgent(0), ReinforceLearningAgent(1), ReinforceLearningAgent(2), ReinforceLearningAgent(3)])
+env.set_agents([RuleAgent(0), ReinforceLearningAgent(1), ReinforceLearningAgent(2), ReinforceLearningAgent(3)])
 
 hu_reward_statistics = {0: [], 1: [], 2: [], 3: []}
 for i in range(play_times):

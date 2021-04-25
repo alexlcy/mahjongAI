@@ -189,6 +189,8 @@ class ReinforceLearningAgent:
 
             # Save current prediction
             feature_tracer.set_current_prediction(self.__player_id, raw_prediction)
+            # Save
+            feature_tracer.set_is_trigger_by_rl(self.__player_id, is_trigger_by_rl)
 
             # Call discard function to discard a tile
             if discard_tile is not None:

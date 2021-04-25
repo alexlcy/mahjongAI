@@ -10,6 +10,7 @@ import torch
 import numpy as np
 import h5py
 import datetime
+from collections import Counter
 
 from mahjong.Serialization import helper
 from mahjong.ReinforcementLearning.calculation_rl import cal_probability_of_action
@@ -125,8 +126,8 @@ class ExperienceBuffer:
                 self.discard_argmax.append(np.argmax(self.discard[-1]))
                 # ### Discard model predictions ###
                 tmp = collectors[c_key].feature_tracers[i].current_prediction[c_key]
-                self.is_trigger_by_rl.append(1 if tmp is not None else 0)
-                self.raw_predictions.append(tmp if tmp is not None else torch.Tensor(np.zeros((1,34))))
+                self.is_trigger_by_rl.append(int(collectors[c_key].feature_tracers[i].is_trigger_by_rl[c_key]) if is_rl_agent else -1)
+                self.raw_predictions.append(tmp if tmp is not None else torch.Tensor(np.zeros((1, 34))))
                 # ### probability from model (rule & AI)
                 epsilon = collectors[c_key].feature_tracers[i].epsilons[c_key]
                 if is_rl_agent:
@@ -154,6 +155,7 @@ class ExperienceBuffer:
             y = np.array(self.y)
             discard = np.stack(self.discard)
             is_rl_agent = np.array(self.is_rl_agent)
+            print(f'is_trigger_by_rl: {Counter(self.is_trigger_by_rl)}')
             is_trigger_by_rl = np.array(self.is_trigger_by_rl)
             p_action = np.array(self.action_probabilities)
             discard_argmax = np.array(self.discard_argmax)
