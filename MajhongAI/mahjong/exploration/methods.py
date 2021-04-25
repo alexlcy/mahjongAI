@@ -60,11 +60,12 @@ class ExplorationMethods:
 
     def epsilon_3(self, feature, player, feature_tracer, **kwargs):  # advanced probability with decay
         explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
-        # TODO: can delete later, for Koning to see more attempts for model
+        # minimize the epsilon, (Koning) just for more attempt with the sl model
         explore_probability = explore_probability / 10
         feature_tracer.set_explore_probability(player['player_id'], explore_probability)
         self.decay_step += 1
         ai_discard_tile, raw_prediction = self.decide_discard_by_AI(feature, player)
+        # TODO: if no unexpected error, can delete below print
         if raw_prediction is None:
             print('Error here~ type2: methods/epsilon_3')
         if explore_probability > np.random.rand():
