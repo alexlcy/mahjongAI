@@ -12,6 +12,7 @@ import h5py
 import datetime
 
 from mahjong.Serialization import helper
+from mahjong.ReinforcementLearning.calculation_rl import cal_probability_of_action
 
 __all__ = [
     'ExperienceCollector',
@@ -91,7 +92,7 @@ class ExperienceBuffer:
         self.action_probabilities = []
         self.discard_argmax = []
         self.raw_predictions = []
-        self.epsilons = []
+        # self.epsilons = []
         self.win_times = {0: 0, 1: 0, 2: 0, 3: 0}
         self.hu_score = {0: 0, 1: 0, 2: 0, 3: 0}
         self.hu_reward = {0: 0, 1: 0, 2: 0, 3: 0}
@@ -99,18 +100,18 @@ class ExperienceBuffer:
         self.game_no = 0
 
     # TODO: if ok should be moved to calculation_rl.py
-    def cal_probability_of_action(self, is_trigger_by_rl, epsilon, discard_argmax, raw_predictions):
-        p_action = 0
-        try:
-            p_action = (1 - epsilon) * raw_predictions.T[discard_argmax][0]
-        except Exception:
-            print('Error here, type 1: experience/cal_probability_of_action')
-        if not is_trigger_by_rl:
-            try:
-                p_action += epsilon / 27
-            except Exception:
-                print('Error here, type 4: experience/cal_probability_of_action')
-        return p_action
+    # def cal_probability_of_action(self, is_trigger_by_rl, epsilon, discard_argmax, raw_predictions):
+    #     p_action = 0
+    #     try:
+    #         p_action = (1 - epsilon) * raw_predictions.T[discard_argmax][0]
+    #     except Exception:
+    #         print('Error here, type 1: experience/cal_probability_of_action')
+    #     if not is_trigger_by_rl:
+    #         try:
+    #             p_action += epsilon / 27
+    #         except Exception:
+    #             print('Error here, type 4: experience/cal_probability_of_action')
+    #     return p_action
 
     def massage_experience(self, collectors, normed=True):
         self.game_no += 1
@@ -129,13 +130,13 @@ class ExperienceBuffer:
                 # ### probability from model (rule & AI)
                 epsilon = collectors[c_key].feature_tracers[i].epsilons[c_key]
                 if is_rl_agent:
-                    p = self.cal_probability_of_action(self.is_trigger_by_rl[-1], epsilon, self.discard_argmax[-1], tmp)
+                    p = cal_probability_of_action(self.is_trigger_by_rl[-1], epsilon, self.discard_argmax[-1], tmp)
                     self.action_probabilities.append(p)
-                    self.epsilons.append(epsilon if epsilon is not None else -0.5)
+                    # self.epsilons.append(epsilon if epsilon is not None else -0.5)
                 else:
                     # print(f'Checking cases~ type 3')
-                    self.action_probabilities.append(-1)
-                    self.epsilons.append(-1)
+                    self.action_probabilities.append(1)
+                    # self.epsilons.append(-1)
 
             if normed:
                 self.y.extend(collectors[c_key].norm_rewards)
@@ -157,30 +158,30 @@ class ExperienceBuffer:
             p_action = np.array(self.action_probabilities)
             discard_argmax = np.array(self.discard_argmax)
             raw_predictions = torch.cat(self.raw_predictions, dim=0)
-            epsilon = np.array(self.epsilons)
+            # epsilon = np.array(self.epsilons)
             date_string = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             with h5py.File(folder_path + "experiment_" + date_string + r'.h5', 'w') as experience_outf:
                 experience_outf.create_group('experience')
                 # 1
                 experience_outf['experience'].create_dataset('game_no', data=game_no)
                 # 2
-                experience_outf['experience'].create_dataset('x', data=x)
+                experience_outf['experience'].create_dataset('states', data=x)
                 # 3
-                experience_outf['experience'].create_dataset('y', data=y)
+                experience_outf['experience'].create_dataset('rewards', data=y)
                 # 4
-                experience_outf['experience'].create_dataset('discard', data=discard)
+                experience_outf['experience'].create_dataset('actions', data=discard_argmax)
                 # 5
                 experience_outf['experience'].create_dataset('is_rl_agents', data=is_rl_agent)
                 # 6
-                experience_outf['experience'].create_dataset('is_trigger_by_rl', data=is_trigger_by_rl)
+                # experience_outf['experience'].create_dataset('is_trigger_by_rl', data=is_trigger_by_rl)
                 # 7
                 experience_outf['experience'].create_dataset('p_action', data=p_action)
                 # 8
-                experience_outf['experience'].create_dataset('discard_argmax', data=discard_argmax)
+                # experience_outf['experience'].create_dataset('discard_argmax', data=discard_argmax)
                 # 9
-                experience_outf['experience'].create_dataset('raw_predictions', data=raw_predictions)
+                # experience_outf['experience'].create_dataset('raw_predictions', data=raw_predictions)
                 # 10
-                experience_outf['experience'].create_dataset('epsilon', data=epsilon)
+                # experience_outf['experience'].create_dataset('epsilon', data=epsilon)
             for c_key in self.win_times.keys():
                 print(f'Player {c_key} won {self.win_times[c_key]} times...')
             print(f'HU {sum(self.win_times.values())} times data generated...')
@@ -189,8 +190,7 @@ class ExperienceBuffer:
 
     def read_experience(self, file_name):
         h5file = h5py.File(file_name, 'r')
-        headers = ['game_no', 'x', 'y', 'discard', 'is_rl_agents', 'is_trigger_by_rl', 'p_action', 'discard_argmax',
-                   'raw_predictions', 'epsilon']
+        headers = ['game_no', 'is_rl_agents', 'states', 'rewards', 'actions', 'p_action']
         buffer_dict = {header: np.array(h5file['experience'][header]) for header in headers}
         return buffer_dict
 

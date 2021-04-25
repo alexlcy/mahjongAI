@@ -90,9 +90,9 @@ class ReinforceLearningAgent:
         if not legal_actions or len(legal_actions) == 0:
             return
 
-        if len(legal_actions) == 1:
-            player['choice'] = legal_actions[0]
-            return
+        # if len(legal_actions) == 1:
+        #     player['choice'] = legal_actions[0]
+        #     return
 
         # Step 1: 选缺 process (Only trigger once in a round)
         colors = [0] * 3
