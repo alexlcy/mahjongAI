@@ -114,7 +114,7 @@ class NoisyFactorizedLinear(nn.Linear):
         func = lambda x: torch.sign(x) * torch.sqrt(torch.abs(x))
 
         with torch.no_grad():
-            self.epsilon_input = torch.randn(self.epsilon_input.size())
+            torch.randn(self.epsilon_input.size(), out=self.epsilon_input)
             torch.randn(self.epsilon_output.size(), out=self.epsilon_output)  # TODO: whether same?
             eps_in = func(self.epsilon_input)
             eps_out = func(self.epsilon_output)
