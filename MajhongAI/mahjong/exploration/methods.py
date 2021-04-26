@@ -175,7 +175,7 @@ class ExplorationMethods:
                 find = True
             else:
                 if ai_discard_tile in player['hands'] and find:
-                    return ai_discard_tile, raw_prediction
+                    return ai_discard_tile
 
     # Choose the card in hands based on the probability distribution
     def decide_card_by_softmax(self, feature, player):
