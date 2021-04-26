@@ -118,10 +118,10 @@ class NoisyFactorizedLinear(nn.Linear):
             torch.randn(self.epsilon_output.size(), out=self.epsilon_output)
             eps_in = func(self.epsilon_input)
             eps_out = func(self.epsilon_output)  # eps_b
-            noise = torch.mul(eps_in, eps_out).detach()  # eps_w
+            noise = torch.mul(eps_in, eps_out)  # eps_w
         if bias is not None:
             bias = bias + self.sigma_b * eps_out.t()  # bias = mu_b + sigma_b * eps_b
-        return F.linear(input, self.weight + self.sigma_weight * noise, bias)  # weight: mu_w
+        return F.linear(input, self.weight + self.sigma_w * noise, bias)  # weight: mu_w
 
 
 class DQN:
@@ -151,7 +151,7 @@ class DQN:
         return self.replay_buffer
 
     def create_model(self):
-        return MJResNet50()
+        return MJResNet50().to(device)
 
     def get_estimated_Q(self, state):
         return self.model.predict(np.array(state))
@@ -210,6 +210,8 @@ EPISODE = 100
 DQN_agent = DQN()
 FILE = 'experiment_2021_04_21_12_13_25.h5'
 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print("Using {} device".format(device))
 
 for episode in tqdm(range(1, EPISODE+1)):
     new_buffer = DQN_agent.preprocess(ExperienceBuffer(10).read_experience(FILE))
