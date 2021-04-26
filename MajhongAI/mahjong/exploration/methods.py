@@ -108,7 +108,6 @@ class ExplorationMethods:
             print('Error here~ type2: methods/by_softmax')
         return self.decide_card_by_softmax(feature, player), False, raw_prediction
 
-
     def gaussian(self, feature, player, action_space, **kwargs):
         self.t += 1
         sigma = (
@@ -180,8 +179,15 @@ class ExplorationMethods:
     # Choose the card in hands based on the probability distribution
     def decide_card_by_softmax(self, feature, player):
         softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
+        # TODO: ValueError: probabilities do not sum to 1
+        # temp_weight_list = np.random.choice(ai_discard_tile_list, size=27, replace=False, p=softmax_prediction[0].tolist()[:27])
+        # for index, ai_discard_tile in enumerate(temp_weight_list):
+        #     if ai_discard_tile in player['hands']:
+        #         return ai_discard_tile
+        temp_weight_list = copy.deepcopy(softmax_prediction[0].tolist())
+        temp_weight_list = temp_weight_list[:27]
         while True:
-            target_card = random.choices(ai_discard_tile_list, weights=softmax_prediction)
+            target_card = random.choices(ai_discard_tile_list, weights=temp_weight_list)[0]
             if target_card in player['hands']:
                 return target_card
 
@@ -189,14 +195,14 @@ class ExplorationMethods:
         softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
 
         # Set the original target card's possibility is 0 in order to not choose it anymore in exploration
-        temp_weight_list = copy.deepcopy(softmax_prediction)
+        temp_weight_list = copy.deepcopy(softmax_prediction[0].tolist())
+        temp_weight_list = temp_weight_list[:27]
         for index, ai_discard_tile in enumerate(ai_discard_tile_list):
             if ai_discard_tile in player['hands']:
                 temp_weight_list[index] = 0
                 break
-
         while True:
-            target_card = random.choices(ai_discard_tile_list, weights=softmax_prediction)
+            target_card = random.choices(ai_discard_tile_list, weights=temp_weight_list)[0]
             if target_card in player['hands']:
                 return target_card
 
