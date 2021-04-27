@@ -131,6 +131,7 @@ class ExperienceBuffer:
                 tmp = collectors[c_key].feature_tracers[i].current_prediction[c_key]
                 is_trigger_by_rl = collectors[c_key].feature_tracers[i].is_trigger_by_rl[c_key]
                 if is_rl_agent and is_trigger_by_rl is None:
+                    is_trigger_by_rl = -2
                     print(f'Checking None: ?? in experience')
                 self.is_trigger_by_rl.append(int(is_trigger_by_rl) if is_rl_agent else -1)
                 self.raw_predictions.append(tmp if tmp is not None else torch.Tensor(np.zeros((1, 34))))
