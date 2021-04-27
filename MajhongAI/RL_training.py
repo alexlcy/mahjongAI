@@ -23,7 +23,7 @@ def get_discounted_reward(r):
 
 def preprocess_data(s, a, r, p):
     s = torch.tensor(s, dtype=torch.float32, device=device)
-    a = torch.tensor(a, dtype=torch.float32, device=device)
+    a = torch.tensor(a).long().to(device)
     # a = torch.tensor(a).squeeze(1).argmax(-1).long().to(device)
     r = torch.tensor(r, dtype=torch.float32, device=device)
     discounted_r = get_discounted_reward(r)
@@ -38,7 +38,10 @@ loss_fn = nn.CrossEntropyLoss(reduction='none')
 optim = torch.optim.Adam(model.parameters(), lr=lr)
 
 for exp_i, exp in enumerate(exp_paths):
-    game_no, whether_RL, states, rewards, index_of_action, prob_from_action_model = exp_buffer.read_experience(exp)
+    buffer_dict = exp_buffer.read_experience(exp)
+    game_no, whether_RL, states, rewards, index_of_action, prob_from_action_model = \
+        buffer_dict['game_no'], buffer_dict['is_rl_agents'], buffer_dict['states'], buffer_dict['rewards'],\
+        buffer_dict['actions'], buffer_dict['p_action']
     # # Get Rl agent data
     # states_, rewards_, actions_, prob_from_action_model_, index_of_action_ = [],[],[],[],[]
     # for idx,val in enumerate(whether_RL):
@@ -57,13 +60,12 @@ for exp_i, exp in enumerate(exp_paths):
                                              prob_from_action_model[i*batch_size:(i+1)*batch_size],\
                                              index_of_action[i*batch_size:(i+1)*batch_size]
 
+        batch_s, batch_a, batch_r, batch_p = preprocess_data(batch_s, batch_a, batch_r, batch_p)
         action_logits = model(batch_s)
         softmax = torch.nn.Softmax(dim=1)
         softmax_prediction = softmax(action_logits)
-        prob_from_training_model = torch.tensor([softmax_prediction[j][v] for j,v in enumerate(batch_a)],
+        prob_from_training_model = torch.tensor([softmax_prediction[j][int(v.item())] for j,v in enumerate(batch_a)],
                                                 dtype=torch.float32, device=device)
-
-        batch_s, batch_a, batch_r, batch_p = preprocess_data(batch_s, batch_a, batch_r, batch_p)
 
         optim.zero_grad()
         loss = (prob_from_training_model / batch_p) * batch_r * loss_fn(action_logits, batch_a)
