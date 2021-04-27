@@ -41,6 +41,18 @@ class ExplorationMethods:
         total_dict = {**w_dict, **b_dict, **t_dict, **f_dict, **j_dict}
         self.total_dict_revert = {index: value for value, index in total_dict.items()}
 
+    def epsilon_random(self, feature, player, **kwargs):  # fixed probability for choosing a random action
+        if random.random() <= self.epsilon_min:
+            return self.decide_discard_by_random(player)
+        else:
+            return self.decide_discard_by_AI(feature, player)
+
+    def epsilon_rule(self, feature, player, **kwargs):  # fixed probability for choosing a random action
+        if random.random() <= self.epsilon_min:
+            return self.decide_discard_by_rule(player)
+        else:
+            return self.decide_discard_by_AI(feature, player)
+
     def epsilon_1(self, feature, player, **kwargs):  # fixed probability for choosing a random action
         if random.random() <= self.prob_random_action:
             # return super().decide_discard_by_rule()
