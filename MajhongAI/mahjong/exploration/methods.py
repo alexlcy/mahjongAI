@@ -179,32 +179,51 @@ class ExplorationMethods:
     # Choose the card in hands based on the probability distribution
     def decide_card_by_softmax(self, feature, player):
         softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
-        # TODO: ValueError: probabilities do not sum to 1
-        # temp_weight_list = np.random.choice(ai_discard_tile_list, size=27, replace=False, p=softmax_prediction[0].tolist()[:27])
-        # for index, ai_discard_tile in enumerate(temp_weight_list):
-        #     if ai_discard_tile in player['hands']:
-        #         return ai_discard_tile
-        temp_weight_list = copy.deepcopy(softmax_prediction[0].tolist())
-        temp_weight_list = temp_weight_list[:27]
-        while True:
-            target_card = random.choices(ai_discard_tile_list, weights=temp_weight_list)[0]
-            if target_card in player['hands']:
-                return target_card
+        raw_prediction_27 = copy.deepcopy(raw_prediction[0][:27])
+        softmax = torch.nn.Softmax(dim=0)
+        softmax_prediction_27 = np.round(softmax(raw_prediction_27).numpy(), 10)
+        softmax_prediction_27 = softmax_prediction_27 / np.sum(softmax_prediction_27)
+        sample_list = np.random.choice(ai_discard_tile_list, size=27, replace=False, p=softmax_prediction_27)
+        for ai_discard_tile in sample_list:
+            if ai_discard_tile in player['hands']:
+                return ai_discard_tile
+
+        # temp_weight_list = copy.deepcopy(softmax_prediction[0].tolist())
+        # temp_weight_list = temp_weight_list[:27]
+        # while True:
+        #     target_card = random.choices(ai_discard_tile_list, weights=temp_weight_list)[0]
+        #     if target_card in player['hands']:
+        #         return target_card
 
     def decide_discard_by_softmax_and_epsilon(self, feature, player):
+        # TODO: Whether needed
         softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
-
+        raw_prediction_27 = copy.deepcopy(raw_prediction[0][:27])
+        softmax = torch.nn.Softmax(dim=0)
+        softmax_prediction_27 = softmax(raw_prediction_27)
         # Set the original target card's possibility is 0 in order to not choose it anymore in exploration
-        temp_weight_list = copy.deepcopy(softmax_prediction[0].tolist())
-        temp_weight_list = temp_weight_list[:27]
         for index, ai_discard_tile in enumerate(ai_discard_tile_list):
             if ai_discard_tile in player['hands']:
-                temp_weight_list[index] = 0
+                softmax_prediction_27[index] = 0
                 break
-        while True:
-            target_card = random.choices(ai_discard_tile_list, weights=temp_weight_list)[0]
-            if target_card in player['hands']:
-                return target_card
+        softmax_prediction_27 = np.round(softmax_prediction_27.numpy(), 10)
+        softmax_prediction_27 = softmax_prediction_27 / np.sum(softmax_prediction_27)
+        sample_list = np.random.choice(ai_discard_tile_list, size=26, replace=False, p=softmax_prediction_27)
+        for ai_discard_tile in sample_list:
+            if ai_discard_tile in player['hands']:
+                return ai_discard_tile
+        # softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
+        # temp_weight_list = copy.deepcopy(softmax_prediction[0].tolist())
+        # temp_weight_list = temp_weight_list[:27]
+        # # Set the original target card's possibility is 0 in order to not choose it anymore in exploration
+        # for index, ai_discard_tile in enumerate(ai_discard_tile_list):
+        #     if ai_discard_tile in player['hands']:
+        #         temp_weight_list[index] = 0
+        #         break
+        # while True:
+        #     target_card = random.choices(ai_discard_tile_list, weights=temp_weight_list)[0]
+        #     if target_card in player['hands']:
+        #         return target_card
 
     def decide_discard_by_random(self, player):
         return random.choice(player['hands'])

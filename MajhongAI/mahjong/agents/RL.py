@@ -218,7 +218,7 @@ class ReinforceLearningAgent:
         # return self.exploration_method.epsilon_2(feature, player)  # total 10: 1,3,2,3
         # return self.exploration_method.epsilon_3(feature, player, feature_tracer)  # total 10: 3,3,2,2
 
-        # TODO: Try different explore methods and see whether need change by GANG Ying
+        # TODO: Try different explore methods and see whether need change
         # return self.exploration_method.epsilon_second_of_softmax(feature, player, feature_tracer)  # total 10: 3,3,2,2
         # return self.exploration_method.epsilon_by_softmax(feature, player, feature_tracer)  # total 10: 3,3,2,2
         return self.exploration_method.by_softmax(feature, player, feature_tracer)  # total 10: 3,3,2,2
