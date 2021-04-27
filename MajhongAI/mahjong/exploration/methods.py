@@ -183,7 +183,11 @@ class ExplorationMethods:
         softmax = torch.nn.Softmax(dim=0)
         softmax_prediction_27 = np.round(softmax(raw_prediction_27).numpy(), 10)
         softmax_prediction_27 = softmax_prediction_27 / np.sum(softmax_prediction_27)
-        sample_list = np.random.choice(ai_discard_tile_list, size=27, replace=False, p=softmax_prediction_27)
+        size = sum(1 for item in softmax_prediction_27 if item != 0)
+        try:
+            sample_list = np.random.choice(ai_discard_tile_list, size=size, replace=False, p=softmax_prediction_27)
+        except:
+            print('Error with:',softmax_prediction_27)
         for ai_discard_tile in sample_list:
             if ai_discard_tile in player['hands']:
                 return ai_discard_tile
@@ -208,7 +212,8 @@ class ExplorationMethods:
                 break
         softmax_prediction_27 = np.round(softmax_prediction_27.numpy(), 10)
         softmax_prediction_27 = softmax_prediction_27 / np.sum(softmax_prediction_27)
-        sample_list = np.random.choice(ai_discard_tile_list, size=26, replace=False, p=softmax_prediction_27)
+        size = sum(1 for item in softmax_prediction_27 if item != 0)
+        sample_list = np.random.choice(ai_discard_tile_list, size=size, replace=False, p=softmax_prediction_27)
         for ai_discard_tile in sample_list:
             if ai_discard_tile in player['hands']:
                 return ai_discard_tile
