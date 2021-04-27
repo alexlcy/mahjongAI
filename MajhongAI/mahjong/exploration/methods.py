@@ -8,6 +8,7 @@ import numpy as np
 import torch
 import math
 from mahjong.consts import COMMAND, CARD_DICT,CARD
+import copy
 # from mahjong.agents.RL import ReinforceLearningAgent
 # from mahjong.exploration.base import RawExplorationStrategy
 
@@ -73,6 +74,40 @@ class ExplorationMethods:
         else:
             return ai_discard_tile, True, raw_prediction
 
+    def epsilon_second_of_softmax(self, feature, player, feature_tracer, **kwargs):  # Explore by our model with second max prob
+        explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
+        feature_tracer.set_explore_probability(player['player_id'], explore_probability)
+        self.decay_step += 1
+        ai_discard_tile, raw_prediction = self.decide_discard_by_AI(feature, player)
+        # TODO: if no unexpected error, can delete below print
+        if raw_prediction is None:
+            print('Error here~ type2: methods/epsilon_second_of_softmax')
+        if explore_probability > np.random.rand():
+            return self.decide_card_with_second_possibility(feature, player), False, raw_prediction
+        else:
+            return ai_discard_tile, True, raw_prediction
+
+    def epsilon_by_softmax(self, feature, player, feature_tracer, **kwargs):  # Explore by our model with softmax
+        explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
+        feature_tracer.set_explore_probability(player['player_id'], explore_probability)
+        self.decay_step += 1
+        ai_discard_tile, raw_prediction = self.decide_discard_by_AI(feature, player)
+        # TODO: if no unexpected error, can delete below print
+        if raw_prediction is None:
+            print('Error here~ type2: methods/epsilon_by_softmax')
+        if explore_probability > np.random.rand():
+            return self.decide_discard_by_softmax_and_epsilon(feature, player), False, raw_prediction
+        else:
+            return ai_discard_tile, True, raw_prediction
+
+    def by_softmax(self, feature, player, feature_tracer, **kwargs):
+        ai_discard_tile, raw_prediction = self.decide_discard_by_AI(feature, player)
+        feature_tracer.set_explore_probability(player['player_id'], 0)
+        # TODO: if no unexpected error, can delete below print
+        if raw_prediction is None:
+            print('Error here~ type2: methods/by_softmax')
+        return self.decide_card_by_softmax(feature, player), False, raw_prediction
+
     def gaussian(self, feature, player, action_space, **kwargs):
         self.t += 1
         sigma = (
@@ -116,16 +151,85 @@ class ExplorationMethods:
         Returns:
 
         """
-        # # Discard based on rule
-        # cards = [0] * 30
-        # for card in player['hands']:
-        #     cards[card] += 1
-        #
-        # for card in range(30):
-        #     if cards[card] == 1:
-        #         return card
-        # for card in range(30):
-        #     if cards[card] == 2:
-        #         return card
+        # Discard based on rule
+        cards = [0] * 30
+        for card in player['hands']:
+            cards[card] += 1
 
+        for card in range(30):
+            if cards[card] == 1:
+                return card
+        for card in range(30):
+            if cards[card] == 2:
+                return card
+
+    # Choose the card in hands has the second max probability
+    def decide_card_with_second_possibility(self, feature, player):
+        softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
+
+        # Delete the original target card in order to not choose it anymore in exploration
+        find = False
+        for index, ai_discard_tile in enumerate(ai_discard_tile_list):
+            if ai_discard_tile in player['hands'] and not find:
+                find = True
+            else:
+                if ai_discard_tile in player['hands'] and find:
+                    return ai_discard_tile
+
+    # Choose the card in hands based on the probability distribution
+    def decide_card_by_softmax(self, feature, player):
+        softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
+        raw_prediction_27 = copy.deepcopy(raw_prediction[0][:27])
+        softmax = torch.nn.Softmax(dim=0)
+        softmax_prediction_27 = np.round(softmax(raw_prediction_27).numpy(), 10)
+        softmax_prediction_27 = softmax_prediction_27 / np.sum(softmax_prediction_27)
+        size = sum(1 for item in softmax_prediction_27 if item != 0)
+        try:
+            sample_list = np.random.choice(ai_discard_tile_list, size=size, replace=False, p=softmax_prediction_27)
+        except:
+            print('Error with:',softmax_prediction_27)
+        for ai_discard_tile in sample_list:
+            if ai_discard_tile in player['hands']:
+                return ai_discard_tile
+
+        # temp_weight_list = copy.deepcopy(softmax_prediction[0].tolist())
+        # temp_weight_list = temp_weight_list[:27]
+        # while True:
+        #     target_card = random.choices(ai_discard_tile_list, weights=temp_weight_list)[0]
+        #     if target_card in player['hands']:
+        #         return target_card
+
+    def decide_discard_by_softmax_and_epsilon(self, feature, player):
+        # TODO: Whether needed
+        softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
+        raw_prediction_27 = copy.deepcopy(raw_prediction[0][:27])
+        softmax = torch.nn.Softmax(dim=0)
+        softmax_prediction_27 = softmax(raw_prediction_27)
+        # Set the original target card's possibility is 0 in order to not choose it anymore in exploration
+        for index, ai_discard_tile in enumerate(ai_discard_tile_list):
+            if ai_discard_tile in player['hands']:
+                softmax_prediction_27[index] = 0
+                break
+        softmax_prediction_27 = np.round(softmax_prediction_27.numpy(), 10)
+        softmax_prediction_27 = softmax_prediction_27 / np.sum(softmax_prediction_27)
+        size = sum(1 for item in softmax_prediction_27 if item != 0)
+        sample_list = np.random.choice(ai_discard_tile_list, size=size, replace=False, p=softmax_prediction_27)
+        for ai_discard_tile in sample_list:
+            if ai_discard_tile in player['hands']:
+                return ai_discard_tile
+        # softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
+        # temp_weight_list = copy.deepcopy(softmax_prediction[0].tolist())
+        # temp_weight_list = temp_weight_list[:27]
+        # # Set the original target card's possibility is 0 in order to not choose it anymore in exploration
+        # for index, ai_discard_tile in enumerate(ai_discard_tile_list):
+        #     if ai_discard_tile in player['hands']:
+        #         temp_weight_list[index] = 0
+        #         break
+        # while True:
+        #     target_card = random.choices(ai_discard_tile_list, weights=temp_weight_list)[0]
+        #     if target_card in player['hands']:
+        #         return target_card
+
+    def decide_discard_by_random(self, player):
         return random.choice(player['hands'])
+

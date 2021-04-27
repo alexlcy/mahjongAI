@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @FileName : NoiseNetDQN_torch.py
+# @FileName : NoiseNetDQN.py
 # @Project  : MAHJONG AI
 # @Author   : WANG Jianxing
 # @Time     : 2021/4/24 15:54
@@ -55,7 +55,7 @@ class ResidualBlock(nn.Module):
 
 
 class MJResNet50(nn.Module):
-    def __init__(self, history_len, n_cls=34, n_residuals=50):
+    def __init__(self, history_len=4, n_cls=34, n_residuals=50):
         super().__init__()
         self.net = self.create_model(2+(history_len+1)*21, n_residuals, n_cls)
 
@@ -87,7 +87,7 @@ class MJResNet50(nn.Module):
 
     def linear_block(self, n_feat, out_feat, dropout_prob=0.5):
         block = nn.ModuleList([
-            nn.Linear(n_feat, out_feat),
+            NoisyFactorizedLinear(n_feat, out_feat),
             nn.BatchNorm1d(out_feat),
             nn.Dropout(dropout_prob),
             nn.LeakyReLU()
@@ -98,16 +98,16 @@ class MJResNet50(nn.Module):
 class NoisyFactorizedLinear(nn.Linear):
     """
     NoisyNet layer with factorized gaussian noise
-    N.B. nn.Linear already initializes weight and bias to
+    nn.Linear already initializes weight and bias to mu_w and mu_b
     """
     def __init__(self, in_features, out_features, sigma_zero=0.5, bias=True):
         super(NoisyFactorizedLinear, self).__init__(in_features, out_features, bias=bias)
         sigma_init = sigma_zero / math.sqrt(in_features)
-        self.sigma_weight = nn.Parameter(torch.Tensor(out_features, in_features).fill_(sigma_init))
+        self.sigma_w = nn.Parameter(torch.Tensor(out_features, in_features).fill_(sigma_init))
         self.register_buffer("epsilon_input", torch.zeros(1, in_features))
         self.register_buffer("epsilon_output", torch.zeros(out_features, 1))
         if bias:
-            self.sigma_bias = nn.Parameter(torch.Tensor(out_features).fill_(sigma_init))
+            self.sigma_b = nn.Parameter(torch.Tensor(out_features).fill_(sigma_init))
 
     def forward(self, input):
         bias = self.bias
@@ -115,13 +115,13 @@ class NoisyFactorizedLinear(nn.Linear):
 
         with torch.no_grad():
             torch.randn(self.epsilon_input.size(), out=self.epsilon_input)
-            torch.randn(self.epsilon_output.size(), out=self.epsilon_output)  # TODO: whether same?
+            torch.randn(self.epsilon_output.size(), out=self.epsilon_output)
             eps_in = func(self.epsilon_input)
-            eps_out = func(self.epsilon_output)
-            noise_w = torch.mul(eps_in, eps_out).detach()
+            eps_out = func(self.epsilon_output)  # eps_b
+            noise = torch.mul(eps_in, eps_out)  # eps_w
         if bias is not None:
-            bias = bias + self.sigma_bias * eps_out.t()
-        return F.linear(input, self.weight + self.sigma_weight * noise_w, bias)
+            bias = bias + self.sigma_b * eps_out.t()  # bias = mu_b + sigma_b * eps_b
+        return F.linear(input, self.weight + self.sigma_w * noise, bias)  # weight: mu_w
 
 
 class DQN:
@@ -151,27 +151,7 @@ class DQN:
         return self.replay_buffer
 
     def create_model(self):
-        state_shape = (195,34,1)
-        action_shape = (1,34)
-
-        model = Sequential()
-
-        model.add(Conv2D(256, (3,3), input_shape=state_shape))
-        model.add(Activation('relu'))
-        # model.add(MaxPooling2D(pool_size=(2,2)))
-        model.add(Dropout(0.2))
-
-        model.add(Conv2D(256, (3, 3), input_shape=state_shape))
-        model.add(Activation('relu'))
-        # model.add(MaxPooling2D(pool_size=(2, 2)))
-        model.add(Dropout(0.2))
-        
-        model.add(Flatten())
-        model.add(Dense(64))
-
-        model.add(Dense(action_shape, activation='linear'))
-        model.compile(loss='mse', optimizer=Adam(lr=LR), metrics=['accuracy'])
-        return model
+        return MJResNet50().to(device)
 
     def get_estimated_Q(self, state):
         return self.model.predict(np.array(state))
@@ -230,6 +210,8 @@ EPISODE = 100
 DQN_agent = DQN()
 FILE = 'experiment_2021_04_21_12_13_25.h5'
 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print("Using {} device".format(device))
 
 for episode in tqdm(range(1, EPISODE+1)):
     new_buffer = DQN_agent.preprocess(ExperienceBuffer(10).read_experience(FILE))
@@ -245,8 +227,6 @@ for episode in tqdm(range(1, EPISODE+1)):
 
     # Update target model
 
-# TODO: Change model structure
-# TODO: Figure out how to train a supervised learning Q function, whether can just replace y(discard) with y'(reward)
 # TODO: Use new Q function as the discard model to play in env
 # TODO: Replace discard model with new target model in env every 3 rounds (How?)
 # TODO: New epsilon-greedy should be added into env
