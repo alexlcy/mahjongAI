@@ -132,7 +132,7 @@ class ExplorationMethods:
         softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
         for index, ai_discard_tile in enumerate(ai_discard_tile_list):
             if ai_discard_tile in player['hands']:
-                return ai_discard_tile, False, raw_prediction
+                return ai_discard_tile, raw_prediction
 
     def decide_discard_by_rule(self, player):
         """
