@@ -60,7 +60,7 @@ for i in range(play_times):
     reset & run
     """
     env.reset()
-    buffer = env.run(buffer)
+    env.run(buffer)
 
     # tensor board
     # win_times

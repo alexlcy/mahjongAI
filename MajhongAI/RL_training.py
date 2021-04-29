@@ -1,21 +1,23 @@
 import os
-import h5py
 import glob
 import math
-from datetime import datetime
+import logging
+import time
+import random
 from tqdm import tqdm
-from mahjong.ReinforcementLearning.experience import ExperienceBuffer
-from mahjong.models.model import DiscardModel, KongModel, PongModel
 import numpy as np
-
 import torch
 import torch.nn as nn
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+from mahjong.env import Env
+from mahjong.ReinforcementLearning.experience import ReplayBuffer
+from mahjong.models.model import DiscardModel, KongModel, PongModel
+from mahjong.stats_logger.calc_functions import calc_win_rates, calc_hu_scores, calc_win_times, calc_hu_score_each_game
+from mahjong.agents.DL import DeepLearningAgent
+from mahjong.agents.RL import ReinforceLearningAgent
+from mahjong.agents.rule import RuleAgent
 
-# Hyper-parameters
-lr = 0.01
-batch_size = 256
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 def get_discounted_reward(r):
     discounted_r = (r - r.mean())/(r.std() + 1e-7)
@@ -24,59 +26,126 @@ def get_discounted_reward(r):
 def preprocess_data(s, a, r, p):
     s = torch.tensor(s, dtype=torch.float32, device=device)
     a = torch.tensor(a).long().to(device)
-    # a = torch.tensor(a).squeeze(1).argmax(-1).long().to(device)
     r = torch.tensor(r, dtype=torch.float32, device=device)
     discounted_r = get_discounted_reward(r)
     p = torch.tensor(p, dtype=torch.float32, device=device)
     return s, a, discounted_r, p
 
-# Training
-exp_paths = glob.glob('mahjong/data/*.h5')
-exp_buffer = ExperienceBuffer(10)
+def update_policy(exps):
+    for exp_i, exp in enumerate(exps):
+        states, rewards, actions, action_probs = exp['states'], exp['rewards'],\
+            exp['actions'], exp['p_action']
+
+        for i in tqdm(range(math.ceil(len(states)/BATCH_SIZE)), desc=f"Training on buffer {exp_i+1}: "):
+            batch_s, batch_r, batch_p, batch_a = states[i*BATCH_SIZE:(i+1)*BATCH_SIZE],\
+                                                 rewards[i*BATCH_SIZE:(i+1)*BATCH_SIZE],\
+                                                 action_probs[i*BATCH_SIZE:(i+1)*BATCH_SIZE],\
+                                                 actions[i*BATCH_SIZE:(i+1)*BATCH_SIZE]
+
+            batch_s, batch_a, batch_r, batch_p = preprocess_data(batch_s, batch_a, batch_r, batch_p)
+            action_logits = model(batch_s)
+            softmax_preds = nn.Softmax(dim=-1)(action_logits)
+            pred_probs = torch.gather(softmax_preds, 1, batch_a.unsqueeze(-1))  # [bs, 1]
+
+            optim.zero_grad()
+            loss = (pred_probs / batch_p) * batch_r * loss_fn(action_logits, batch_a)
+            loss = loss.mean()
+            loss.backward()
+            optim.step()
+
+def replace_behavior_policy(agent, model, model_type='discard'):
+    if model_type == 'discard':
+        agent.discard_model.model.load_state_dict(model.state_dict())
+    elif model_type == 'pong':
+        agent.pong_model.model.load_state_dict(model.state_dict())
+    elif model_type == 'kong':
+        agent.kong_model.model.load_state_dict(model.state_dict())
+
+
+
+# =========================== Training ===========================
+# Hyper-parameters & settings
+PLAY_TIMES = 100
+LR = 0.01
+BATCH_SIZE = 256
+EXP_SAMPLE_SIZE = 10  # how many games to sample to train model each time
+BEHAVIOR_POLICY_UPDATE_INTV = 2  # interval after which the behavior policy gets replaced by the newest target policy
+SAVE_INTV = 50
+MODEL_TO_TRAIN = 'discard'
+
 model = DiscardModel(device).model
 loss_fn = nn.CrossEntropyLoss(reduction='none')
-optim = torch.optim.Adam(model.parameters(), lr=lr)
+optim = torch.optim.Adam(model.parameters(), lr=LR)
 
-for exp_i, exp in enumerate(exp_paths):
-    buffer_dict = exp_buffer.read_experience(exp)
-    game_no, whether_RL, states, rewards, index_of_action, prob_from_action_model = \
-        buffer_dict['game_no'], buffer_dict['is_rl_agents'], buffer_dict['states'], buffer_dict['rewards'],\
-        buffer_dict['actions'], buffer_dict['p_action']
-    # # Get Rl agent data
-    # states_, rewards_, actions_, prob_from_action_model_, index_of_action_ = [],[],[],[],[]
-    # for idx,val in enumerate(whether_RL):
-    #     if val == 1:
-    #         states_.append(states[idx])
-    #         rewards_.append(rewards[idx])
-    #         actions_.append(actions[idx])
-    #         prob_from_action_model_.append(prob_from_action_model[idx])
-    #         index_of_action_.append(index_of_action[idx])
-    # states, rewards, actions, prob_from_action_model, index_of_action = \
-    #     states_, rewards_, actions_, prob_from_action_model_, index_of_action_
+LOG_FORMAT = "%(message)s "
+logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
-    for i in tqdm(range(math.ceil(len(states)/batch_size)), desc=f"Training on buffer {exp_i}: "):
-        batch_s, batch_r, batch_p, batch_a = states[i*batch_size:(i+1)*batch_size],\
-                                             rewards[i*batch_size:(i+1)*batch_size],\
-                                             prob_from_action_model[i*batch_size:(i+1)*batch_size],\
-                                             index_of_action[i*batch_size:(i+1)*batch_size]
+start = time.time()
+replay_buffer = ReplayBuffer(PLAY_TIMES)
+random.seed(0)
 
-        batch_s, batch_a, batch_r, batch_p = preprocess_data(batch_s, batch_a, batch_r, batch_p)
-        action_logits = model(batch_s)
-        softmax = torch.nn.Softmax(dim=1)
-        softmax_prediction = softmax(action_logits)
-        prob_from_training_model = torch.tensor([softmax_prediction[j][int(v.item())] for j,v in enumerate(batch_a)],
-                                                dtype=torch.float32, device=device)
+config = {
+    'show_log': False,
+    'player_num': 4,
+    'seed': None  # to None for random run, if seed == None, will not save record
+}
+env = Env(config)
+RL_agent = ReinforceLearningAgent(0)
+env.set_agents([RL_agent, RuleAgent(1), RuleAgent(2), RuleAgent(3)])
 
-        optim.zero_grad()
-        loss = (prob_from_training_model / batch_p) * batch_r * loss_fn(action_logits, batch_a)
-        loss = loss.mean()
-        loss.backward()
-        optim.step()
+hu_reward_statistics = {0: [], 1: [], 2: [], 3: []}
 
+prev_weights = None
+for i in range(PLAY_TIMES):
+    print(f'No.{i + 1} Game ing~')
 
-RL_SAVE_DIR = 'mahjong/models/weights/discard/'
-if not os.path.exists(RL_SAVE_DIR):
-    os.makedirs(RL_SAVE_DIR)
+    """
+    reset & run
+    """
+    env.reset()
+    env.run(replay_buffer)
 
-model_name = f'RL-discard-{datetime.now().strftime("%Y-%m-%d-%H%M")}.pth'
-torch.save(model.state_dict(), os.path.join(RL_SAVE_DIR, model_name))
+    # tensor board
+    # win_times
+    calc_win_times(replay_buffer.win_times, replay_buffer.game_no)
+    # win_rates
+    calc_win_rates(replay_buffer.win_times, replay_buffer.game_no)
+    # hu_score
+    calc_hu_scores(replay_buffer.hu_score, replay_buffer.game_no)
+    # hu_score each game
+    calc_hu_score_each_game(replay_buffer.hu_reward, replay_buffer.game_no)
+
+    # TODO: checking, can delete
+    reward_sum = np.sum([replay_buffer.hu_reward[b_key] for b_key in hu_reward_statistics.keys()])
+    for h_key in hu_reward_statistics.keys():
+        hu_reward_statistics[h_key].append(replay_buffer.hu_reward[h_key])
+
+    # TODO: checking the reward sum is zero, can delete
+    if reward_sum != 0:
+        print(f'Cal buffer: {replay_buffer.hu_reward}, sum: {reward_sum}')
+
+    replay_buffer.update_buffer()
+
+    # Update policy
+    if len(replay_buffer) < EXP_SAMPLE_SIZE:
+        continue
+    exps = replay_buffer.sample(EXP_SAMPLE_SIZE)
+    update_policy(exps)
+
+    # Replace behavior policy
+    if i != 0 and i % BEHAVIOR_POLICY_UPDATE_INTV == 0:
+        replace_behavior_policy(RL_agent, model, MODEL_TO_TRAIN)
+
+    # Save policy
+    if i != 0 and i % SAVE_INTV == 0:
+        RL_SAVE_DIR = 'mahjong/models/weights/discard/'
+        if not os.path.exists(RL_SAVE_DIR):
+            os.makedirs(RL_SAVE_DIR)
+
+        model_name = f'RL-discard-playtime_{i+1}.pth'
+        torch.save(model.state_dict(), os.path.join(RL_SAVE_DIR, model_name))
+
+    
+
+end = time.time()
+print(f'Recording: {(end - start) / 60} min played {play_times} games')

@@ -10,7 +10,8 @@ import torch
 import numpy as np
 import h5py
 import datetime
-from collections import Counter
+import random
+from collections import Counter, deque
 
 from mahjong.Serialization import helper
 from mahjong.ReinforcementLearning.calculation_rl import cal_probability_of_action
@@ -80,7 +81,6 @@ class ExperienceCollector:
             self.feature_tracers.append(deepcopy(feature_tracer))
             self.discard_cards.append(deepcopy(action[1]))
             self.norm_rewards.append(deepcopy(norm_reward))
-
 
 class ExperienceBuffer:
     def __init__(self, play_times):
@@ -227,3 +227,92 @@ class ExperienceBuffer:
     # def load_experience(self, folder_path, csv_file_name):
     #     self.buffer = pd.read_csv(folder_path + '/' + csv_file_name + '.csv', sep='|')
     #     return self.buffer
+
+class ReplayBuffer:
+    def __init__(self, play_times, buffer_capacity=100):
+        self.buffer = deque([], maxlen=buffer_capacity)
+        self.game_no_list = []
+        self.x = []
+        self.y = []
+        self.discard = []
+        self.is_rl_agent = []
+        self.is_trigger_by_rl = []
+        self.action_probabilities = []
+        self.discard_argmax = []
+        self.raw_predictions = []
+        # self.epsilons = []
+        self.win_times = {0: 0, 1: 0, 2: 0, 3: 0}
+        self.hu_score = {0: 0, 1: 0, 2: 0, 3: 0}
+        self.hu_reward = {0: 0, 1: 0, 2: 0, 3: 0}
+        self.play_times = play_times
+        self.game_no = 0
+
+    def massage_experience(self, collectors, normed=True):
+        self.game_no += 1
+        for c_key in collectors.keys():
+            for i in range(len(collectors[c_key].feature_tracers)):
+                self.game_no_list.append(self.game_no)
+                self.x.append(collectors[c_key].feature_tracers[i].get_features(c_key).cpu())
+                self.discard.append(helper(1, [collectors[c_key].discard_cards[i]]))
+                is_rl_agent = collectors[c_key].is_rl_agent
+                self.is_rl_agent.append(is_rl_agent)
+                self.discard_argmax.append(np.argmax(self.discard[-1]))
+                # ### Discard model predictions ###
+                tmp = collectors[c_key].feature_tracers[i].current_prediction[c_key]
+                is_trigger_by_rl = collectors[c_key].feature_tracers[i].is_trigger_by_rl[c_key]
+                if is_rl_agent and is_trigger_by_rl is None:
+                    is_trigger_by_rl = -2
+                    print(f'Checking None: ?? in experience')
+                self.is_trigger_by_rl.append(int(is_trigger_by_rl) if is_rl_agent else -1)
+                self.raw_predictions.append(tmp if tmp is not None else torch.Tensor(np.zeros((1, 34))))
+                # ### probability from model (rule & AI)
+                epsilon = collectors[c_key].feature_tracers[i].epsilons[c_key]
+                if is_rl_agent:
+                    p = cal_probability_of_action(self.is_trigger_by_rl[-1], epsilon, self.discard_argmax[-1], tmp)
+                    self.action_probabilities.append(p)
+                else:
+                    self.action_probabilities.append(1)
+
+            if normed:
+                self.y.extend(collectors[c_key].norm_rewards)
+            else:
+                self.y.extend(collectors[c_key].rewards)
+            self.hu_score[c_key] += collectors[c_key].hu_rewards
+            self.hu_reward[c_key] = collectors[c_key].hu_rewards
+            if collectors[c_key].win:
+                self.win_times[c_key] += collectors[c_key].win_times
+
+    def update_buffer(self):
+        print(len(self.x))
+        if len(self.x) != 0:
+            game_no = np.array(self.game_no_list)
+            x = torch.cat(self.x, dim=0)
+            y = np.array(self.y)
+            is_rl_agent = np.array(self.is_rl_agent)
+            print(f'is_trigger_by_rl: {Counter(self.is_trigger_by_rl)}')
+
+            p_action = np.array(self.action_probabilities)
+            discard_argmax = np.array(self.discard_argmax)
+
+            game_data = {
+                'game_no': game_no,
+                'states': x,
+                'rewards': y,
+                'actions': discard_argmax,
+                'is_rl_agents': is_rl_agent,
+                'p_action': p_action
+            }
+
+            for c_key in self.win_times.keys():
+                print(f'Player {c_key} won {self.win_times[c_key]} times...')
+            print(f'HU {sum(self.win_times.values())} times data generated...')
+
+            self.buffer.append(game_data)
+        else:
+            print('No HU experience data...')
+
+    def sample(self, n_games):
+        return random.sample(self.buffer, n_games)
+
+    def __len__(self):
+        return len(self.buffer)
