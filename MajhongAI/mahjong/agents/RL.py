@@ -220,9 +220,9 @@ class ReinforceLearningAgent:
 
         # TODO: Try different explore methods and see whether need change
         # return self.exploration_method.epsilon_second_of_softmax(feature, player, feature_tracer)  # total 10: 3,3,2,2
-        #return self.exploration_method.epsilon_by_softmax(feature, player, feature_tracer)  # total 10: 3,3,2,2
+        return self.exploration_method.epsilon_by_softmax(feature, player, feature_tracer)  # total 10: 3,3,2,2
 
-        return self.exploration_method.epsilon_random(feature, player, feature_tracer)  # Alex working on this
+        #return self.exploration_method.epsilon_random(feature, player)  # Alex working on this
 
         # Priority 1: Discard based on color
         # color_discard_tile = self.decide_discard_by_color(player)
