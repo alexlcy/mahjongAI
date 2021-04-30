@@ -31,7 +31,7 @@ def preprocess_data(s, a, r, p):
     p = torch.tensor(p, dtype=torch.float32, device=device)
     return s, a, discounted_r, p
 
-def update_policy(exps):
+def update_policy(model, optim, loss_fn, exps):
     for exp_i, exp in enumerate(exps):
         states, rewards, actions, action_probs = exp['states'], exp['rewards'],\
             exp['actions'], exp['p_action']
@@ -48,7 +48,7 @@ def update_policy(exps):
             pred_probs = torch.gather(softmax_preds, 1, batch_a.unsqueeze(-1))  # [bs, 1]
 
             optim.zero_grad()
-            loss = (pred_probs / batch_p) * batch_r * loss_fn(action_logits, batch_a)
+            loss = (pred_probs.squeeze(-1) / batch_p) * batch_r * loss_fn(action_logits, batch_a)
             loss = loss.mean()
             loss.backward()
             optim.step()
@@ -61,6 +61,8 @@ def replace_behavior_policy(agent, model, model_type='discard'):
     elif model_type == 'kong':
         agent.kong_model.model.load_state_dict(model.state_dict())
 
+    print('\n=============== Behavior policy is updated ===============\n')
+
 
 
 # =========================== Training ===========================
@@ -68,8 +70,8 @@ def replace_behavior_policy(agent, model, model_type='discard'):
 PLAY_TIMES = 100
 LR = 0.01
 BATCH_SIZE = 256
-EXP_SAMPLE_SIZE = 10  # how many games to sample to train model each time
-BEHAVIOR_POLICY_UPDATE_INTV = 2  # interval after which the behavior policy gets replaced by the newest target policy
+EXP_SAMPLE_SIZE = 20  # how many games to sample to train model each time
+BEHAVIOR_POLICY_UPDATE_INTV = 10  # interval after which the behavior policy gets replaced by the newest target policy
 SAVE_INTV = 50
 MODEL_TO_TRAIN = 'discard'
 
@@ -115,14 +117,14 @@ for i in range(PLAY_TIMES):
     # hu_score each game
     calc_hu_score_each_game(replay_buffer.hu_reward, replay_buffer.game_no)
 
-    # TODO: checking, can delete
-    reward_sum = np.sum([replay_buffer.hu_reward[b_key] for b_key in hu_reward_statistics.keys()])
-    for h_key in hu_reward_statistics.keys():
-        hu_reward_statistics[h_key].append(replay_buffer.hu_reward[h_key])
+    # # TODO: checking, can delete
+    # reward_sum = np.sum([replay_buffer.hu_reward[b_key] for b_key in hu_reward_statistics.keys()])
+    # for h_key in hu_reward_statistics.keys():
+    #     hu_reward_statistics[h_key].append(replay_buffer.hu_reward[h_key])
 
-    # TODO: checking the reward sum is zero, can delete
-    if reward_sum != 0:
-        print(f'Cal buffer: {replay_buffer.hu_reward}, sum: {reward_sum}')
+    # # TODO: checking the reward sum is zero, can delete
+    # if reward_sum != 0:
+    #     print(f'Cal buffer: {replay_buffer.hu_reward}, sum: {reward_sum}')
 
     replay_buffer.update_buffer()
 
@@ -130,7 +132,7 @@ for i in range(PLAY_TIMES):
     if len(replay_buffer) < EXP_SAMPLE_SIZE:
         continue
     exps = replay_buffer.sample(EXP_SAMPLE_SIZE)
-    update_policy(exps)
+    update_policy(model, optim, loss_fn, exps)
 
     # Replace behavior policy
     if i != 0 and i % BEHAVIOR_POLICY_UPDATE_INTV == 0:
