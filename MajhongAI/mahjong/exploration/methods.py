@@ -122,17 +122,17 @@ class ExplorationMethods:
         tile_priority = np.argsort(softmax_prediction.numpy())[0][::-1]
         tile_priority_list = [self.total_dict_revert[index] for index in tile_priority]
         tile_index_priority = [CARD_DICT[index] for index in tile_priority_list if index[0] not in ('J', 'F')]
-        return softmax_prediction, tile_index_priority, raw_prediction
+        return softmax_prediction, tile_index_priority, softmax_prediction
 
     def decide_discard_by_AI(self, feature, player):
         """
         Call the discard model and return the tile that we should discard
         Returns:
         """
-        softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
+        softmax_prediction, ai_discard_tile_list, softmax_prediction = self.decide_discard_by_AI_help(feature)
         for index, ai_discard_tile in enumerate(ai_discard_tile_list):
             if ai_discard_tile in player['hands']:
-                return ai_discard_tile, raw_prediction
+                return ai_discard_tile, softmax_prediction
 
     def decide_discard_by_rule(self, player):
         """
@@ -159,7 +159,7 @@ class ExplorationMethods:
 
     # Choose the card in hands has the second max probability
     def decide_card_with_second_possibility(self, feature, player):
-        softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
+        softmax_prediction, ai_discard_tile_list, softmax_prediction = self.decide_discard_by_AI_help(feature)
 
         # Delete the original target card in order to not choose it anymore in exploration
         find = False
