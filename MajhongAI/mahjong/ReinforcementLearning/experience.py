@@ -82,6 +82,7 @@ class ExperienceCollector:
             self.discard_cards.append(deepcopy(action[1]))
             self.norm_rewards.append(deepcopy(norm_reward))
 
+
 class ExperienceBuffer:
     def __init__(self, play_times):
         keys = ['player_ids', 'lack_color', 'action_nums', 'raw_states', 'states', 'discards',
@@ -95,7 +96,7 @@ class ExperienceBuffer:
         self.is_trigger_by_rl = []
         self.action_probabilities = []
         self.discard_argmax = []
-        self.raw_predictions = []
+        self.discard_probabilities = []
         # self.epsilons = []
         self.win_times = {0: 0, 1: 0, 2: 0, 3: 0}
         self.hu_score = {0: 0, 1: 0, 2: 0, 3: 0}
@@ -104,10 +105,10 @@ class ExperienceBuffer:
         self.game_no = 0
 
     # TODO: if ok should be moved to calculation_rl.py
-    # def cal_probability_of_action(self, is_trigger_by_rl, epsilon, discard_argmax, raw_predictions):
+    # def cal_probability_of_action(self, is_trigger_by_rl, epsilon, discard_argmax, discard_probabilities):
     #     p_action = 0
     #     try:
-    #         p_action = (1 - epsilon) * raw_predictions.T[discard_argmax][0]
+    #         p_action = (1 - epsilon) * discard_probabilities.T[discard_argmax][0]
     #     except Exception:
     #         print('Error here, type 1: experience/cal_probability_of_action')
     #     if not is_trigger_by_rl:
@@ -134,7 +135,7 @@ class ExperienceBuffer:
                     is_trigger_by_rl = -2
                     print(f'Checking None: ?? in experience')
                 self.is_trigger_by_rl.append(int(is_trigger_by_rl) if is_rl_agent else -1)
-                self.raw_predictions.append(tmp if tmp is not None else torch.Tensor(np.zeros((1, 34))))
+                self.discard_probabilities.append(tmp if tmp is not None else torch.Tensor(np.zeros((1, 34))))
                 # ### probability from model (rule & AI)
                 epsilon = collectors[c_key].feature_tracers[i].epsilons[c_key]
                 if is_rl_agent:
@@ -166,7 +167,7 @@ class ExperienceBuffer:
             # is_trigger_by_rl = np.array(self.is_trigger_by_rl)
             p_action = np.array(self.action_probabilities)
             discard_argmax = np.array(self.discard_argmax)
-            # raw_predictions = torch.cat(self.raw_predictions, dim=0)
+            # discard_probabilities = torch.cat(self.discard_probabilities, dim=0)
             # epsilon = np.array(self.epsilons)
             date_string = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
             with h5py.File(folder_path + "experiment_" + date_string + r'.h5', 'w') as experience_outf:
@@ -188,7 +189,7 @@ class ExperienceBuffer:
                 # 8
                 # experience_outf['experience'].create_dataset('discard_argmax', data=discard_argmax)
                 # 9
-                # experience_outf['experience'].create_dataset('raw_predictions', data=raw_predictions)
+                # experience_outf['experience'].create_dataset('discard_probabilities', data=discard_probabilities)
                 # 10
                 # experience_outf['experience'].create_dataset('epsilon', data=epsilon)
             for c_key in self.win_times.keys():
@@ -228,6 +229,7 @@ class ExperienceBuffer:
     #     self.buffer = pd.read_csv(folder_path + '/' + csv_file_name + '.csv', sep='|')
     #     return self.buffer
 
+
 class ReplayBuffer:
     def __init__(self, play_times, buffer_capacity=100):
         self.buffer = deque([], maxlen=buffer_capacity)
@@ -239,7 +241,7 @@ class ReplayBuffer:
         self.is_trigger_by_rl = []
         self.action_probabilities = []
         self.discard_argmax = []
-        self.raw_predictions = []
+        self.discard_probabilities = []
         # self.epsilons = []
         self.win_times = {0: 0, 1: 0, 2: 0, 3: 0}
         self.hu_score = {0: 0, 1: 0, 2: 0, 3: 0}
@@ -264,7 +266,7 @@ class ReplayBuffer:
                     is_trigger_by_rl = -2
                     print(f'Checking None: ?? in experience')
                 self.is_trigger_by_rl.append(int(is_trigger_by_rl) if is_rl_agent else -1)
-                self.raw_predictions.append(tmp if tmp is not None else torch.Tensor(np.zeros((1, 34))))
+                self.discard_probabilities.append(tmp if tmp is not None else torch.Tensor(np.zeros((1, 34))))
                 # ### probability from model (rule & AI)
                 epsilon = collectors[c_key].feature_tracers[i].epsilons[c_key]
                 if is_rl_agent:

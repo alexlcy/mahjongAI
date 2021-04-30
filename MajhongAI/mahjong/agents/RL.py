@@ -187,10 +187,10 @@ class ReinforceLearningAgent:
 
         # Step 3: Choose which one to discard
         if player['choice'] < 100:
-            discard_tile, is_trigger_by_rl, raw_prediction = self.decide_discard(player, feature, player['hands'], feature_tracer)
+            discard_tile, is_trigger_by_rl, discard_probabilities = self.decide_discard(player, feature, player['hands'], feature_tracer)
 
             # Save current prediction
-            feature_tracer.set_current_prediction(self.__player_id, raw_prediction)
+            feature_tracer.set_current_prediction(self.__player_id, discard_probabilities)
             # Save the status that is_trigger_by_rl
             feature_tracer.set_is_trigger_by_rl(self.__player_id, is_trigger_by_rl)
             # TODO: Checking, can delete later

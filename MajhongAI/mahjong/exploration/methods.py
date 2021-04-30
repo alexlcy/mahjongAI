@@ -77,27 +77,27 @@ class ExplorationMethods:
         # explore_probability = explore_probability / 10
         feature_tracer.set_explore_probability(player['player_id'], explore_probability)
         self.decay_step += 1
-        ai_discard_tile, raw_prediction = self.decide_discard_by_AI(feature, player)
+        ai_discard_tile, discard_probabilities = self.decide_discard_by_AI(feature, player)
         # TODO: if no unexpected error, can delete below print
-        if raw_prediction is None:
+        if discard_probabilities is None:
             print('Error here~ type2: methods/epsilon_3')
         if explore_probability > np.random.rand():
-            return self.decide_discard_by_rule(player), False, raw_prediction
+            return self.decide_discard_by_rule(player), False, discard_probabilities
         else:
-            return ai_discard_tile, True, raw_prediction
+            return ai_discard_tile, True, discard_probabilities
 
     def epsilon_second_of_softmax(self, feature, player, feature_tracer, **kwargs):  # Explore by our model with second max prob
         explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
         feature_tracer.set_explore_probability(player['player_id'], explore_probability)
         self.decay_step += 1
-        ai_discard_tile, raw_prediction = self.decide_discard_by_AI(feature, player)
+        ai_discard_tile, discard_probabilities = self.decide_discard_by_AI(feature, player)
         # TODO: if no unexpected error, can delete below print
-        if raw_prediction is None:
+        if discard_probabilities is None:
             print('Error here~ type2: methods/epsilon_second_of_softmax')
         if explore_probability > np.random.rand():
-            return self.decide_card_with_second_possibility(feature, player), False, raw_prediction
+            return self.decide_card_with_second_possibility(feature, player), False, discard_probabilities
         else:
-            return ai_discard_tile, True, raw_prediction
+            return ai_discard_tile, True, discard_probabilities
 
     def epsilon_by_softmax(self, feature, player, feature_tracer, **kwargs):  # Explore by our model with softmax
         explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
@@ -106,14 +106,14 @@ class ExplorationMethods:
         # # For a fixed epsilon
         # explore_probability = 0.1
         feature_tracer.set_explore_probability(player['player_id'], explore_probability)
-        ai_discard_tile, raw_prediction = self.decide_discard_by_AI(feature, player)
+        ai_discard_tile, discard_probabilities = self.decide_discard_by_AI(feature, player)
         # TODO: if no unexpected error, can delete below print
-        if raw_prediction is None:
+        if discard_probabilities is None:
             print('Error here~ type2: methods/epsilon_by_softmax')
         if explore_probability > np.random.rand():
-            return self.decide_discard_by_softmax_and_epsilon(feature, player), False, raw_prediction
+            return self.decide_discard_by_softmax_and_epsilon(feature, player), False, discard_probabilities
         else:
-            return ai_discard_tile, True, raw_prediction
+            return ai_discard_tile, True, discard_probabilities
 
     def decide_discard_by_AI_help(self, feature):
         raw_prediction = self.model.predict(feature)  # (1,34)
@@ -189,10 +189,10 @@ class ExplorationMethods:
         #     if ai_discard_tile in player['hands']:
         #         return ai_discard_tile
 
-        softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
-        raw_prediction_27 = copy.deepcopy(raw_prediction[0][:27])
+        softmax_prediction, ai_discard_tile_list, discard_probabilities = self.decide_discard_by_AI_help(feature)
+        discard_probabilities_27 = copy.deepcopy(discard_probabilities[0][:27])
         softmax = torch.nn.Softmax(dim=0)
-        softmax_prediction_27 = softmax(raw_prediction_27).numpy()
+        softmax_prediction_27 = softmax(discard_probabilities_27).numpy()
         softmax_prediction_27 = softmax_prediction_27 / np.sum(softmax_prediction_27)
         sample_list = np.random.choice(ai_discard_tile_list, size=27, replace=False, p=softmax_prediction_27)
         for ai_discard_tile in sample_list:
