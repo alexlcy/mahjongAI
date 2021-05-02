@@ -17,3 +17,13 @@ def cal_probability_of_action(is_trigger_by_rl, epsilon, discard_argmax, discard
         except Exception:
             print('Error here, type 4: experience/cal_probability_of_action')
     return p_action
+
+
+# Just retrieve the discard card probability of the model
+def cal_probability_of_action_2(discard_argmax, discard_probabilities):
+    p_action = 0
+    try:
+        p_action = discard_probabilities.T[discard_argmax][0]
+    except Exception:
+        print('Error here, type 1: experience/cal_probability_of_action')
+    return p_action

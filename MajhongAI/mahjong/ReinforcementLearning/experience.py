@@ -270,7 +270,8 @@ class ReplayBuffer:
                 # ### probability from model (rule & AI)
                 epsilon = collectors[c_key].feature_tracers[i].epsilons[c_key]
                 if is_rl_agent:
-                    p = cal_probability_of_action(self.is_trigger_by_rl[-1], epsilon, self.discard_argmax[-1], tmp)
+                    # p = cal_probability_of_action(self.is_trigger_by_rl[-1], epsilon, self.discard_argmax[-1], tmp)
+                    p = cal_probability_of_action_2(self.discard_argmax[-1], tmp)
                     self.action_probabilities.append(p)
                 else:
                     self.action_probabilities.append(1)
