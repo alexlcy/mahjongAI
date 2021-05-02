@@ -14,7 +14,7 @@ import random
 from collections import Counter, deque
 
 from mahjong.Serialization import helper
-from mahjong.ReinforcementLearning.calculation_rl import cal_probability_of_action
+from mahjong.ReinforcementLearning.calculation_rl import cal_probability_of_action, cal_probability_of_action_2
 
 __all__ = [
     'ExperienceCollector',
@@ -251,6 +251,15 @@ class ReplayBuffer:
 
     def massage_experience(self, collectors, normed=True):
         self.game_no += 1
+        self.game_no_list = []
+        self.x = []
+        self.y = []
+        self.discard = []
+        self.is_rl_agent = []
+        self.is_trigger_by_rl = []
+        self.action_probabilities = []
+        self.discard_argmax = []
+        self.discard_probabilities = []
         for c_key in collectors.keys():
             for i in range(len(collectors[c_key].feature_tracers)):
                 self.game_no_list.append(self.game_no)
@@ -286,7 +295,6 @@ class ReplayBuffer:
                 self.win_times[c_key] += collectors[c_key].win_times
 
     def update_buffer(self):
-        print(len(self.x))
         if len(self.x) != 0:
             game_no = np.array(self.game_no_list)
             x = torch.cat(self.x, dim=0)
