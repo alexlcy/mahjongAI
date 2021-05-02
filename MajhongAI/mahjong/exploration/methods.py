@@ -122,11 +122,11 @@ class ExplorationMethods:
             return ai_discard_tile, True, discard_probabilities
 
     def epsilon_by_softmax(self, feature, player, feature_tracer, **kwargs):  # Explore by our model with softmax
-        explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
-        self.decay_step += 1
+        # explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
+        # self.decay_step += 1
 
-        # # For a fixed epsilon
-        # explore_probability = 0.1
+        # For a fixed epsilon
+        explore_probability = 0.01
         feature_tracer.set_explore_probability(player['player_id'], explore_probability)
         ai_discard_tile, discard_probabilities = self.decide_discard_by_AI(feature, player)
         # TODO: if no unexpected error, can delete below print
