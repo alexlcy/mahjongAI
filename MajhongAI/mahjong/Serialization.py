@@ -29,7 +29,8 @@ def helper(size, array):
                     try:
                         temp[j][tile_index] = 1
                     except:
-                        np.savetxt('bug_____data', array)
+                        with open("bug.txt", "w") as output:
+                            output.write(str(array))
     return temp
 
 

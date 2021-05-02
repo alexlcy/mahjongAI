@@ -41,17 +41,39 @@ class ExplorationMethods:
         total_dict = {**w_dict, **b_dict, **t_dict, **f_dict, **j_dict}
         self.total_dict_revert = {index: value for value, index in total_dict.items()}
 
-    def epsilon_random(self, feature, player, **kwargs):  # fixed probability for choosing a random action
-        if random.random() <= self.epsilon_min:
-            return self.decide_discard_by_random(player)
-        else:
-            return self.decide_discard_by_AI(feature, player)
+    def epsilon_random(self, feature, player, feature_tracer, **kwargs):  # fixed probability for choosing a random action
+        explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
+        self.decay_step += 1
 
-    def epsilon_rule(self, feature, player, **kwargs):  # fixed probability for choosing a random action
-        if random.random() <= self.epsilon_min:
-            return self.decide_discard_by_rule(player)
+        # # For a fixed epsilon
+        # explore_probability = 0.1
+        feature_tracer.set_explore_probability(player['player_id'], explore_probability)
+        ai_discard_tile, discard_probabilities = self.decide_discard_by_AI(feature, player)
+        # TODO: if no unexpected error, can delete below print
+        if discard_probabilities is None:
+            print('Error here~ type2: methods/epsilon_by_softmax')
+        if explore_probability > np.random.rand():
+            return self.decide_discard_by_random(player), False, discard_probabilities
         else:
-            return self.decide_discard_by_AI(feature, player)
+            return ai_discard_tile, True, discard_probabilities
+
+
+    def epsilon_rule(self, feature, player, feature_tracer, **kwargs):  # fixed probability for choosing a random action
+        explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
+        self.decay_step += 1
+
+        # # For a fixed epsilon
+        # explore_probability = 0.1
+        feature_tracer.set_explore_probability(player['player_id'], explore_probability)
+        ai_discard_tile, discard_probabilities = self.decide_discard_by_AI(feature, player)
+        # TODO: if no unexpected error, can delete below print
+        if discard_probabilities is None:
+            print('Error here~ type2: methods/epsilon_by_softmax')
+        if explore_probability > np.random.rand():
+            return self.decide_discard_by_rule(player), False, discard_probabilities
+        else:
+            return ai_discard_tile, True, discard_probabilities
+
 
     def epsilon_1(self, feature, player, **kwargs):  # fixed probability for choosing a random action
         if random.random() <= self.prob_random_action:
@@ -200,7 +222,7 @@ class ExplorationMethods:
                 return ai_discard_tile
 
     def decide_discard_by_random(self, player):
-        return random.choice(player['hands']), False, None
+        return random.choice(player['hands'])
 
 
 
