@@ -45,7 +45,7 @@ def update_policy(model, optim, loss_fn, exps):
             batch_s, batch_a, batch_r, batch_p = preprocess_data(batch_s, batch_a, batch_r, batch_p)
             action_logits = model(batch_s)
             softmax_preds = nn.Softmax(dim=-1)(action_logits)
-            pred_probs = torch.gather(softmax_preds, 1, batch_a.unsqueeze(-1))  # [bs, 1]
+            pred_probs = torch.gather(softmax_preds, 1, batch_a.unsqueeze(-1)).detach()  # [bs, 1]
 
             optim.zero_grad()
             loss = (pred_probs.squeeze(-1) / batch_p) * batch_r * loss_fn(action_logits, batch_a)
@@ -67,12 +67,12 @@ def replace_behavior_policy(agent, model, model_type='discard'):
 
 # =========================== Training ===========================
 # Hyper-parameters & settings
-PLAY_TIMES = 100
-LR = 0.01
-BATCH_SIZE = 256
-EXP_SAMPLE_SIZE = 20  # how many games to sample to train model each time
-BEHAVIOR_POLICY_UPDATE_INTV = 10  # interval after which the behavior policy gets replaced by the newest target policy
-SAVE_INTV = 50
+PLAY_TIMES = 1000
+LR = 0.0001
+BATCH_SIZE = 512
+EXP_SAMPLE_SIZE = 100  # how many games to sample to train model each time
+BEHAVIOR_POLICY_UPDATE_INTV = 100  # interval after which the behavior policy gets replaced by the newest target policy
+SAVE_INTV = 100
 MODEL_TO_TRAIN = 'discard'
 
 model = DiscardModel(device).model
@@ -144,10 +144,10 @@ for i in range(PLAY_TIMES):
         if not os.path.exists(RL_SAVE_DIR):
             os.makedirs(RL_SAVE_DIR)
 
-        model_name = f'RL-discard-playtime_{i+1}.pth'
+        model_name = f'RL-discard-playtime_{i}.pth'
         torch.save(model.state_dict(), os.path.join(RL_SAVE_DIR, model_name))
 
     
 
 end = time.time()
-print(f'Recording: {(end - start) / 60} min played {play_times} games')
+print(f'Recording: {(end - start) / 60} min played {PLAY_TIMES} games')

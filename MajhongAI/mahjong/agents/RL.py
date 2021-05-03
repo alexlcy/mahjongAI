@@ -222,9 +222,9 @@ class ReinforceLearningAgent:
         # return self.exploration_method.epsilon_second_of_softmax(feature, player, feature_tracer)  # total 10: 3,3,2,2
 
 
-        #return self.exploration_method.epsilon_by_softmax(feature, player, feature_tracer)  # William train on this
+        return self.exploration_method.epsilon_by_softmax(feature, player, feature_tracer)  # William train on this
 
-        return self.exploration_method.epsilon_random(feature, player, feature_tracer)  # Alex train on this
+        # return self.exploration_method.epsilon_random(feature, player, feature_tracer)  # Alex train on this
 
         #return self.exploration_method.epsilon_rule(feature, player, feature_tracer)  # Koning train on this
 
