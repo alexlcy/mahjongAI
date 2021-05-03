@@ -73,6 +73,7 @@ BATCH_SIZE = 512
 EXP_SAMPLE_SIZE = 100  # how many games to sample to train model each time
 BEHAVIOR_POLICY_UPDATE_INTV = 100  # interval after which the behavior policy gets replaced by the newest target policy
 SAVE_INTV = 100
+TRAIN_FREQENCY = 100
 MODEL_TO_TRAIN = 'discard'
 
 model = DiscardModel(device).model
@@ -131,8 +132,10 @@ for i in range(PLAY_TIMES):
     # Update policy
     if len(replay_buffer) < EXP_SAMPLE_SIZE:
         continue
-    exps = replay_buffer.sample(EXP_SAMPLE_SIZE)
-    update_policy(model, optim, loss_fn, exps)
+
+    if i != 0 and i % TRAIN_FREQENCY == 0:
+        exps = replay_buffer.sample(EXP_SAMPLE_SIZE)
+        update_policy(model, optim, loss_fn, exps)
 
     # Replace behavior policy
     if i != 0 and i % BEHAVIOR_POLICY_UPDATE_INTV == 0:
