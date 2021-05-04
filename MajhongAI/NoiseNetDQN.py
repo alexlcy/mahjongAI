@@ -31,7 +31,7 @@ from mahjong.stats_logger.calc_functions import calc_win_rates, calc_hu_scores, 
 from mahjong.agents.DL import DeepLearningAgent
 from mahjong.agents.RL import ReinforceLearningAgent
 from mahjong.agents.rule import RuleAgent
-from DQN import DQNModel
+from mahjong.DQN import DQNModel
 
 
 # class SamePadConv2d(nn.Conv2d):

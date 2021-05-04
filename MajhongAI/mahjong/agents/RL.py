@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 import math
 import torch
-from torch import nn
-from torch.nn import init, Parameter
-from torch.nn import functional as F
-from torch.autograd import Variable
-from collections import deque
 import random
 import numpy as np
 
 from mahjong.snapshot import Snapshot
-from mahjong.consts import COMMAND, CARD_DICT,CARD
+from mahjong.consts import COMMAND
 from collections import Counter
 from mahjong.models.model import KongModel, PongModel
-from MajhongAI.DQN import DQNModel
+from mahjong.DQN import DQNModel
 from mahjong.settings import FeatureTracer
 from mahjong.exploration.methods import ExplorationMethods
 
