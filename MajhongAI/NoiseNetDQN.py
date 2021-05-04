@@ -190,65 +190,60 @@ class DQNAgent:
 
     def preprocess(self, exps):
         game_no, states, rewards, actions = exps['game_no'], exps['states'], exps['rewards'], exps['actions']
-        next_states = []
-        dones = []
+        next_states = copy.deepcopy(states)
+        dones = np.zeros(len(states))
+        dones[-1] = 1
         for i in range(len(states)-1):
-            round_cnt = game_no[i]
-            # For a same round, set done = False
-            if game_no[i+1] == round_cnt:
-                dones.append(False)
-                next_states.append(states[i+1])
-            # For a different round, set done = True
-            else:
-                dones.append((states[i], actions[i], rewards[i], states[i+1], True))
-                next_states.append(states[i])
+            next_states[i] = states[i+1]
+        next_states[-1] = states[-1]
         return states, actions, rewards, next_states, dones
 
     def train(self, exps):
-        states, actions, rewards, next_states, dones = self.preprocess(exps)
-        for i in tqdm(range(math.ceil(len(states) / BATCH_SIZE))):
-            batch_s, batch_a, batch_r, batch_next_s, batch_d = states[i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
-                                                               actions[i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
-                                                               rewards[i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
-                                                               next_states[i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
-                                                               dones[i*BATCH_SIZE:(i+1)*BATCH_SIZE]
-            # s_j, a_j, r_j, s_j+1
-            batch_s = torch.tensor(batch_s, dtype=torch.float32, device=device)
-            batch_a = torch.tensor(batch_a).long().to(device)
-            batch_r = (batch_r - batch_r.mean()) / (batch_r.std() + 1e-7)
-            batch_r = torch.tensor(batch_r, dtype=torch.float32, device=device)
-            batch_next_s = torch.tensor(batch_next_s, dtype=torch.float32, device=device)
-            batch_d = torch.tensor(batch_d, dtype=torch.bool, device=device)
+        for exp_i, exp in enumerate(exps):
+            states, actions, rewards, next_states, dones = self.preprocess(exp)
+            for i in tqdm(range(math.ceil(len(states) / BATCH_SIZE)), desc=f"Training on buffer {exp_i+1}: "):
+                batch_s, batch_a, batch_r, batch_next_s, batch_d = states[i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
+                                                                   actions[i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
+                                                                   rewards[i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
+                                                                   next_states[i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
+                                                                   dones[i*BATCH_SIZE:(i+1)*BATCH_SIZE]
+                # s_j, a_j, r_j, s_j+1
+                batch_s = torch.tensor(batch_s, dtype=torch.float32, device=device)
+                batch_a = torch.tensor(batch_a).long().to(device)
+                batch_r = (batch_r - batch_r.mean()) / (batch_r.std() + 1e-7)
+                batch_r = torch.tensor(batch_r, dtype=torch.float32, device=device)
+                batch_next_s = torch.tensor(batch_next_s, dtype=torch.float32, device=device)
+                batch_d = torch.tensor(batch_d, dtype=torch.bool, device=device)
 
-            # get q-values for all actions in current states
-            predicted_qvalues = self.DQN(batch_s)
+                # get q-values for all actions in current states
+                predicted_qvalues = self.DQN(batch_s)
 
-            # select q-values for chosen actions: Q(s_j,a_j;theta)
-            predicted_qvalues_for_actions = torch.gather(predicted_qvalues, 1, batch_a.unsqueeze(-1))
+                # select q-values for chosen actions: Q(s_j,a_j;theta)
+                predicted_qvalues_for_actions = torch.gather(predicted_qvalues, 1, batch_a.unsqueeze(-1))
 
-            # compute q-values for all actions in next states: Q_hat(s_j+1,a';theta')
-            predicted_next_qvalues = self.DQN_target(batch_next_s)
+                # compute q-values for all actions in next states: Q_hat(s_j+1,a';theta')
+                predicted_next_qvalues = self.DQN_target(batch_next_s)
 
-            # compute max using predicted next q-values:
-            max_next_qvalues = predicted_next_qvalues.max(-1)[0]
+                # compute max using predicted next q-values:
+                max_next_qvalues = predicted_next_qvalues.max(-1)[0]
 
-            # compute "target q-values" for loss y_j
-            target_qvalues_for_actions = batch_r + GAMMA * max_next_qvalues
+                # compute "target q-values" for loss y_j
+                target_qvalues_for_actions = batch_r + GAMMA * max_next_qvalues
 
-            # at the last state we shall use simplified formula: Q(s,a) = r(s,a) since s' doesn't exist
-            target_qvalues_for_actions = torch.where(batch_d, batch_r, target_qvalues_for_actions)
+                # at the last state we shall use simplified formula: Q(s,a) = r(s,a) since s' doesn't exist
+                target_qvalues_for_actions = torch.where(batch_d, batch_r, target_qvalues_for_actions)
 
-            # mean squared error loss to minimize
-            # loss = torch.mean((predicted_qvalues_for_actions -
-            #                   target_qvalues_for_actions.detach()) ** 2)
-            loss = F.smooth_l1_loss(predicted_qvalues_for_actions, target_qvalues_for_actions.detach())
+                # mean squared error loss to minimize
+                # loss = torch.mean((predicted_qvalues_for_actions -
+                #                   target_qvalues_for_actions.detach()) ** 2)
+                loss = F.smooth_l1_loss(predicted_qvalues_for_actions.squeeze(), target_qvalues_for_actions.detach())
 
-            self.optimizer.zero_grad()
-            # loss = loss.mean()
-            loss.backward()
-            for param in self.DQN.parameters():
-                param.grad.data.clamp_(-1, 1)
-            self.optimizer.step()
+                self.optimizer.zero_grad()
+                # loss = loss.mean()
+                loss.backward()
+                for param in self.DQN.parameters():
+                    param.grad.data.clamp_(-1, 1)
+                self.optimizer.step()
 
     def update_tar_DQN(self):
         self.DQN_target.load_state_dict(self.DQN.state_dict())
@@ -325,7 +320,7 @@ for i in range(PLAY_TIMES):
     buffer.update_buffer()
 
     # Update policy
-    if i < 100 or len(buffer) < EXP_SAMPLE_SIZE:
+    if i < TRAIN_FREQUENCY or len(buffer) < EXP_SAMPLE_SIZE:
         continue
 
     if i != 0 and i % TRAIN_FREQUENCY == 0:

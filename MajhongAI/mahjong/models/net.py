@@ -70,3 +70,5 @@ class MJNet(nn.Module):
             nn.LeakyReLU()
         ])
         return block
+
+# print(MJNet(history_len=4))
