@@ -244,6 +244,7 @@ class DQNAgent:
                 for param in self.DQN.parameters():
                     param.grad.data.clamp_(-1, 1)
                 self.optimizer.step()
+                print(f"loss:{loss}")
 
     def update_tar_DQN(self):
         self.DQN_target.load_state_dict(self.DQN.state_dict())
@@ -252,13 +253,13 @@ class DQNAgent:
 
 # =========================== Training ===========================
 # Hyper-parameters & settings
-PLAY_TIMES = 1000
-LR = 0.0001
+PLAY_TIMES = 10000
+LR = 0.0005
 BATCH_SIZE = 512
 EXP_SAMPLE_SIZE = 100  # how many games to sample to train model each time
 BEHAVIOR_POLICY_UPDATE_INTV = 100  # interval after which the behavior policy gets replaced by the newest target policy
 SAVE_INTV = 100
-TRAIN_FREQUENCY = 100
+TRAIN_FREQUENCY = 50
 GAMMA = 0.99
 # MODEL_TO_TRAIN = 'discard'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
