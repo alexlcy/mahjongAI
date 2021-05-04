@@ -130,7 +130,7 @@ for i in range(PLAY_TIMES):
     replay_buffer.update_buffer()
 
     # Update policy
-    if len(replay_buffer) < EXP_SAMPLE_SIZE:
+    if i < 500 or len(replay_buffer) < EXP_SAMPLE_SIZE:
         continue
 
     if i != 0 and i % TRAIN_FREQENCY == 0:
