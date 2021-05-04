@@ -225,6 +225,34 @@ class ExplorationMethods:
     def decide_discard_by_random(self, player):
         return random.choice(player['hands'])
 
+    def DQN_with_epsilon(self, feature, player, feature_tracer, **kwargs):
+        explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
+        self.decay_step += 1
+
+        # # For a fixed epsilon
+        # explore_probability = 0.1
+        feature_tracer.set_explore_probability(player['player_id'], explore_probability)
+        ai_discard_tile, raw_prediction = self.decide_discard_by_DQN(feature, player)
+        # TODO: if no unexpected error, can delete below print
+        if raw_prediction is None:
+            print('Error here~ type2: methods/DQN_with_epsilon')
+        if explore_probability > np.random.rand():
+            return self.decide_discard_by_softmax_and_epsilon(feature, player), False, np.random.rand(1,34)
+        else:
+            return ai_discard_tile, True, np.random.rand(1,34)
+
+
+    def decide_discard_by_DQN(self, feature, player):
+        raw_prediction = self.model.predict(feature)  # (1,34)
+        # softmax = torch.nn.Softmax(dim=1)
+        # softmax_prediction = softmax(raw_prediction)
+        tile_priority = np.argsort(raw_prediction.numpy())[0][::-1]
+        tile_priority_list = [self.total_dict_revert[index] for index in tile_priority]
+        tile_index_priority = [CARD_DICT[index] for index in tile_priority_list if index[0] not in ('J', 'F')]
+        for index, ai_discard_tile in enumerate(tile_index_priority):
+            if ai_discard_tile in player['hands']:
+                return ai_discard_tile, raw_prediction
+
 
 
 

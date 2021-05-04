@@ -12,7 +12,8 @@ import numpy as np
 from mahjong.snapshot import Snapshot
 from mahjong.consts import COMMAND, CARD_DICT,CARD
 from collections import Counter
-from mahjong.models.model import DiscardModel, KongModel, PongModel
+from mahjong.models.model import KongModel, PongModel
+from MajhongAI.DQN import DQNModel
 from mahjong.settings import FeatureTracer
 from mahjong.exploration.methods import ExplorationMethods
 
@@ -29,7 +30,8 @@ class ReinforceLearningAgent:
         # j_dict = {'J' + str(i + 1): i + 31 for i in range(3)}  # （剑牌）中发白
         # total_dict = {**w_dict, **b_dict, **t_dict, **f_dict, **j_dict}
         # self.total_dict_revert = {index: value for value, index in total_dict.items()}
-        self.discard_model = DiscardModel()
+        # self.discard_model = DiscardModel()
+        self.discard_model = DQNModel()
         self.kong_model = KongModel()
         self.pong_model = PongModel()
         self.exploration_method = ExplorationMethods(self.discard_model)
@@ -222,11 +224,13 @@ class ReinforceLearningAgent:
         # return self.exploration_method.epsilon_second_of_softmax(feature, player, feature_tracer)  # total 10: 3,3,2,2
 
 
-        return self.exploration_method.epsilon_by_softmax(feature, player, feature_tracer)  # William train on this
+        # return self.exploration_method.epsilon_by_softmax(feature, player, feature_tracer)  # William train on this
 
         # return self.exploration_method.epsilon_random(feature, player, feature_tracer)  # Alex train on this
 
         #return self.exploration_method.epsilon_rule(feature, player, feature_tracer)  # Koning train on this
+
+        return self.exploration_method.DQN_with_epsilon(feature, player, feature_tracer)
 
         # Priority 1: Discard based on color
         # color_discard_tile = self.decide_discard_by_color(player)
