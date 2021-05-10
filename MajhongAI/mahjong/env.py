@@ -8,6 +8,7 @@ from mahjong.game import Game
 from mahjong.snapshot import Snapshot
 
 from mahjong.ReinforcementLearning.experience import ExperienceBuffer
+from mahjong.ReinforcementLearning.experience import ReplayBuffer
 
 import mahjong.mahjong_config
 
