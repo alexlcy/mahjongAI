@@ -12,7 +12,7 @@ def logger(data_name):
     def _log(func):
         def record(*args, **kwargs):
             result, no = func(*args, **kwargs)
-            writer.add_scalar(data_name, result, no)
+            writer.add_scalar(result, no)
             return result
 
         return record

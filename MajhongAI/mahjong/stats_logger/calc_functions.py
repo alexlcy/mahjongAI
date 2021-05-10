@@ -30,6 +30,6 @@ def calc_hu_score_each_game(hu_rewards, game_no):
     return hu_reward_result, game_no
 
 
-@logger(data_name='calc_mean_loss_each_train')
-def calc_mean_loss_each_train(loss):
-    return loss
+@logger(data_name='MSE')
+def calc_mean_loss_each_train(loss, no):
+    return loss, no
