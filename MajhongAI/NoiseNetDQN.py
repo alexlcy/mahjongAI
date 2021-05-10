@@ -190,14 +190,24 @@ class DQNAgent:
     #     tile_index_priority = [CARD_DICT[index] for index in tile_priority_list if index[0] not in ('J', 'F')]
 
     def preprocess(self, exps):
-        game_no, states, rewards, actions = exps['game_no'], exps['states'], exps['rewards'], exps['actions']
-        next_states = copy.deepcopy(states)
-        dones = np.zeros(len(states))
+        game_no, states, rewards, actions, player_id = exps['game_no'], exps['states'], exps['rewards'], exps['actions'], exps['player_id']
+        fix_states = []
+        fix_rewards = []
+        fix_actions = []
+        for idx, val in enumerate(player_id):
+            if val == 1:  # player id = 1
+                fix_states.append(states[idx])
+                fix_rewards.append(rewards[idx])
+                fix_actions.append(actions[idx])
+
+        next_states = copy.deepcopy(fix_states)
+        for i in range(len(fix_states)-1):
+            next_states[i] = fix_states[i+1]
+        next_states[-1] = fix_states[-1]
+
+        dones = np.zeros(len(fix_states))
         dones[-1] = 1
-        for i in range(len(states)-1):
-            next_states[i] = states[i+1]
-        next_states[-1] = states[-1]
-        return states, actions, rewards, next_states, dones
+        return fix_states, fix_actions, fix_rewards, next_states, dones
 
     def train(self, exps):
         losses = []
@@ -212,7 +222,7 @@ class DQNAgent:
                 # s_j, a_j, r_j, s_j+1
                 batch_s = torch.tensor(batch_s, dtype=torch.float32, device=device)
                 batch_a = torch.tensor(batch_a).long().to(device)
-                batch_r = (batch_r - batch_r.mean()) / (batch_r.std() + 1e-7)
+                # batch_r = (batch_r - batch_r.mean()) / (batch_r.std() + 1e-7)
                 batch_r = torch.tensor(batch_r, dtype=torch.float32, device=device)
                 batch_next_s = torch.tensor(batch_next_s, dtype=torch.float32, device=device)
                 batch_d = torch.tensor(batch_d, dtype=torch.bool, device=device)
@@ -259,9 +269,9 @@ PLAY_TIMES = 200000
 LR = 0.00001
 BATCH_SIZE = 512
 EXP_SAMPLE_SIZE = 100  # how many games to sample to train model each time
-BEHAVIOR_POLICY_UPDATE_INTV = 100  # interval after which the behavior policy gets replaced by the newest target policy
+BEHAVIOR_POLICY_UPDATE_INTV = 300  # interval after which the behavior policy gets replaced by the newest target policy
 SAVE_INTV = 1000
-TRAIN_FREQUENCY = 100
+TRAIN_FREQUENCY = 150
 GAMMA = 0.99
 # MODEL_TO_TRAIN = 'discard'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
