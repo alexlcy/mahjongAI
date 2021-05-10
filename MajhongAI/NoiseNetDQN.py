@@ -293,7 +293,7 @@ prev_weights = None
 # torch.save(model.state_dict(), os.path.join(RL_SAVE_DIR, model_init_name))
 
 for i in range(PLAY_TIMES):
-    print(f'No.{i + 1} Game ing~')
+    print(f'No.{i} Game ing~')
 
     """
     reset & run
