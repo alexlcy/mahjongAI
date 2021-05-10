@@ -179,6 +179,7 @@ class DQNAgent:
         self.DQN_target.load_state_dict(self.DQN.state_dict())
 
         self.optimizer = torch.optim.Adam(self.DQN.parameters(), lr=LR)
+        self.loss_fn = nn.MSELoss()
 
     # def act(self, state):
     #     raw_prediction = self.DQN.predict(state)  # (1,34)
@@ -234,7 +235,7 @@ class DQNAgent:
                 # at the last state we shall use simplified formula: Q(s,a) = r(s,a) since s' doesn't exist
                 target_qvalues_for_actions = torch.where(batch_d, batch_r, target_qvalues_for_actions)
 
-                loss = nn.MSELoss(predicted_qvalues_for_actions.squeeze(), target_qvalues_for_actions)
+                loss = self.loss_fn(predicted_qvalues_for_actions.squeeze(), target_qvalues_for_actions)
 
                 self.optimizer.zero_grad()
                 loss = loss.mean()
