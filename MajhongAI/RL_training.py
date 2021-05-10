@@ -27,9 +27,9 @@ def preprocess_data(s, a, r, p):
     s = torch.tensor(s, dtype=torch.float32, device=device)
     a = torch.tensor(a).long().to(device)
     r = torch.tensor(r, dtype=torch.float32, device=device)
-    discounted_r = get_discounted_reward(r)
+    # r = get_discounted_reward(r)
     p = torch.tensor(p, dtype=torch.float32, device=device)
-    return s, a, discounted_r, p
+    return s, a, r, p
 
 def update_policy(model, optim, loss_fn, exps):
     for exp_i, exp in enumerate(exps):
@@ -48,7 +48,7 @@ def update_policy(model, optim, loss_fn, exps):
             pred_probs = torch.gather(softmax_preds, 1, batch_a.unsqueeze(-1)).detach()  # [bs, 1]
 
             optim.zero_grad()
-            loss = (pred_probs.squeeze(-1) / batch_p) * batch_r * loss_fn(action_logits, batch_a)
+            loss = (pred_probs.squeeze(-1) / batch_p + 1e-6) * batch_r * loss_fn(action_logits, batch_a)
             loss = loss.mean()
             loss.backward()
             optim.step()
