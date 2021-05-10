@@ -30,6 +30,7 @@ from mahjong.models.model import DiscardModel, KongModel, PongModel
 from mahjong.stats_logger.calc_functions import calc_win_rates, calc_hu_scores, calc_win_times, calc_hu_score_each_game, calc_mean_loss_each_train
 from mahjong.agents.DL import DeepLearningAgent
 from mahjong.agents.RL import ReinforceLearningAgent
+from mahjong.agents.random import RandomAgent
 from mahjong.agents.rule import RuleAgent
 from mahjong.DQN import DQNModel
 
@@ -277,7 +278,7 @@ class DQNAgent:
 PLAY_TIMES = 200000
 LR = 0.00001
 BATCH_SIZE = 512
-EXP_SAMPLE_SIZE = 400  # how many games to sample to train model each time
+EXP_SAMPLE_SIZE = 200  # how many games to sample to train model each time
 BEHAVIOR_POLICY_UPDATE_INTV = 500  # interval after which the behavior policy gets replaced by the newest target policy
 SAVE_INTV = 10000
 TRAIN_FREQUENCY = 100
@@ -301,7 +302,7 @@ config = {
 }
 env = Env(config)
 RL_agent = ReinforceLearningAgent(0)
-env.set_agents([RL_agent, RuleAgent(1), RuleAgent(2), RuleAgent(3)])
+env.set_agents([RL_agent, RuleAgent(1), RandomAgent(2), RuleAgent(3)])
 
 hu_reward_statistics = {0: [], 1: [], 2: [], 3: []}
 
@@ -342,7 +343,7 @@ for i in range(PLAY_TIMES):
     buffer.update_buffer()
 
     # Update policy
-    if i < 1 or len(buffer) < EXP_SAMPLE_SIZE:
+    if i < 200 or len(buffer) < EXP_SAMPLE_SIZE:
         continue
 
     if i != 0 and i % TRAIN_FREQUENCY == 0:
