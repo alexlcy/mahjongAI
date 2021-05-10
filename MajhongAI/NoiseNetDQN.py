@@ -246,7 +246,7 @@ class DQNAgent:
                 self.optimizer.step()
                 # print(f"loss:{loss}")
                 losses.append(loss)
-        return torch.mean(torch.stack(losses)).numpy()
+        return torch.mean(torch.stack(losses)).cpu().numpy()
 
     def update_tar_DQN(self):
         self.DQN_target.load_state_dict(self.DQN.state_dict())
