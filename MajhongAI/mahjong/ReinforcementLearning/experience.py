@@ -265,6 +265,7 @@ class ReplayBuffer:
         self.action_probabilities = []
         self.discard_argmax = []
         self.discard_probabilities = []
+        self.player_id = []
         for c_key in collectors.keys():
             for i in range(len(collectors[c_key].feature_tracers)):
                 self.player_id.append(collectors[c_key].player_id)
