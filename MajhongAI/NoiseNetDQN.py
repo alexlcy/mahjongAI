@@ -323,14 +323,14 @@ for i in range(PLAY_TIMES):
     buffer.update_buffer()
 
     # Update policy
-    if i < 500 or len(buffer) < EXP_SAMPLE_SIZE:
+    if i < 200 or len(buffer) < EXP_SAMPLE_SIZE:
         continue
 
     if i != 0 and i % TRAIN_FREQUENCY == 0:
         exps = buffer.sample(EXP_SAMPLE_SIZE)
         mean_loss = DQNAgent.train(exps)
         # mean loss each train
-        calc_mean_loss_each_train(buffer.mean_loss, buffer.game_no)
+        calc_mean_loss_each_train(mean_loss)
 
     # Replace behavior policy
     if i != 0 and i % BEHAVIOR_POLICY_UPDATE_INTV == 0:
