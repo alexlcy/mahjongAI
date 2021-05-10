@@ -199,6 +199,7 @@ class DQNAgent:
         return states, actions, rewards, next_states, dones
 
     def train(self, exps):
+        losses = []
         for exp_i, exp in enumerate(exps):
             states, actions, rewards, next_states, dones = self.preprocess(exp)
             for i in tqdm(range(math.ceil(len(states) / BATCH_SIZE)), desc=f"Training on buffer {exp_i+1}: "):
@@ -245,6 +246,9 @@ class DQNAgent:
                     param.grad.data.clamp_(-1, 1)
                 self.optimizer.step()
                 print(f"loss:{loss}")
+                losses.append(loss)
+        return np.mean(losses)
+            
 
     def update_tar_DQN(self):
         self.DQN_target.load_state_dict(self.DQN.state_dict())
@@ -326,7 +330,9 @@ for i in range(PLAY_TIMES):
 
     if i != 0 and i % TRAIN_FREQUENCY == 0:
         exps = buffer.sample(EXP_SAMPLE_SIZE)
-        DQNAgent.train(exps)
+        mean_loss = DQNAgent.train(exps)
+        # mean loss each train
+        calc_mean_loss_each_train(buffer.hu_reward, buffer.game_no)
 
     # Replace behavior policy
     if i != 0 and i % BEHAVIOR_POLICY_UPDATE_INTV == 0:

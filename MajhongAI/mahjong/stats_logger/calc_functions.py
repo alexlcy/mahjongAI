@@ -28,3 +28,8 @@ def calc_hu_score_each_game(hu_rewards, game_no):
     for i in range(4):
         hu_reward_result[i] = hu_rewards[i]
     return hu_reward_result, game_no
+
+
+@logger(data_name='calc_mean_loss_each_train')
+def calc_mean_loss_each_train(loss):
+    return loss
