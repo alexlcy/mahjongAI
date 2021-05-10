@@ -235,17 +235,17 @@ class DQNAgent:
                 # at the last state we shall use simplified formula: Q(s,a) = r(s,a) since s' doesn't exist
                 target_qvalues_for_actions = torch.where(batch_d, batch_r, target_qvalues_for_actions)
 
-                loss = self.loss_fn(predicted_qvalues_for_actions.squeeze(), target_qvalues_for_actions)
+                loss = F.smooth_l1_loss(predicted_qvalues_for_actions.squeeze(), target_qvalues_for_actions.detach())
 
                 self.optimizer.zero_grad()
-                loss = loss.mean()
+                # loss = loss.mean()
                 loss.backward()
                 for param in self.DQN.parameters():
                     param.grad.data.clamp_(-1, 1)
                 self.optimizer.step()
                 # print(f"loss:{loss}")
-                losses.append(loss)
-        return np.mean(losses)
+        #         losses.append(loss)
+        # return np.mean(losses)
 
     def update_tar_DQN(self):
         self.DQN_target.load_state_dict(self.DQN.state_dict())
@@ -257,10 +257,10 @@ class DQNAgent:
 PLAY_TIMES = 100000
 LR = 0.00001
 BATCH_SIZE = 512
-EXP_SAMPLE_SIZE = 100  # how many games to sample to train model each time
+EXP_SAMPLE_SIZE = 10  # how many games to sample to train model each time
 BEHAVIOR_POLICY_UPDATE_INTV = 100  # interval after which the behavior policy gets replaced by the newest target policy
 SAVE_INTV = 1000
-TRAIN_FREQUENCY = 100
+TRAIN_FREQUENCY = 10
 GAMMA = 0.99
 # MODEL_TO_TRAIN = 'discard'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -327,9 +327,9 @@ for i in range(PLAY_TIMES):
 
     if i != 0 and i % TRAIN_FREQUENCY == 0:
         exps = buffer.sample(EXP_SAMPLE_SIZE)
-        mean_loss = DQNAgent.train(exps)
+        DQNAgent.train(exps)
         # mean loss each train
-        calc_mean_loss_each_train(buffer.hu_reward, buffer.game_no)
+        # calc_mean_loss_each_train(buffer.hu_reward, buffer.game_no)
 
     # Replace behavior policy
     if i != 0 and i % BEHAVIOR_POLICY_UPDATE_INTV == 0:
