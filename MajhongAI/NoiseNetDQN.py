@@ -234,10 +234,7 @@ class DQNAgent:
                 # at the last state we shall use simplified formula: Q(s,a) = r(s,a) since s' doesn't exist
                 target_qvalues_for_actions = torch.where(batch_d, batch_r, target_qvalues_for_actions)
 
-                # mean squared error loss to minimize
-                # loss = torch.mean((predicted_qvalues_for_actions -
-                #                   target_qvalues_for_actions.detach()) ** 2)
-                loss = F.smooth_l1_loss(predicted_qvalues_for_actions.squeeze(), target_qvalues_for_actions.detach())
+                loss = nn.MSELoss(predicted_qvalues_for_actions.squeeze(), target_qvalues_for_actions)
 
                 self.optimizer.zero_grad()
                 # loss = loss.mean()
