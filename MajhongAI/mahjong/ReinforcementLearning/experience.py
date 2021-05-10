@@ -254,7 +254,7 @@ class ReplayBuffer:
         self.game_no = 0
         self.player_id = []
 
-    def massage_experience(self, collectors, normed=False):
+    def massage_experience(self, collectors, normed=True):
         self.game_no += 1
         self.game_no_list = []
         self.x = []

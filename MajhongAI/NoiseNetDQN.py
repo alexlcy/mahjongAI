@@ -216,7 +216,7 @@ class DQNAgent:
         #
         # dones = np.zeros(len(states))
         # dones[-1] = 1
-        return fix_states, fix_actions, fix_rewards, next_states, dones
+        return fix_states, fix_actions, np.array(fix_rewards), next_states, dones
         # return states, actions, rewards, next_states, dones
 
     def train(self, exps):
@@ -232,7 +232,7 @@ class DQNAgent:
                 # s_j, a_j, r_j, s_j+1
                 batch_s = torch.tensor(torch.stack(batch_s), dtype=torch.float32, device=device)
                 batch_a = torch.tensor(batch_a).long().to(device)
-                # batch_r = (batch_r - batch_r.mean()) / (batch_r.std() + 1e-7)
+                batch_r = (batch_r - batch_r.mean()) / (batch_r.std() + 1e-7)
                 batch_r = torch.tensor(batch_r, dtype=torch.float32, device=device)
                 batch_next_s = torch.tensor(torch.stack(batch_next_s), dtype=torch.float32, device=device)
                 batch_d = torch.tensor(batch_d, dtype=torch.bool, device=device)
