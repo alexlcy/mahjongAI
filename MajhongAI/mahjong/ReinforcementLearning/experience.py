@@ -103,6 +103,7 @@ class ExperienceBuffer:
         self.hu_reward = {0: 0, 1: 0, 2: 0, 3: 0}
         self.play_times = play_times
         self.game_no = 0
+        self.player_id = []
 
     # TODO: if ok should be moved to calculation_rl.py
     # def cal_probability_of_action(self, is_trigger_by_rl, epsilon, discard_argmax, discard_probabilities):
@@ -124,6 +125,7 @@ class ExperienceBuffer:
             for i in range(len(collectors[c_key].feature_tracers)):
                 self.game_no_list.append(self.game_no)
                 self.x.append(collectors[c_key].feature_tracers[i].get_features(c_key).cpu())
+                self.player_id.append(collectors[c_key].player_id)
                 self.discard.append(helper(1, [collectors[c_key].discard_cards[i]]))
                 is_rl_agent = collectors[c_key].is_rl_agent
                 self.is_rl_agent.append(is_rl_agent)
@@ -159,6 +161,7 @@ class ExperienceBuffer:
     def save_experience(self, folder_path):
         if len(self.x) != 0:
             game_no = np.array(self.game_no_list)
+            player_id = np.array(self.player_id)
             x = torch.cat(self.x, dim=0)
             y = np.array(self.y)
             # discard = np.stack(self.discard)
@@ -192,6 +195,7 @@ class ExperienceBuffer:
                 # experience_outf['experience'].create_dataset('discard_probabilities', data=discard_probabilities)
                 # 10
                 # experience_outf['experience'].create_dataset('epsilon', data=epsilon)
+                experience_outf['experience'].create_dataset('player_id', data=player_id)
             for c_key in self.win_times.keys():
                 print(f'Player {c_key} won {self.win_times[c_key]} times...')
             print(f'HU {sum(self.win_times.values())} times data generated...')
@@ -200,7 +204,7 @@ class ExperienceBuffer:
 
     def read_experience(self, file_name):
         h5file = h5py.File(file_name, 'r')
-        headers = ['game_no', 'is_rl_agents', 'states', 'rewards', 'actions', 'p_action']
+        headers = ['game_no', 'is_rl_agents', 'states', 'rewards', 'actions', 'p_action', 'player_id']
         buffer_dict = {header: np.array(h5file['experience'][header]) for header in headers}
         return buffer_dict
 
