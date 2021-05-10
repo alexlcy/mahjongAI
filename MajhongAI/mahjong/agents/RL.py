@@ -225,7 +225,7 @@ class ReinforceLearningAgent:
 
         #return self.exploration_method.epsilon_rule(feature, player, feature_tracer)  # Koning train on this
 
-        return self.exploration_method.DQN_with_epsilon(feature, player, feature_tracer)
+        return self.exploration_method.DQN_with_epsilon(feature, player, feature_tracer, whether_epsilon=False)
 
         # Priority 1: Discard based on color
         # color_discard_tile = self.decide_discard_by_color(player)

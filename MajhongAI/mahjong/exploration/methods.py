@@ -225,12 +225,14 @@ class ExplorationMethods:
     def decide_discard_by_random(self, player):
         return random.choice(player['hands'])
 
-    def DQN_with_epsilon(self, feature, player, feature_tracer, **kwargs):
-        explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
-        self.decay_step += 1
-
-        # # For a fixed epsilon
-        # explore_probability = 0.1
+    def DQN_with_epsilon(self, feature, player, feature_tracer, whether_epsilon=True, **kwargs):
+        if whether_epsilon:
+            explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
+            self.decay_step += 1
+            # # For a fixed epsilon
+            # explore_probability = 0.1
+        else:
+            explore_probability = 0
         feature_tracer.set_explore_probability(player['player_id'], explore_probability)
         ai_discard_tile, raw_prediction = self.decide_discard_by_DQN(feature, player)
         # TODO: if no unexpected error, can delete below print
@@ -240,7 +242,6 @@ class ExplorationMethods:
             return self.decide_discard_by_softmax_and_epsilon(feature, player), False, np.random.rand(1,34)
         else:
             return ai_discard_tile, True, np.random.rand(1,34)
-
 
     def decide_discard_by_DQN(self, feature, player):
         raw_prediction = self.model.predict(feature)  # (1,34)
@@ -252,7 +253,6 @@ class ExplorationMethods:
         for index, ai_discard_tile in enumerate(tile_index_priority):
             if ai_discard_tile in player['hands']:
                 return ai_discard_tile, raw_prediction
-
 
 
 

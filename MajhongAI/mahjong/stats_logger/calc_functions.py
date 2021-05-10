@@ -1,4 +1,4 @@
-from mahjong.stats_logger.logger import players_dict_logger
+from mahjong.stats_logger.logger import players_dict_logger, logger
 
 
 @players_dict_logger(data_name='win_times')

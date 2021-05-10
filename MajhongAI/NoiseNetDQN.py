@@ -27,7 +27,7 @@ import time
 from mahjong.env import Env
 from mahjong.ReinforcementLearning.experience import ReplayBuffer
 from mahjong.models.model import DiscardModel, KongModel, PongModel
-from mahjong.stats_logger.calc_functions import calc_win_rates, calc_hu_scores, calc_win_times, calc_hu_score_each_game
+from mahjong.stats_logger.calc_functions import calc_win_rates, calc_hu_scores, calc_win_times, calc_hu_score_each_game, calc_mean_loss_each_train
 from mahjong.agents.DL import DeepLearningAgent
 from mahjong.agents.RL import ReinforceLearningAgent
 from mahjong.agents.rule import RuleAgent
@@ -257,13 +257,13 @@ class DQNAgent:
 
 # =========================== Training ===========================
 # Hyper-parameters & settings
-PLAY_TIMES = 10000
-LR = 0.0005
+PLAY_TIMES = 100000
+LR = 0.00001
 BATCH_SIZE = 512
 EXP_SAMPLE_SIZE = 100  # how many games to sample to train model each time
 BEHAVIOR_POLICY_UPDATE_INTV = 100  # interval after which the behavior policy gets replaced by the newest target policy
-SAVE_INTV = 100
-TRAIN_FREQUENCY = 50
+SAVE_INTV = 1000
+TRAIN_FREQUENCY = 100
 GAMMA = 0.99
 # MODEL_TO_TRAIN = 'discard'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'

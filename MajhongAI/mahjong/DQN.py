@@ -64,7 +64,7 @@ class MJNet(nn.Module):
         module_list += nn.ModuleList([
             *self.linear_block(256*34, 1024, dropout_prob=0.2),
             *self.linear_block(1024, 256, dropout_prob=0.2),
-            nn.Linear(256, n_cls)
+            NoisyFactorizedLinear(256, n_cls)
         ])
 
         return nn.Sequential(*module_list)
