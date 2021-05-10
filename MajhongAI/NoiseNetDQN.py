@@ -239,7 +239,7 @@ class DQNAgent:
                 loss = self.loss_fn(predicted_qvalues_for_actions.squeeze(), target_qvalues_for_actions)
 
                 self.optimizer.zero_grad()
-                loss = loss.mean()
+                # loss = loss.mean()
                 loss.backward()
                 for param in self.DQN.parameters():
                     param.grad.data.clamp_(-1, 1)
