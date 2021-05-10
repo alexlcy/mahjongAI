@@ -330,7 +330,7 @@ for i in range(PLAY_TIMES):
         exps = buffer.sample(EXP_SAMPLE_SIZE)
         mean_loss = DQNAgent.train(exps)
         # mean loss each train
-        calc_mean_loss_each_train('MSE', mean_loss, i+1)
+        calc_mean_loss_each_train(mean_loss, i+1)
 
     # Replace behavior policy
     if i != 0 and i % BEHAVIOR_POLICY_UPDATE_INTV == 0:
