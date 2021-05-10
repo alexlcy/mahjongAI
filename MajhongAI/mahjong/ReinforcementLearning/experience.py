@@ -252,6 +252,7 @@ class ReplayBuffer:
         self.hu_reward = {0: 0, 1: 0, 2: 0, 3: 0}
         self.play_times = play_times
         self.game_no = 0
+        self.player_id = []
 
     def massage_experience(self, collectors, normed=True):
         self.game_no += 1
@@ -266,6 +267,7 @@ class ReplayBuffer:
         self.discard_probabilities = []
         for c_key in collectors.keys():
             for i in range(len(collectors[c_key].feature_tracers)):
+                self.player_id.append(collectors[c_key].player_id)
                 self.game_no_list.append(self.game_no)
                 self.x.append(collectors[c_key].feature_tracers[i].get_features(c_key).cpu())
                 self.discard.append(helper(1, [collectors[c_key].discard_cards[i]]))
@@ -300,6 +302,7 @@ class ReplayBuffer:
 
     def update_buffer(self):
         if len(self.x) != 0:
+            player_id = np.array(self.player_id)
             game_no = np.array(self.game_no_list)
             x = torch.cat(self.x, dim=0)
             y = np.array(self.y)
@@ -310,6 +313,7 @@ class ReplayBuffer:
             discard_argmax = np.array(self.discard_argmax)
 
             game_data = {
+                'player_id': player_id,
                 'game_no': game_no,
                 'states': x,
                 'rewards': y,
