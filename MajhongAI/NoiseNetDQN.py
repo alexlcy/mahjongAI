@@ -246,7 +246,7 @@ class DQNAgent:
                 self.optimizer.step()
                 # print(f"loss:{loss}")
                 losses.append(loss)
-        return torch.mean(torch.stack(losses))
+        return torch.mean(torch.stack(losses)).item()
 
     def update_tar_DQN(self):
         self.DQN_target.load_state_dict(self.DQN.state_dict())
@@ -258,7 +258,7 @@ class DQNAgent:
 PLAY_TIMES = 200000
 LR = 0.00001
 BATCH_SIZE = 512
-EXP_SAMPLE_SIZE = 100  # how many games to sample to train model each time
+EXP_SAMPLE_SIZE = 10  # how many games to sample to train model each time
 BEHAVIOR_POLICY_UPDATE_INTV = 100  # interval after which the behavior policy gets replaced by the newest target policy
 SAVE_INTV = 1000
 TRAIN_FREQUENCY = 100
@@ -323,7 +323,7 @@ for i in range(PLAY_TIMES):
     buffer.update_buffer()
 
     # Update policy
-    if i < 100 or len(buffer) < EXP_SAMPLE_SIZE:
+    if i < 10 or len(buffer) < EXP_SAMPLE_SIZE:
         continue
 
     if i != 0 and i % TRAIN_FREQUENCY == 0:
