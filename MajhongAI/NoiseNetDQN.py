@@ -235,17 +235,18 @@ class DQNAgent:
                 # at the last state we shall use simplified formula: Q(s,a) = r(s,a) since s' doesn't exist
                 target_qvalues_for_actions = torch.where(batch_d, batch_r, target_qvalues_for_actions)
 
-                loss = F.smooth_l1_loss(predicted_qvalues_for_actions.squeeze(), target_qvalues_for_actions.detach())
+                # loss = F.smooth_l1_loss(predicted_qvalues_for_actions.squeeze(), target_qvalues_for_actions.detach())
+                loss = self.loss_fn(predicted_qvalues_for_actions.squeeze(), target_qvalues_for_actions)
 
                 self.optimizer.zero_grad()
-                # loss = loss.mean()
+                loss = loss.mean()
                 loss.backward()
                 for param in self.DQN.parameters():
                     param.grad.data.clamp_(-1, 1)
                 self.optimizer.step()
                 # print(f"loss:{loss}")
-        #         losses.append(loss)
-        # return np.mean(losses)
+                losses.append(loss)
+        return np.mean(losses)
 
     def update_tar_DQN(self):
         self.DQN_target.load_state_dict(self.DQN.state_dict())
@@ -327,9 +328,9 @@ for i in range(PLAY_TIMES):
 
     if i != 0 and i % TRAIN_FREQUENCY == 0:
         exps = buffer.sample(EXP_SAMPLE_SIZE)
-        DQNAgent.train(exps)
+        mean_loss = DQNAgent.train(exps)
         # mean loss each train
-        # calc_mean_loss_each_train(buffer.hu_reward, buffer.game_no)
+        calc_mean_loss_each_train(buffer.mean_loss, buffer.game_no)
 
     # Replace behavior policy
     if i != 0 and i % BEHAVIOR_POLICY_UPDATE_INTV == 0:
