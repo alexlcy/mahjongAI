@@ -255,7 +255,7 @@ class DQNAgent:
 
 # =========================== Training ===========================
 # Hyper-parameters & settings
-PLAY_TIMES = 100000
+PLAY_TIMES = 200000
 LR = 0.00001
 BATCH_SIZE = 512
 EXP_SAMPLE_SIZE = 100  # how many games to sample to train model each time
