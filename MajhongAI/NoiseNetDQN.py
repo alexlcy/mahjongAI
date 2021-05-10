@@ -237,15 +237,14 @@ class DQNAgent:
                 loss = nn.MSELoss(predicted_qvalues_for_actions.squeeze(), target_qvalues_for_actions)
 
                 self.optimizer.zero_grad()
-                # loss = loss.mean()
+                loss = loss.mean()
                 loss.backward()
                 for param in self.DQN.parameters():
                     param.grad.data.clamp_(-1, 1)
                 self.optimizer.step()
-                print(f"loss:{loss}")
+                # print(f"loss:{loss}")
                 losses.append(loss)
         return np.mean(losses)
-            
 
     def update_tar_DQN(self):
         self.DQN_target.load_state_dict(self.DQN.state_dict())
