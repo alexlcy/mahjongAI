@@ -246,7 +246,7 @@ class DQNAgent:
                 self.optimizer.step()
                 # print(f"loss:{loss}")
                 losses.append(loss)
-        return np.mean(losses)
+        return torch.mean(torch.stack(losses))
 
     def update_tar_DQN(self):
         self.DQN_target.load_state_dict(self.DQN.state_dict())
@@ -323,7 +323,7 @@ for i in range(PLAY_TIMES):
     buffer.update_buffer()
 
     # Update policy
-    if i < 200 or len(buffer) < EXP_SAMPLE_SIZE:
+    if i < 500 or len(buffer) < EXP_SAMPLE_SIZE:
         continue
 
     if i != 0 and i % TRAIN_FREQUENCY == 0:
