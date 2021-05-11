@@ -23,6 +23,7 @@ from mahjong.ReinforcementLearning.experience import ReplayBuffer
 import math
 import logging
 import time
+import json
 
 from mahjong.env import Env
 from mahjong.ReinforcementLearning.experience import ReplayBuffer
@@ -30,6 +31,7 @@ from mahjong.models.model import DiscardModel, KongModel, PongModel
 from mahjong.stats_logger.calc_functions import calc_win_rates, calc_hu_scores, calc_win_times, calc_hu_score_each_game, calc_mean_loss_each_train
 from mahjong.agents.DL import DeepLearningAgent
 from mahjong.agents.RL import ReinforceLearningAgent
+from mahjong.agents.random import RandomAgent
 from mahjong.agents.rule import RuleAgent
 from mahjong.DQN import DQNModel
 
@@ -195,7 +197,7 @@ class DQNAgent:
         fix_rewards = []
         fix_actions = []
         for idx, val in enumerate(player_id):
-            if val == 1:  # player id = 1
+            if val == 0:  # player id = 0
                 fix_states.append(states[idx])
                 fix_rewards.append(rewards[idx])
                 fix_actions.append(actions[idx])
@@ -207,12 +209,28 @@ class DQNAgent:
 
         dones = np.zeros(len(fix_states))
         dones[-1] = 1
-        return fix_states, fix_actions, fix_rewards, next_states, dones
+
+        # next_states = copy.deepcopy(states)
+        # for i in range(len(states)-1):
+        #     next_states[i] = states[i+1]
+        # next_states[-1] = states[-1]
+        #
+        # dones = np.zeros(len(states))
+        # dones[-1] = 1
+        return fix_states, fix_actions, np.array(fix_rewards), next_states, dones
+        # return states, actions, rewards, next_states, dones
 
     def train(self, exps):
         losses = []
         for exp_i, exp in enumerate(exps):
             states, actions, rewards, next_states, dones = self.preprocess(exp)
+            if len(states) < 2:
+                print('bug2 data!!!')
+                with open("bug2.txt", "w") as f:
+                    f.write(str(exp) + '\n')
+                    f.write(str(actions) + '\n')
+                    f.write(str(rewards) + '\n')
+                continue
             for i in tqdm(range(math.ceil(len(states) / BATCH_SIZE)), desc=f"Training on buffer {exp_i+1}: "):
                 batch_s, batch_a, batch_r, batch_next_s, batch_d = states[i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
                                                                    actions[i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
@@ -220,11 +238,11 @@ class DQNAgent:
                                                                    next_states[i*BATCH_SIZE:(i+1)*BATCH_SIZE], \
                                                                    dones[i*BATCH_SIZE:(i+1)*BATCH_SIZE]
                 # s_j, a_j, r_j, s_j+1
-                batch_s = torch.tensor(batch_s, dtype=torch.float32, device=device)
+                batch_s = torch.tensor(torch.stack(batch_s), dtype=torch.float32, device=device)
                 batch_a = torch.tensor(batch_a).long().to(device)
-                # batch_r = (batch_r - batch_r.mean()) / (batch_r.std() + 1e-7)
+                batch_r = (batch_r - batch_r.mean()) / (batch_r.std() + 1e-7)
                 batch_r = torch.tensor(batch_r, dtype=torch.float32, device=device)
-                batch_next_s = torch.tensor(batch_next_s, dtype=torch.float32, device=device)
+                batch_next_s = torch.tensor(torch.stack(batch_next_s), dtype=torch.float32, device=device)
                 batch_d = torch.tensor(batch_d, dtype=torch.bool, device=device)
 
                 # get q-values for all actions in current states
@@ -268,10 +286,10 @@ class DQNAgent:
 PLAY_TIMES = 200000
 LR = 0.00001
 BATCH_SIZE = 512
-EXP_SAMPLE_SIZE = 100  # how many games to sample to train model each time
-BEHAVIOR_POLICY_UPDATE_INTV = 300  # interval after which the behavior policy gets replaced by the newest target policy
-SAVE_INTV = 1000
-TRAIN_FREQUENCY = 150
+EXP_SAMPLE_SIZE = 200  # how many games to sample to train model each time
+BEHAVIOR_POLICY_UPDATE_INTV = 500  # interval after which the behavior policy gets replaced by the newest target policy
+SAVE_INTV = 10000
+TRAIN_FREQUENCY = 100
 GAMMA = 0.99
 # MODEL_TO_TRAIN = 'discard'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -291,8 +309,8 @@ config = {
     'seed': None  # to None for random run, if seed == None, will not save record
 }
 env = Env(config)
-RL_agent = ReinforceLearningAgent(0)
-env.set_agents([RL_agent, RuleAgent(1), RuleAgent(2), RuleAgent(3)])
+RL_agent = ReinforceLearningAgent(1)
+env.set_agents([RuleAgent(0), RL_agent, RandomAgent(2), RuleAgent(3)])
 
 hu_reward_statistics = {0: [], 1: [], 2: [], 3: []}
 
@@ -333,7 +351,7 @@ for i in range(PLAY_TIMES):
     buffer.update_buffer()
 
     # Update policy
-    if i < 100 or len(buffer) < EXP_SAMPLE_SIZE:
+    if i < 200 or len(buffer) < EXP_SAMPLE_SIZE:
         continue
 
     if i != 0 and i % TRAIN_FREQUENCY == 0:

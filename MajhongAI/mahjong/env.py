@@ -8,6 +8,7 @@ from mahjong.game import Game
 from mahjong.snapshot import Snapshot
 
 from mahjong.ReinforcementLearning.experience import ExperienceBuffer
+from mahjong.ReinforcementLearning.experience import ReplayBuffer
 
 import mahjong.mahjong_config
 
@@ -97,7 +98,7 @@ class Env(object):
 
         # Experience Buffer
         collectors = self.game.round.collectors
-        buffer.massage_experience(collectors, False)
+        buffer.massage_experience(collectors)
 
         # x, y, discard = ExperienceBuffer().read_experience('./experiment_2021_03_29_19_17_08.h5')
         # buffer.combine_experience(collectors)
