@@ -228,13 +228,13 @@ class ExplorationMethods:
 
         softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
         # Set the original target card's possibility is 0 in order to not choose it anymore in exploration
-        temp_weight_list = copy.deepcopy(softmax_prediction)
+        temp_weight_list = copy.deepcopy(softmax_prediction)[0][:27].tolist()
         for index, ai_discard_tile in enumerate(ai_discard_tile_list):
             if ai_discard_tile in player['hands']:
                 temp_weight_list[index] = 0
                 break
         while True:
-            target_card = random.choices(ai_discard_tile_list, weights=temp_weight_list)
+            target_card = random.choices(ai_discard_tile_list, weights=temp_weight_list)[0]
             if target_card in player['hands']:
                 return target_card
 
