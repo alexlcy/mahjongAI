@@ -197,39 +197,43 @@ class ExplorationMethods:
                     return ai_discard_tile
 
     def decide_discard_by_softmax_and_epsilon(self, feature, player):
-        # softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
-        # raw_prediction_27 = copy.deepcopy(raw_prediction[0][:27])
-        # softmax = torch.nn.Softmax(dim=0)
-        # softmax_prediction_27 = softmax(raw_prediction_27).numpy()
-        #
-        # # Set the original target card's possibility is 0 in order to not choose it anymore in exploration
-        # for index, ai_discard_tile in enumerate(ai_discard_tile_list):
-        #     if ai_discard_tile in player['hands']:
-        #         softmax_prediction_27[index] = 0
-        #         break
-        # size = sum(1 for item in softmax_prediction_27 if item != 0)
-        #
-        # softmax_prediction_27 = softmax_prediction_27 / np.sum(softmax_prediction_27)
-        # sample_list = np.random.choice(ai_discard_tile_list, size=size, replace=False, p=softmax_prediction_27)
-        # for ai_discard_tile in sample_list:
-        #     if ai_discard_tile in player['hands']:
-        #         return ai_discard_tile
-
-        softmax_prediction, ai_discard_tile_list, discard_probabilities = self.decide_discard_by_AI_help(feature)
-        discard_probabilities_27 = copy.deepcopy(discard_probabilities[0][:27])
+        softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
+        raw_prediction_27 = copy.deepcopy(raw_prediction[0][:27])
         softmax = torch.nn.Softmax(dim=0)
-        softmax_prediction_27 = softmax(discard_probabilities_27).numpy()
+        softmax_prediction_27 = softmax(raw_prediction_27).numpy()
+
+        # Set the original target card's possibility is 0 in order to not choose it anymore in exploration
+        for index, ai_discard_tile in enumerate(ai_discard_tile_list):
+            if ai_discard_tile in player['hands']:
+                softmax_prediction_27[index] = 0
+                break
         softmax_prediction_27 = softmax_prediction_27 / np.sum(softmax_prediction_27)
-        size = sum(1 for item in softmax_prediction_27 if item)
+        size = sum(1 for item in softmax_prediction_27 if item != 0)
         try:
             sample_list = np.random.choice(ai_discard_tile_list, size=size, replace=False, p=softmax_prediction_27)
         except:
-            with open('bug_data3','w') as f:
+            with open('bug_data3', 'w') as f:
                 f.write('softmax_prediction_27: ' + str(softmax_prediction_27) + '/n')
-                f.write('discard_probabilities: ' + str(discard_probabilities))
+                f.write('raw_prediction: ' + str(raw_prediction))
         for ai_discard_tile in sample_list:
             if ai_discard_tile in player['hands']:
                 return ai_discard_tile
+
+        # softmax_prediction, ai_discard_tile_list, discard_probabilities = self.decide_discard_by_AI_help(feature)
+        # discard_probabilities_27 = copy.deepcopy(discard_probabilities[0][:27])
+        # softmax = torch.nn.Softmax(dim=0)
+        # softmax_prediction_27 = softmax(discard_probabilities_27).numpy()
+        # softmax_prediction_27 = softmax_prediction_27 / np.sum(softmax_prediction_27)
+        # size = sum(1 for item in softmax_prediction_27 if item)
+        # try:
+        #     sample_list = np.random.choice(ai_discard_tile_list, size=size, replace=False, p=softmax_prediction_27)
+        # except:
+        #     with open('bug_data3','w') as f:
+        #         f.write('softmax_prediction_27: ' + str(softmax_prediction_27) + '/n')
+        #         f.write('discard_probabilities: ' + str(discard_probabilities))
+        # for ai_discard_tile in sample_list:
+        #     if ai_discard_tile in player['hands']:
+        #         return ai_discard_tile
 
         # softmax_prediction, ai_discard_tile_list, raw_prediction = self.decide_discard_by_AI_help(feature)
         # # Set the original target card's possibility is 0 in order to not choose it anymore in exploration
