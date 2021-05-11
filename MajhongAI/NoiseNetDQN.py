@@ -227,7 +227,7 @@ class DQNAgent:
             if len(states) < 2:
                 print('bug2 data!!!')
                 with open("bug2.txt", "w") as f:
-                    f.write(json.dumps(exp) + '\n')
+                    f.write(str(exp) + '\n')
                     f.write(str(actions) + '\n')
                     f.write(str(rewards) + '\n')
                 continue
@@ -351,7 +351,7 @@ for i in range(PLAY_TIMES):
     buffer.update_buffer()
 
     # Update policy
-    if i < 20 or len(buffer) < EXP_SAMPLE_SIZE:
+    if i < 200 or len(buffer) < EXP_SAMPLE_SIZE:
         continue
 
     if i != 0 and i % TRAIN_FREQUENCY == 0:
