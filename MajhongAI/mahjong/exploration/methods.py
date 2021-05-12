@@ -225,9 +225,20 @@ class ExplorationMethods:
     def decide_discard_by_random(self, player):
         return random.choice(player['hands'])
 
-    def DQN_with_epsilon(self, feature, player, feature_tracer, whether_epsilon=True, **kwargs):
+    def new_epsilon(self, step, play_times):
+        A = 0.5
+        B = 0.1
+        C = 0.3
+        EPISODES = 15 * play_times
+        standardized_time = (step - A * EPISODES) / (B * EPISODES)
+        cosh = np.cosh(math.exp(-standardized_time))
+        epsilon = 1 - (1 / cosh + (step * C / EPISODES))
+        return epsilon
+
+    def DQN_with_epsilon(self, feature, player, feature_tracer, play_times, whether_epsilon=True, **kwargs):
         if whether_epsilon:
-            explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
+            # explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
+            explore_probability = self.new_epsilon(self.decay_step, play_times)
             self.decay_step += 1
             # # For a fixed epsilon
             # explore_probability = 0.1
