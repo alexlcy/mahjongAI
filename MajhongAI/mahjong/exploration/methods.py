@@ -250,7 +250,7 @@ class ExplorationMethods:
         if raw_prediction is None:
             print('Error here~ type2: methods/DQN_with_epsilon')
         if explore_probability > np.random.rand():
-            return self.decide_discard_by_softmax_and_epsilon(feature, player), False, np.random.rand(1,34)
+            return self.decide_discard_by_rule(player), False, np.random.rand(1,34)
         else:
             return ai_discard_tile, True, np.random.rand(1,34)
 
