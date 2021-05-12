@@ -23,7 +23,7 @@ class ExplorationMethods:
         self.model = model
         self.epsilon = 1.0  # exploration probability at start
         self.epsilon_min = 0.01  # minimum exploration probability
-        self.epsilon_decay = 0.001  # exponential decay rate for exploration prob
+        self.epsilon_decay = 0.05  # exponential decay rate for exploration prob
         self.prob_random_action = prob_random_action
 
         self.t = 0

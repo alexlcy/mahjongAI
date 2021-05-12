@@ -93,8 +93,8 @@ config = {
     'seed': None  # to None for random run, if seed == None, will not save record
 }
 env = Env(config)
-# RL_agent = ReinforceLearningAgent(0)
-env.set_agents([ReinforceLearningAgent(0), RuleAgent(1), RuleAgent(2), RuleAgent(3)])
+RL_agent = ReinforceLearningAgent(0)
+env.set_agents([RL_agent, RuleAgent(1), RuleAgent(2), RuleAgent(3)])
 
 hu_reward_statistics = {0: [], 1: [], 2: [], 3: []}
 
@@ -105,8 +105,9 @@ for i in range(PLAY_TIMES):
     """
     reset & run
     """
-    env.reset(model)
+    env.reset()
     env.run(replay_buffer)
+    RL_agent.exploration_method.decay_step = 0
 
     # tensor board
     # win_times

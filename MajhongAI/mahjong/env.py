@@ -8,7 +8,6 @@ from mahjong.game import Game
 from mahjong.snapshot import Snapshot
 
 from mahjong.ReinforcementLearning.experience import ExperienceBuffer
-from mahjong.exploration.methods import ExplorationMethods
 import mahjong.mahjong_config
 
 DEFAULT_CONFIG = {
@@ -44,10 +43,9 @@ class Env(object):
         self.is_rl_agents = [True if 'reinforcementlearning' in agent.name else False for agent in self.agents]
         return
 
-    def reset(self, model):
+    def reset(self):
         self.game.init_game(self.config, self.is_rl_agents)
         self.snapshot = self.game.new_game()
-        ExplorationMethods(model).decay_step = 0
 
     def next(self):
         self.snapshot = self.game.next(self.snapshot)
