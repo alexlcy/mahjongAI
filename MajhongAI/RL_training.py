@@ -106,8 +106,8 @@ for i in range(PLAY_TIMES):
     reset & run
     """
     env.reset()
-    env.run(replay_buffer)
     RL_agent.exploration_method.decay_step = 0
+    env.run(replay_buffer)
 
     # tensor board
     # win_times
