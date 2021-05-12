@@ -14,7 +14,7 @@ from mahjong.exploration.methods import ExplorationMethods
 
 
 class ReinforceLearningAgent:
-    def __init__(self, player_id: int):
+    def __init__(self, player_id: int, play_times):
         self.name = 'reinforcementlearning'
         self.__player_id = player_id
         self.state_tensor = np.zeros((9, 8, 10))
@@ -30,6 +30,7 @@ class ReinforceLearningAgent:
         self.kong_model = KongModel()
         self.pong_model = PongModel()
         self.exploration_method = ExplorationMethods(self.discard_model)
+        self.play_times = play_times
         # self.decay_step = 0
         # self.epsilon = 0.1  # exploration probability at start
         # self.epsilon_min = 0.01  # minimum exploration probability
@@ -225,7 +226,7 @@ class ReinforceLearningAgent:
 
         #return self.exploration_method.epsilon_rule(feature, player, feature_tracer)  # Koning train on this
 
-        return self.exploration_method.DQN_with_epsilon(feature, player, feature_tracer, whether_epsilon=True)
+        return self.exploration_method.DQN_with_epsilon(feature, player, feature_tracer, self.play_times, whether_epsilon=True)
 
         # Priority 1: Discard based on color
         # color_discard_tile = self.decide_discard_by_color(player)
