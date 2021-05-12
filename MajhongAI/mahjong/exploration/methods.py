@@ -23,7 +23,7 @@ class ExplorationMethods:
         self.model = model
         self.epsilon = 1.0  # exploration probability at start
         self.epsilon_min = 0.01  # minimum exploration probability
-        self.epsilon_decay = 0.05  # exponential decay rate for exploration prob
+        self.epsilon_decay = 0.01  # exponential decay rate for exploration prob
         self.prob_random_action = prob_random_action
 
         self.t = 0
@@ -40,6 +40,17 @@ class ExplorationMethods:
         j_dict = {'J' + str(i + 1): i + 31 for i in range(3)}  # （剑牌）中发白
         total_dict = {**w_dict, **b_dict, **t_dict, **f_dict, **j_dict}
         self.total_dict_revert = {index: value for value, index in total_dict.items()}
+
+    def new_epsilon(self, step, play_times):
+        A = 0.5
+        B = 0.1
+        C = 0.3
+        EPISODES = 15 * play_times
+        standardized_time = (step - A * EPISODES) / (B * EPISODES)
+        cosh = np.cosh(math.exp(-standardized_time))
+        epsilon = 1 - (1 / cosh + (step * C / EPISODES))
+        return epsilon
+
 
     def epsilon_random(self, feature, player, feature_tracer, **kwargs):  # fixed probability for choosing a random action
         explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
@@ -58,8 +69,9 @@ class ExplorationMethods:
             return ai_discard_tile, True, discard_probabilities
 
 
-    def epsilon_rule(self, feature, player, feature_tracer, **kwargs):  # fixed probability for choosing a random action
-        explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
+    def epsilon_rule(self, feature, player, feature_tracer, play_times, **kwargs):  # fixed probability for choosing a random action
+        # explore_probability = self.epsilon_min + (self.epsilon - self.epsilon_min) * np.exp(-self.epsilon_decay * self.decay_step)
+        explore_probability = self.new_epsilon(self.decay_step, play_times)
         self.decay_step += 1
 
         # # For a fixed epsilon

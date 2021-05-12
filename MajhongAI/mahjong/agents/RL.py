@@ -18,7 +18,8 @@ from mahjong.exploration.methods import ExplorationMethods
 
 
 class ReinforceLearningAgent:
-    def __init__(self, player_id: int):
+    def __init__(self, player_id: int, play_times):
+        self.play_times = play_times
         self.name = 'reinforcementlearning'
         self.__player_id = player_id
         self.state_tensor = np.zeros((9, 8, 10))
@@ -226,7 +227,7 @@ class ReinforceLearningAgent:
 
         # return self.exploration_method.epsilon_random(feature, player, feature_tracer)  # Alex train on this
 
-        return self.exploration_method.epsilon_rule(feature, player, feature_tracer)  # Koning train on this
+        return self.exploration_method.epsilon_rule(feature, player, feature_tracer, self.play_times)  # Koning train on this
 
         # Priority 1: Discard based on color
         # color_discard_tile = self.decide_discard_by_color(player)
