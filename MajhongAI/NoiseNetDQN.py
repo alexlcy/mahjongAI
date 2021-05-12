@@ -283,10 +283,10 @@ class DQNAgent:
 
 # =========================== Training ===========================
 # Hyper-parameters & settings
-PLAY_TIMES = 200000
+PLAY_TIMES = 10000
 LR = 0.00001
 BATCH_SIZE = 512
-EXP_SAMPLE_SIZE = 200  # how many games to sample to train model each time
+EXP_SAMPLE_SIZE = 100  # how many games to sample to train model each time
 BEHAVIOR_POLICY_UPDATE_INTV = 500  # interval after which the behavior policy gets replaced by the newest target policy
 SAVE_INTV = 10000
 TRAIN_FREQUENCY = 100
@@ -309,8 +309,8 @@ config = {
     'seed': None  # to None for random run, if seed == None, will not save record
 }
 env = Env(config)
-RL_agent = ReinforceLearningAgent(1)
-env.set_agents([RuleAgent(0), RL_agent, RandomAgent(2), RuleAgent(3)])
+RL_agent = ReinforceLearningAgent(0)
+env.set_agents([RL_agent, RuleAgent(0), RandomAgent(2), RuleAgent(3)])
 
 hu_reward_statistics = {0: [], 1: [], 2: [], 3: []}
 
@@ -351,7 +351,7 @@ for i in range(PLAY_TIMES):
     buffer.update_buffer()
 
     # Update policy
-    if i < 200 or len(buffer) < EXP_SAMPLE_SIZE:
+    if len(buffer) < EXP_SAMPLE_SIZE:
         continue
 
     if i != 0 and i % TRAIN_FREQUENCY == 0:
