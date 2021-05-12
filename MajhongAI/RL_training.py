@@ -67,12 +67,12 @@ def replace_behavior_policy(agent, model, model_type='discard'):
 
 # =========================== Training ===========================
 # Hyper-parameters & settings
-PLAY_TIMES = 1000
-LR = 0.0001
+PLAY_TIMES = 100000
+LR = 0.00001
 BATCH_SIZE = 512
 EXP_SAMPLE_SIZE = 100  # how many games to sample to train model each time
-BEHAVIOR_POLICY_UPDATE_INTV = 100  # interval after which the behavior policy gets replaced by the newest target policy
-SAVE_INTV = 100
+BEHAVIOR_POLICY_UPDATE_INTV = 500  # interval after which the behavior policy gets replaced by the newest target policy
+SAVE_INTV = 1000
 TRAIN_FREQENCY = 100
 MODEL_TO_TRAIN = 'discard'
 
@@ -93,8 +93,8 @@ config = {
     'seed': None  # to None for random run, if seed == None, will not save record
 }
 env = Env(config)
-RL_agent = ReinforceLearningAgent(0)
-env.set_agents([RL_agent, RuleAgent(1), RuleAgent(2), RuleAgent(3)])
+# RL_agent = ReinforceLearningAgent(0)
+env.set_agents([ReinforceLearningAgent(0), RuleAgent(1), RuleAgent(2), RuleAgent(3)])
 
 hu_reward_statistics = {0: [], 1: [], 2: [], 3: []}
 
@@ -105,7 +105,7 @@ for i in range(PLAY_TIMES):
     """
     reset & run
     """
-    env.reset()
+    env.reset(model)
     env.run(replay_buffer)
 
     # tensor board
