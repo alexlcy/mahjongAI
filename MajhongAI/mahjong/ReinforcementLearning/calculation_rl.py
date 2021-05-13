@@ -26,7 +26,7 @@ def cal_probability_of_action_2(discard_argmax, discard_probabilities):
         p_action = discard_probabilities.T[discard_argmax][0]
     except Exception:
         print('Error here, type 1: experience/cal_probability_of_action')
-        print(f'Checking: probabilities - {discard_probabilities.T}')
+        print(f'Checking: probabilities - {discard_probabilities}')
         print(f'Checking: pos of discard - {discard_argmax}')
         print(f'Checking: p of discard - {discard_probabilities.T[discard_argmax][0]}')
     return p_action
