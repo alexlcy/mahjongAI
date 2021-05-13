@@ -235,7 +235,7 @@ class ExperienceBuffer:
 
 
 class ReplayBuffer:
-    def __init__(self, play_times, buffer_capacity=200):
+    def __init__(self, play_times, buffer_capacity=1000):
         self.buffer = deque([], maxlen=buffer_capacity)
         self.game_no_list = []
         self.x = []
