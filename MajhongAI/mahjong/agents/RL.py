@@ -97,6 +97,12 @@ class ReinforceLearningAgent:
         #     player['choice'] = legal_actions[0]
         #     return
 
+        # For discard predict, no matter what action it takes
+        discard_tile, is_trigger_by_rl, discard_probabilities = self.decide_discard(player, feature, player['hands'],
+                                                                                    feature_tracer)
+        feature_tracer.set_current_prediction(self.__player_id, discard_probabilities)
+        feature_tracer.set_is_trigger_by_rl(self.__player_id, is_trigger_by_rl)
+
         # Step 1: 选缺 process (Only trigger once in a round)
         colors = [0] * 3
         for card in player['hands']:
@@ -188,15 +194,20 @@ class ReinforceLearningAgent:
 
         # Step 3: Choose which one to discard
         if player['choice'] < 100:
-            discard_tile, is_trigger_by_rl, discard_probabilities = self.decide_discard(player, feature, player['hands'], feature_tracer)
-
-            # Save current prediction
-            feature_tracer.set_current_prediction(self.__player_id, discard_probabilities)
-            # Save the status that is_trigger_by_rl
-            feature_tracer.set_is_trigger_by_rl(self.__player_id, is_trigger_by_rl)
-            # TODO: Checking, can delete later
-            if is_trigger_by_rl is None:
-                print(f'Check unexpected error: player_id:{self.__player_id}, is_trigger_by_rl is {is_trigger_by_rl}')
+            # Done at the beginning
+            # discard_tile, is_trigger_by_rl, discard_probabilities = self.decide_discard(player, feature, player['hands'], feature_tracer)
+            #
+            # # Save current prediction
+            # if discard_probabilities is None:
+            #     print('Checking nan pro??!!!')
+            # feature_tracer.set_current_prediction(self.__player_id, discard_probabilities)
+            # # Save the status that is_trigger_by_rl
+            # if is_trigger_by_rl is None:
+            #     print(f'Checking why??')
+            # feature_tracer.set_is_trigger_by_rl(self.__player_id, is_trigger_by_rl)
+            # # TODO: Checking, can delete later
+            # if is_trigger_by_rl is None:
+            #     print(f'Check unexpected error: player_id:{self.__player_id}, is_trigger_by_rl is {is_trigger_by_rl}')
 
             # Call discard function to discard a tile
             if discard_tile is not None:
