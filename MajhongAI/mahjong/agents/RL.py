@@ -94,6 +94,12 @@ class ReinforceLearningAgent:
         #     player['choice'] = legal_actions[0]
         #     return
 
+        # For discard predict, no matter what action it takes
+        discard_tile, is_trigger_by_rl, discard_probabilities = self.decide_discard(player, feature, player['hands'],
+                                                                                    feature_tracer)
+        feature_tracer.set_current_prediction(self.__player_id, discard_probabilities)
+        feature_tracer.set_is_trigger_by_rl(self.__player_id, is_trigger_by_rl)
+
         # Step 1: 选缺 process (Only trigger once in a round)
         colors = [0] * 3
         for card in player['hands']:

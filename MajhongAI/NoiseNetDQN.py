@@ -283,7 +283,7 @@ class DQNAgent:
 
 # =========================== Training ===========================
 # Hyper-parameters & settings
-PLAY_TIMES = 10000
+PLAY_TIMES = 30000
 LR = 0.00001
 BATCH_SIZE = 512
 EXP_SAMPLE_SIZE = 100  # how many games to sample to train model each time
@@ -310,7 +310,7 @@ config = {
 }
 env = Env(config)
 RL_agent = ReinforceLearningAgent(0, PLAY_TIMES)
-env.set_agents([RL_agent, RuleAgent(1), RuleAgent(2), RuleAgent(3)])
+env.set_agents([RL_agent, RandomAgent(1), RuleAgent(2), RuleAgent(3)])
 
 hu_reward_statistics = {0: [], 1: [], 2: [], 3: []}
 
