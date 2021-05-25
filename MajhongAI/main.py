@@ -10,7 +10,7 @@ from mahjong.agents.rule import RuleAgent
 import os
 from mahjong import online_encoder
 from mahjong.Serialization import online_serialize
-from mahjong.stats_logger.calc_functions import calc_win_rates, calc_hu_scores, calc_win_times, calc_hu_score_each_game
+from mahjong.stats_logger.calc_functions import calc_win_rates, calc_hu_scores, calc_win_times, calc_hu_score_each_game, calc_win_rate_of_win_game_times
 
 # mahjong.settings.init()
 
@@ -51,7 +51,8 @@ config = {
 }
 env = Env(config)
 RL_agent = ReinforceLearningAgent(0, play_times)
-game_agents = [RL_agent, RuleAgent(1), RuleAgent(2), RuleAgent(3)]
+# game_agents = [RL_agent, RuleAgent(1), RuleAgent(2), RuleAgent(3)]
+game_agents = [DeepLearningAgent(0), RuleAgent(1), RuleAgent(2), RuleAgent(3)]
 env.set_agents(game_agents)
 
 hu_reward_statistics = {0: [], 1: [], 2: [], 3: []}
@@ -74,7 +75,10 @@ for i in range(play_times):
     calc_hu_scores(buffer.hu_score, buffer.game_no)
     # hu_score each game
     calc_hu_score_each_game(buffer.hu_reward, buffer.game_no)
+    # win rates of win game times
+    calc_win_rate_of_win_game_times(buffer.win_times, buffer.win_game, buffer.game_no)
     # print(f'reward_in_each_game:{buffer.hu_reward}')
+
 
     # TODO: checking, can delete
     reward_sum = np.sum([buffer.hu_reward[b_key] for b_key in hu_reward_statistics.keys()])
@@ -86,6 +90,7 @@ for i in range(play_times):
         print(f'Cal buffer: {buffer.hu_reward}, sum: {reward_sum}')
 
 buffer.save_experience(m_config.buffer_folder_location)
+print(f'win games:{buffer.win_game}, {buffer.win_game / play_times * 100:2f}%, tie games:{play_times - buffer.win_game}, {(play_times - buffer.win_game) / play_times * 100:2f}%')
 end = time.time()
 print('Agents ', end=' ')
 for i in range(4):

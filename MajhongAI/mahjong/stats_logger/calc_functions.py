@@ -28,3 +28,14 @@ def calc_hu_score_each_game(hu_rewards, game_no):
     for i in range(4):
         hu_reward_result[i] = hu_rewards[i]
     return hu_reward_result, game_no
+
+
+@players_dict_logger(data_name='win_rate_of_win_game_times')
+def calc_win_rate_of_win_game_times(win_times, win_game_times, game_no):
+    cal_win_rate = {}
+    for i in range(4):
+        if win_game_times == 0:
+            cal_win_rate[i] = 0
+        else:
+            cal_win_rate[i] = win_times[i] / win_game_times
+    return cal_win_rate, game_no

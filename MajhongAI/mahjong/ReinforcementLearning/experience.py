@@ -103,6 +103,7 @@ class ExperienceBuffer:
         self.hu_reward = {0: 0, 1: 0, 2: 0, 3: 0}
         self.play_times = play_times
         self.game_no = 0
+        self.win_game = 0
 
     # TODO: if ok should be moved to calculation_rl.py
     # def cal_probability_of_action(self, is_trigger_by_rl, epsilon, discard_argmax, discard_probabilities):
@@ -155,6 +156,10 @@ class ExperienceBuffer:
             self.hu_reward[c_key] = collectors[c_key].hu_rewards
             if collectors[c_key].win:
                 self.win_times[c_key] += collectors[c_key].win_times
+        for c_key in collectors.keys():
+            if collectors[c_key].win:
+                self.win_game += 1
+                break
 
     def save_experience(self, folder_path):
         if len(self.x) != 0:
@@ -248,6 +253,7 @@ class ReplayBuffer:
         self.hu_reward = {0: 0, 1: 0, 2: 0, 3: 0}
         self.play_times = play_times
         self.game_no = 0
+        self.win_game = 0
 
     def massage_experience(self, collectors, normed=True):
         self.game_no += 1
@@ -293,6 +299,10 @@ class ReplayBuffer:
             self.hu_reward[c_key] = collectors[c_key].hu_rewards
             if collectors[c_key].win:
                 self.win_times[c_key] += collectors[c_key].win_times
+        for c_key in collectors.keys():
+            if collectors[c_key].win:
+                self.win_game += 1
+                break
 
     def update_buffer(self):
         if len(self.x) != 0:
