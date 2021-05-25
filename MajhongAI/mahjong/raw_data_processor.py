@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @FileName : raw_data_processor.py
+# @Project  : MAHJONG AI
+# @Author   : WANG Jianxing
+# @Time     : 2021/4/17
 import copy
 import numpy as np
 # import DataInformation

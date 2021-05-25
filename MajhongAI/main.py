@@ -10,38 +10,93 @@ from mahjong.agents.rule import RuleAgent
 import os
 from mahjong import online_encoder
 from mahjong.Serialization import online_serialize
-
+from mahjong.stats_logger.calc_functions import calc_win_rates, calc_hu_scores, calc_win_times, calc_hu_score_each_game, calc_win_rate_of_win_game_times
 
 # mahjong.settings.init()
 
 from mahjong.agents.DL import DeepLearningAgent
+from mahjong.agents.RL import ReinforceLearningAgent
+import time
 
-import mahjong_config
-from ReinforcementLearning.experience import ExperienceBuffer
+import mahjong.mahjong_config as m_config
+from mahjong.ReinforcementLearning.experience import ExperienceBuffer
 
-LOG_FORMAT = "%(message)s"
+import os
+
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
+import numpy as np
+
+LOG_FORMAT = "%(message)s "
 logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
+start = time.time()
+play_times = 1000
+buffer = ExperienceBuffer(play_times)
 random.seed(0)
-seed = time()
+# seed = time.time()
+# seed = None
+# config = {
+#     'show_log': True,
+#     'player_num': 4,
+#     'seed': None  # to None for random run, if seed == None, will not save record
+# }
+# env = Env(config)
+# env.set_agents([ReinforceLearningAgent(0), RuleAgent(1), RuleAgent(2), RuleAgent(3)])
+
 config = {
-    'show_log': True,
+    'show_log': False,
     'player_num': 4,
-    'seed': seed # to None for random run, if seed == None, will not save record
+    'seed': None  # to None for random run, if seed == None, will not save record
 }
-
 env = Env(config)
-env.set_agents([RuleAgent(0), RuleAgent(1), RuleAgent(2), DeepLearningAgent(3)])
+RL_agent = ReinforceLearningAgent(0, play_times)
+# game_agents = [RL_agent, RuleAgent(1), RuleAgent(2), RuleAgent(3)]
+game_agents = [DeepLearningAgent(0), RuleAgent(1), RuleAgent(2), RuleAgent(3)]
+env.set_agents(game_agents)
 
-"""
-reset & run
-"""
-buffer = ExperienceBuffer()
-for i in range(10):
+hu_reward_statistics = {0: [], 1: [], 2: [], 3: []}
+for i in range(play_times):
+    print(f'No.{i + 1} Game ing~')
+
+    """
+    reset & run
+    """
     env.reset()
-    buffer = env.run(buffer)
-buffer.save_experience()
+    # RL_agent.exploration_method.decay_step = 0
+    env.run(buffer)
 
+    # tensor board
+    # win_times
+    calc_win_times(buffer.win_times, buffer.game_no)
+    # win_rates
+    calc_win_rates(buffer.win_times, buffer.game_no)
+    # hu_score
+    calc_hu_scores(buffer.hu_score, buffer.game_no)
+    # hu_score each game
+    calc_hu_score_each_game(buffer.hu_reward, buffer.game_no)
+    # win rates of win game times
+    calc_win_rate_of_win_game_times(buffer.win_times, buffer.win_game, buffer.game_no)
+    # print(f'reward_in_each_game:{buffer.hu_reward}')
+
+
+    # TODO: checking, can delete
+    reward_sum = np.sum([buffer.hu_reward[b_key] for b_key in hu_reward_statistics.keys()])
+    for h_key in hu_reward_statistics.keys():
+        hu_reward_statistics[h_key].append(buffer.hu_reward[h_key])
+
+    # TODO: checking the reward sum is zero, can delete
+    if reward_sum != 0:
+        print(f'Cal buffer: {buffer.hu_reward}, sum: {reward_sum}')
+
+buffer.save_experience(m_config.buffer_folder_location)
+print(f'win games:{buffer.win_game}, {buffer.win_game / play_times * 100:2f}%, tie games:{play_times - buffer.win_game}, {(play_times - buffer.win_game) / play_times * 100:2f}%')
+end = time.time()
+print('Agents ', end=' ')
+for i in range(4):
+    print(f'{i}: {game_agents[i].name}  ', end=' ')
+print('')
+print(f'Recording: {(end - start) / 60} min played {play_times} games')
 
 # # Online encoder
 # DL_agent = 0

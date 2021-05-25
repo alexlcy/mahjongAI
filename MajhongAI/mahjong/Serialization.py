@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @FileName : Serialization.py
+# @Project  : MAHJONG AI
+# @Author   : WANG Jianxing
+# @Time     : 2021/4/17
 import numpy as np
 from collections import Counter
 import os, os.path
@@ -21,13 +26,17 @@ def helper(size, array):
                 tile_index = total_dict[i]
                 nums = count[i]
                 for j in range(nums):
-                    temp[j][tile_index] = 1
+                    try:
+                        temp[j][tile_index] = 1
+                    except:
+                        with open("bug.txt", "w") as output:
+                            output.write(str(array))
     return temp
 
 
 def online_serialize(all_data):
     names = locals()
-    # own wind 1 + round wind 1 + steal_card 1 + own hand 1 + all discards 4*4 + open melds 4*4 = 39
+    # own wind 1 + round wind 1 + steal_card 1 + own hand 4 + all discards 4*4 + open melds 4*4 = 39
     all_features = {f'res{i}': np.zeros((39, 34), int) for i in range(5)}
 
     for index, data in enumerate(all_data):
@@ -38,7 +47,7 @@ def online_serialize(all_data):
             names['res' + str(index)] = False
             # print(names['res' + str(index)])
             for idx, array in enumerate(data):
-                if idx in [0, 1, 2]:  # for wind and own wind and steal_card: each size (1,34)
+                if idx in [0, 1, 3]:  # for wind and own wind and steal_card: each size (1,34)
                     if names['res'+str(index)] is False:
                         names['res' + str(index)] = helper(1, array)
                     else:
@@ -68,9 +77,9 @@ def online_serialize(all_data):
         # for value in all_features.values():
         #     print(value.shape)
         # res = np.concatenate((value for value in all_features.values()), axis=0)
-        res = np.vstack(list(all_features.values()))[:, :, np.newaxis]
-        # print('all serialized features size:', res.shape)
-        return res
+    res = np.vstack(all_features.values())[:, :, np.newaxis]  # (195,34,1)
+    # print('all serialized features size:', res.shape)
+    return res
 
 
 # def offline_serialize(data):

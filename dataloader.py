@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @FileName : dataloader.py
+# @Project  : MAHJONG AI
+# @Author   : WANG Jianxing
+# @Time     : 2021/4/17
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 from MajhongAI.mahjong.Serialization import offline_serialize

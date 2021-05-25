@@ -8,8 +8,7 @@ from mahjong.game import Game
 from mahjong.snapshot import Snapshot
 
 from mahjong.ReinforcementLearning.experience import ExperienceBuffer
-
-import mahjong_config
+import mahjong.mahjong_config
 
 DEFAULT_CONFIG = {
     'player_num': 4,
@@ -28,6 +27,7 @@ class Env(object):
         Args:
             config (dict, optional): DEFAULT_CONFIG. Defaults to None.
         """
+        self.is_rl_agents = None
         self.config = config
         if not self.config:
             self.config = DEFAULT_CONFIG
@@ -40,9 +40,11 @@ class Env(object):
 
     def set_agents(self, agents):
         self.agents = agents
+        self.is_rl_agents = [True if 'reinforcementlearning' in agent.name else False for agent in self.agents]
+        return
 
     def reset(self):
-        self.game.init_game(self.config)
+        self.game.init_game(self.config, self.is_rl_agents)
         self.snapshot = self.game.new_game()
 
     def next(self):
@@ -95,7 +97,6 @@ class Env(object):
         # Experience Buffer
         collectors = self.game.round.collectors
         buffer.massage_experience(collectors)
-        return buffer
 
         # x, y, discard = ExperienceBuffer().read_experience('./experiment_2021_03_29_19_17_08.h5')
         # buffer.combine_experience(collectors)
