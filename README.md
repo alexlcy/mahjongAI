@@ -12,13 +12,3 @@ https://drive.google.com/drive/folders/1dOvYVDFtaHcQF-whuG2gL4dwMPxBfXXf?usp=sha
 $ cd MajhongAI
 $ tensorboard --logdir=runs
 ```
-
-
-# Todo
-Alex: 
-
-Koning:
-
-Jason:
-
-William:
